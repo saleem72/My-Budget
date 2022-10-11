@@ -30,6 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
       {required HomeMoreMenuItem item}) {
     switch (item) {
       case HomeMoreMenuItem.subjects:
+        Navigator.of(context).pushNamed(NavLinks.subjects);
         break;
       case HomeMoreMenuItem.accounts:
         break;
