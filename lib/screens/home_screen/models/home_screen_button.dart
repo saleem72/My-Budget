@@ -1,7 +1,10 @@
 //
 
 import 'package:flutter/material.dart';
+import 'package:my_budget/styling/assets.dart';
 import 'package:my_budget/styling/pallet.dart';
+
+import '../../../helpers/localization/language_constants.dart';
 
 enum HomeScreenButton { bill, diary, accountStatment, budget }
 
@@ -19,29 +22,29 @@ extension HomeScreenButtonDetails on HomeScreenButton {
     }
   }
 
-  String get label {
+  String label(BuildContext context) {
     switch (this) {
       case HomeScreenButton.bill:
-        return 'Invoice';
+        return Translator.translation(context).invoice_tag;
       case HomeScreenButton.diary:
-        return 'Dialy Mov';
+        return Translator.translation(context).daily_tag;
       case HomeScreenButton.accountStatment:
-        return 'Account Statment';
+        return Translator.translation(context).account_statment_tag;
       case HomeScreenButton.budget:
-        return 'Budget';
+        return Translator.translation(context).budget_tag;
     }
   }
 
-  IconData get icon {
+  String get icon {
     switch (this) {
       case HomeScreenButton.bill:
-        return Icons.person;
+        return Assests.invoice;
       case HomeScreenButton.diary:
-        return Icons.attach_file;
+        return Assests.daily;
       case HomeScreenButton.accountStatment:
-        return Icons.document_scanner;
+        return Assests.statment;
       case HomeScreenButton.budget:
-        return Icons.scale;
+        return Assests.budget;
     }
   }
 }

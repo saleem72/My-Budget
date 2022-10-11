@@ -3,11 +3,16 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_budget/helpers/localization/language_constants.dart';
+import 'package:my_budget/helpers/routing/nav_links.dart';
+import 'package:my_budget/screens/home_screen/models/home_more_menu_item.dart';
 import 'package:my_budget/screens/home_screen/models/home_screen_button.dart';
+import 'package:my_budget/styling/assets.dart';
 
 import 'package:my_budget/styling/styling.dart';
 
 import '../../database/buget_database_cubit/budget_database_cubit.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -21,19 +26,33 @@ class _HomeScreenState extends State<HomeScreen> {
     print(button.label);
   }
 
+  void _actionForMenuItem(BuildContext context,
+      {required HomeMoreMenuItem item}) {
+    switch (item) {
+      case HomeMoreMenuItem.subjects:
+        break;
+      case HomeMoreMenuItem.accounts:
+        break;
+      case HomeMoreMenuItem.settings:
+        Navigator.of(context).pushNamed(NavLinks.settings);
+        break;
+      case HomeMoreMenuItem.about:
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
     final double totalHeight = (size.height - kToolbarHeight - 24);
-    final cardHeight = ((totalHeight * 0.65)) / 2;
+    final cardHeight = ((totalHeight * 0.60)) / 2;
     final double itemWidth = size.width / 2;
     final database = context.read<BudgetDatabaseCubit>().database;
     return Scaffold(
-      // backgroundColor: Pallet.background,
       appBar: AppBar(
-        title: const Text(
-          'Home',
+        title: Text(
+          AppLocalizations.of(context)!.home,
           style: Topology.title,
         ),
         centerTitle: true,
@@ -44,90 +63,169 @@ class _HomeScreenState extends State<HomeScreen> {
             size: 20,
           ),
         ),
+        actions: [
+          PopupMenuButton(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            onSelected: (item) => _actionForMenuItem(context, item: item),
+            itemBuilder: (context) => HomeMoreMenuItem.values
+                .map((e) => PopupMenuItem(
+                    value: e,
+                    child: PopupMenuItemCard(
+                      title: e.title(context),
+                      icon: e.icon,
+                    )))
+                .toList(),
+          ),
+        ],
       ),
       body: Column(
         children: [
-          SizedBox(
-            height: totalHeight * 0.65,
-            child: GridView.count(
-              primary: false,
-              padding: const EdgeInsets.all(16),
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10,
-              crossAxisCount: 2,
-              childAspectRatio: (itemWidth / cardHeight),
-              children: <Widget>[
-                for (final button in HomeScreenButton.values)
-                  Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    color: Pallet.card,
-                    child: Container(
-                      padding: const EdgeInsets.all(8),
-                      child: RoundedButton(
-                        onPressed: (item) {},
-                        button: button,
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          ),
-          SizedBox(
-            height: totalHeight * 0.35,
-            child: Row(
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: Container(
-                    margin:
-                        const EdgeInsets.only(bottom: 16, left: 16, right: 8),
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      color: Pallet.appBar,
-                      child: Container(),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: Container(
-                    margin:
-                        const EdgeInsets.only(bottom: 16, left: 8, right: 16),
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      color: Colors.white,
-                      child: Container(),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          _summarySection(totalHeight),
+          _mainActions(totalHeight, itemWidth, cardHeight),
         ],
       ),
     );
   }
 
-  SizedBox _mainActions() {
+  Widget _summarySection(double totalHeight) {
     return SizedBox(
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: [
-            for (final button in HomeScreenButton.values)
-              RoundedButton(
-                onPressed: (p0) => _actionFor(p0),
-                button: button,
-              ),
-          ],
+      height: totalHeight * 0.4,
+      child: Row(
+        children: [
+          _balance(),
+          _expenses(),
+        ],
+      ),
+    );
+  }
+
+  Widget _expenses() {
+    return Expanded(
+      flex: 1,
+      child: Container(
+        margin: const EdgeInsets.only(top: 16, left: 8, right: 16),
+        child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          color: Colors.white,
+          child: Container(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Image.asset(
+                      Assests.category,
+                      width: 16,
+                      height: 16,
+                      color: Pallet.appBar,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      Translator.translation(context).categories_tag,
+                      style: Topology.darkSmallBody,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
         ),
       ),
+    );
+  }
+
+  Widget _balance() {
+    return Expanded(
+      flex: 1,
+      child: Container(
+        margin: const EdgeInsets.only(top: 16, left: 16, right: 8),
+        child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          color: Pallet.appBar,
+          child: Container(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Image.asset(
+                      Assests.money,
+                      width: 16,
+                      height: 16,
+                      color: Colors.white,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      Translator.translation(context).balance_tag,
+                      style: Topology.lightSmallBody,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _mainActions(double totalHeight, double itemWidth, double cardHeight) {
+    return SizedBox(
+      height: totalHeight * 0.60,
+      child: GridView.count(
+        primary: false,
+        padding: const EdgeInsets.all(16),
+        crossAxisSpacing: 10,
+        mainAxisSpacing: 10,
+        crossAxisCount: 2,
+        childAspectRatio: (itemWidth / cardHeight),
+        children: <Widget>[
+          for (final button in HomeScreenButton.values)
+            Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              color: Pallet.card,
+              child: Container(
+                padding: const EdgeInsets.all(8),
+                child: RoundedButton(
+                  onPressed: (item) => _actionFor(item),
+                  button: button,
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class PopupMenuItemCard extends StatelessWidget {
+  const PopupMenuItemCard({
+    Key? key,
+    required this.title,
+    required this.icon,
+  }) : super(key: key);
+  final String title;
+  final String icon;
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Image.asset(
+          icon,
+          width: 16,
+          height: 16,
+        ),
+        const SizedBox(width: 8),
+        Text(title),
+      ],
     );
   }
 }
@@ -166,15 +264,19 @@ class RoundedButton extends StatelessWidget {
                   width: 75,
                   height: 75,
                   child: Center(
-                    child: Icon(button.icon),
+                    child: Image.asset(
+                      button.icon,
+                      width: 18,
+                      height: 18,
+                    ),
                   ),
                 )
               ],
             ),
             Container(
-              padding: const EdgeInsets.only(left: 4, right: 4, bottom: 8),
+              padding: const EdgeInsets.only(left: 4, right: 4),
               child: Text(
-                button.label,
+                button.label(context),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,
