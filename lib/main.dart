@@ -8,7 +8,6 @@ import 'package:my_budget/helpers/localization/locale_cubit/locale_cubit.dart';
 import 'package:my_budget/helpers/routing/nav_links.dart';
 import 'package:my_budget/helpers/routing/routes_generator.dart';
 import 'package:my_budget/styling/pallet.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'screens/sreens_imports.dart';

@@ -11,5 +11,14 @@
     "account_statment_tag": "كشف حساب",
     "budget_tag": "الميزانية",
     "categories_tag": "التفصيلات",
-    "balance_tag": "الميزانية"
+    "balance_tag": "الميزانية",
+    "accounts": "الحسابات",
+    "journal": "يومية الصندوق",
+    "selected_date": "التاريخ",
+    "list_of_movement": "سجل الحركة",
+    "save": "حفظ",
+    "cancel": "الغاء",
+    "add_movment": "اضافة حركة",
+    "amount": "المبلغ",
+    "balance": "الرصيد"
 }

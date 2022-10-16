@@ -22,8 +22,18 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  void _actionFor(HomeScreenButton button) {
-    print(button.label);
+  void _actionFor(BuildContext context, {required HomeScreenButton button}) {
+    switch (button) {
+      case HomeScreenButton.bill:
+        break;
+      case HomeScreenButton.diary:
+        Navigator.of(context).pushNamed(NavLinks.journal);
+        break;
+      case HomeScreenButton.accountStatment:
+        break;
+      case HomeScreenButton.budget:
+        break;
+    }
   }
 
   void _actionForMenuItem(BuildContext context,
@@ -33,6 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
         Navigator.of(context).pushNamed(NavLinks.subjects);
         break;
       case HomeMoreMenuItem.accounts:
+        Navigator.of(context).pushNamed(NavLinks.accounts);
         break;
       case HomeMoreMenuItem.settings:
         Navigator.of(context).pushNamed(NavLinks.settings);
@@ -196,7 +207,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Container(
                 padding: const EdgeInsets.all(8),
                 child: RoundedButton(
-                  onPressed: (item) => _actionFor(item),
+                  onPressed: (item) => _actionFor(context, button: item),
                   button: button,
                 ),
               ),

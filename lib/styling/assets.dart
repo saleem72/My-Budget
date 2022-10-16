@@ -15,4 +15,6 @@ class Assests {
   static const settings = '${_iconsPath}settings.png';
   static const product = '${_iconsPath}products.png';
   static const account = '${_iconsPath}account.png';
+  static const journalIn = '${_iconsPath}journal_in.png';
+  static const journalOut = '${_iconsPath}journal_out.png';
 }

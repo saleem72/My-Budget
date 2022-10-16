@@ -7,14 +7,14 @@ import 'package:my_budget/widgets/subjects_tree/subjects_tree.dart';
 
 import '../../database/buget_database_cubit/budget_database_cubit.dart';
 
-class SubjectsScreen extends StatelessWidget {
-  const SubjectsScreen({Key? key}) : super(key: key);
+class AccountsScreen extends StatelessWidget {
+  const AccountsScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(Translator.translation(context).subjects_tag),
+        title: Text(Translator.translation(context).accounts_tag),
       ),
       body: Column(
         children: [
@@ -28,7 +28,7 @@ class SubjectsScreen extends StatelessWidget {
 
   Widget _subjectsTree(BuildContext context) {
     final database = context.read<BudgetDatabaseCubit>().database;
-    final stream = database.subjectsDao.watchAllSubjects();
+    final stream = database.accountsDao.watchAllAccounts();
     return StreamBuilder(
         stream: stream,
         builder: (context, snapshot) {

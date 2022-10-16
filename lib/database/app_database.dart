@@ -22,8 +22,8 @@ LazyDatabase _openConnection() {
 }
 
 @DriftDatabase(
-  tables: [Subjects],
-  daos: [SubjectsDao],
+  tables: [Subjects, Accounts, Debentures, DebentureItems],
+  daos: [SubjectsDao, AccountsDao, DebenturesDao],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
@@ -42,6 +42,10 @@ class AppDatabase extends _$AppDatabase {
           batch.insertAll(subjects, shirtsSubSubjects());
           batch.insertAll(subjects, foodSubSubjects());
           batch.insertAll(subjects, electricitySubSubjects());
+
+          batch.insertAll(accounts, mainAccounts());
+          batch.insertAll(accounts, indebtedSubAccounts());
+          batch.insertAll(accounts, creditSubAccounts());
         });
       },
     );
@@ -50,3 +54,22 @@ class AppDatabase extends _$AppDatabase {
   @override
   int get schemaVersion => 1;
 }
+
+// indebted credit
+List<AccountsCompanion> mainAccounts() => [
+      AccountsCompanion.insert(id: const Value(1), title: 'Debit'),
+      AccountsCompanion.insert(id: const Value(2), title: 'Credit'),
+    ];
+
+// cashier salary
+List<AccountsCompanion> indebtedSubAccounts() => [
+      AccountsCompanion.insert(
+          id: const Value(3), parentId: const Value(1), title: 'Cashier'),
+      AccountsCompanion.insert(parentId: const Value(1), title: 'Salary'),
+    ];
+
+// cashier salary
+List<AccountsCompanion> creditSubAccounts() => [
+      AccountsCompanion.insert(parentId: const Value(2), title: 'Purchases'),
+      AccountsCompanion.insert(parentId: const Value(2), title: 'Bills'),
+    ];

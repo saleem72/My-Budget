@@ -3,44 +3,44 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_budget/database/models/tree_node.dart';
-import 'package:my_budget/widgets/subjects_tree/subjects_tree_selected_node_cubit/subjects_tree_selected_node_cubit.dart';
+import 'package:my_budget/helpers/localization/language.dart';
+import 'package:my_budget/helpers/localization/locale_cubit/locale_cubit.dart';
 
 import '../../database/models/subject_with_childs.dart';
+import 'subjects_tree_selected_node_cubit/subjects_tree_selected_node_cubit.dart';
 
-class SubjectTreeNode extends StatelessWidget {
-  const SubjectTreeNode({
+class SubjectTreeNodeTile extends StatelessWidget {
+  const SubjectTreeNodeTile({
     Key? key,
     required this.subject,
   }) : super(key: key);
-
-  final SubjectWithChilds subject;
-
+  final TreeNode subject;
   @override
   Widget build(BuildContext context) {
+    final locale = context.read<LocaleCubit>().state;
     return BlocBuilder<SubjectsTreeSelectedNodeCubit, TreeNode?>(
       builder: (context, state) {
         final bool isSelected = state == subject;
         return Container(
-          color: Colors.grey.shade300,
-          padding: const EdgeInsets.all(8),
           margin: subject.parentId == null
-              ? const EdgeInsets.only(bottom: 16)
-              : EdgeInsets.zero,
-          child: Column(
-            children: [
-              _subjectTitle(context, isSelected: isSelected),
-              subject.childs.isEmpty
-                  ? const SizedBox.shrink()
-                  : Padding(
-                      padding: const EdgeInsets.only(left: 16.0),
-                      child: Column(
-                        children: subject.childs
-                            .map((e) => SubjectTreeNode(subject: e))
-                            .toList(),
-                      ),
-                    ),
-            ],
-          ),
+              ? EdgeInsets.zero
+              : locale.languageCode == Language.arabic.languageCode
+                  ? const EdgeInsets.only(right: 16)
+                  : const EdgeInsets.only(left: 16),
+          child: subject.childs.isEmpty
+              ? _subjectTitle(context, isSelected: isSelected)
+              : ExpansionTile(
+                  title: _subjectTitle(context, isSelected: isSelected),
+                  children: subject.childs
+                      .map((e) => Container(
+                            margin: locale.languageCode ==
+                                    Language.arabic.languageCode
+                                ? const EdgeInsets.only(right: 16)
+                                : const EdgeInsets.only(left: 16),
+                            child: SubjectTreeNodeTile(subject: e),
+                          ))
+                      .toList(),
+                ),
         );
       },
     );

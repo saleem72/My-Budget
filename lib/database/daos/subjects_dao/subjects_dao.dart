@@ -1,6 +1,6 @@
 //
 
-import 'package:my_budget/database/entities/subject.dart';
+import 'package:my_budget/database/entities/subjects.dart';
 import 'package:drift/drift.dart';
 import 'package:my_budget/database/extensions/sortable_tree_node_list.dart';
 import 'package:my_budget/database/models/subject_with_childs.dart';

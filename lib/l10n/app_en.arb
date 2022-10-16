@@ -7,10 +7,18 @@
     "subjects_tag": "Subjects",
     "accounts_tag": "Accounts",
     "invoice_tag": "Invoice",
-    "daily_tag": "Dialy Mov",
+    "daily_tag": "Journal",
     "account_statment_tag": "Account Statment",
     "budget_tag": "Budget",
     "categories_tag": "Categories",
-    "balance_tag": "Balance"
+    "balance_tag": "Balance",
+    "accounts": "Accounts",
+    "journal": "Journal",
+    "selected_date": "Selected Date",
+    "list_of_movement": "List of movement",
+    "save": "Save",
+    "cancel": "Cancel",
+    "add_movment": "Add movment",
+    "amount": "Amount",
+    "balance": "Balance"
 }
-
