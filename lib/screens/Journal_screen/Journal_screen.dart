@@ -170,6 +170,7 @@ class _JournalScreenState extends State<JournalScreen> {
       },
       child: Text(
         Translator.translation(context).save,
+        style: Topology.darkLargBody,
       ),
     );
     final cancelButton = TextButton(
@@ -178,6 +179,7 @@ class _JournalScreenState extends State<JournalScreen> {
       },
       child: Text(
         Translator.translation(context).cancel,
+        style: Topology.darkLargBody,
       ),
     );
 
@@ -195,7 +197,10 @@ class _JournalScreenState extends State<JournalScreen> {
           children: [
             Row(
               children: [
-                const Text('Is it income'),
+                Text(
+                  Translator.translation(context).is_it_income,
+                  style: Topology.darkLargBody,
+                ),
                 Switch(
                     value: isIn,
                     onChanged: ((value) {
@@ -208,6 +213,7 @@ class _JournalScreenState extends State<JournalScreen> {
             TextField(
               controller: amountText,
               keyboardType: TextInputType.number,
+              style: Topology.darkLargBody,
               onChanged: (value) {
                 final temp = double.tryParse(value);
                 if (temp != null) {
@@ -218,23 +224,45 @@ class _JournalScreenState extends State<JournalScreen> {
               },
               decoration: InputDecoration(
                 hintText: Translator.translation(context).amount,
+                hintStyle: Topology.darkLargBody.copyWith(
+                  color: Colors.grey,
+                ),
                 isCollapsed: true,
               ),
             ),
-            DropdownButton<Account>(
-              value: account,
-              items: accounts
-                  .map((e) => DropdownMenuItem(
-                        value: e,
-                        child: Text(e.title),
-                      ))
-                  .toList(),
-              onChanged: (item) {
-                setState(() {
-                  account = item;
-                  print('New value: $item');
-                });
-              },
+            const SizedBox(height: 16),
+            InputDecorator(
+              decoration: const InputDecoration(
+                labelStyle: Topology.darkLargBody,
+                isCollapsed: true,
+                errorStyle: TextStyle(color: Colors.redAccent, fontSize: 16.0),
+                hintText: 'Please select expense',
+                // border: OutlineInputBorder(
+                //   borderRadius: BorderRadius.circular(5.0),
+                // ),
+              ),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<Account>(
+                  value: account,
+                  isExpanded: true,
+                  isDense: true,
+                  style: Topology.darkLargBody,
+                  items: accounts
+                      .map((e) => DropdownMenuItem(
+                            value: e,
+                            child: Text(
+                              e.title,
+                              style: Topology.darkLargBody,
+                            ),
+                          ))
+                      .toList(),
+                  onChanged: (item) {
+                    setState(() {
+                      account = item; // InputDecoration
+                    });
+                  },
+                ),
+              ),
             ),
           ],
         ),

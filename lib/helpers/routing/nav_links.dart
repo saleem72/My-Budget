@@ -8,4 +8,5 @@ class NavLinks {
   static const subjects = '/subjects';
   static const accounts = '/accounts';
   static const journal = '/journal';
+  static const accountStatment = '/account_statment';
 }

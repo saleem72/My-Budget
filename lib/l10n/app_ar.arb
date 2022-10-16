@@ -20,5 +20,7 @@
     "cancel": "الغاء",
     "add_movment": "اضافة حركة",
     "amount": "المبلغ",
-    "balance": "الرصيد"
+    "balance": "الرصيد",
+    "is_it_income": "وارد",
+    "account_tag": "الحساب"
 }

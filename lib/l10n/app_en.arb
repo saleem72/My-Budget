@@ -20,5 +20,7 @@
     "cancel": "Cancel",
     "add_movment": "Add movment",
     "amount": "Amount",
-    "balance": "Balance"
+    "balance": "Balance",
+    "is_it_income": "Is it income",
+    "account_tag": "Account"
 }

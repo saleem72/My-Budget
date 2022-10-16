@@ -30,6 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
         Navigator.of(context).pushNamed(NavLinks.journal);
         break;
       case HomeScreenButton.accountStatment:
+        Navigator.of(context).pushNamed(NavLinks.accountStatment);
         break;
       case HomeScreenButton.budget:
         break;

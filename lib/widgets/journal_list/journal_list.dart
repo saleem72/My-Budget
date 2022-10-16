@@ -19,6 +19,8 @@ class JournalList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double balance = data.fold(
+        0, (previousValue, element) => previousValue + element.amount);
     return Column(
       children: [
         Expanded(child: _buildList(context)),
@@ -33,6 +35,13 @@ class JournalList extends StatelessWidget {
                   fontWeight: FontWeight.w900,
                 ),
               ),
+              const SizedBox(width: 8),
+              Text(
+                '\$$balance',
+                style: Topology.darkMeduimBody.copyWith(
+                  fontWeight: FontWeight.w900,
+                ),
+              )
             ],
           ),
         ),

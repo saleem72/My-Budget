@@ -85,25 +85,23 @@ class DebenturesDao extends DatabaseAccessor<AppDatabase>
         relatedAccount: credit.title,
       );
     }).watch();
+  }
 
-    /*
-    final query = (select(debentureItems).join([
+  Future<List<JournalEntry>> getStatmentForAccount(Account account) {
+    return (select(debentureItems)
+          ..where((row) {
+            return row.debit.equals(account.id);
+          }))
+        .join([
       leftOuterJoin(accounts, debentureItems.credit.equalsExp(accounts.id))
-    ]))
-      ..where(debentureItems.debit.equals(3));
-
-    return query.watch().map((rows) {
-      return rows.map((p0) {
-        final debentureItem = p0.readTable(debentureItems);
-        final credit = p0.readTable(accounts);
-        final item = JournalEntry.fromDebentureItem(debentureItem);
-        return item.copyWith(
-          relatedAccount: credit.title,
-        );
-      }).toList();
-    });
-
-    */
+    ]).map((p0) {
+      final debentureItem = p0.readTable(debentureItems);
+      final credit = p0.readTable(accounts);
+      final item = JournalEntry.fromDebentureItem(debentureItem);
+      return item.copyWith(
+        relatedAccount: credit.title,
+      );
+    }).get();
   }
 }
 
