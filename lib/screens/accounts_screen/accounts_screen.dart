@@ -33,7 +33,8 @@ class AccountsScreen extends StatelessWidget {
         stream: stream,
         builder: (context, snapshot) {
           final data = snapshot.data ?? [];
-          return SubjectsTree(data: data);
+          // return SubjectsTree(data: data);
+          return Text(data.length.toString());
         });
   }
 }

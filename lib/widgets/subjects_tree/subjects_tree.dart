@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_budget/database/models/tree_node.dart';
+import 'package:my_budget/screens/subjects_screen/subjects_tree_cubit/subjects_tree_cubit.dart';
 import 'package:my_budget/widgets/subjects_tree/subjects_tree_selected_node_cubit/subjects_tree_selected_node_cubit.dart';
 
 import '../../database/models/subject_with_childs.dart';
@@ -15,7 +16,7 @@ class SubjectsTree extends StatelessWidget {
     required this.data,
   }) : super(key: key);
 
-  final List<TreeNode> data;
+  final List<SubjectWithChilds> data;
 
   @override
   Widget build(BuildContext context) {
@@ -25,13 +26,63 @@ class SubjectsTree extends StatelessWidget {
     //       return SubjectTreeNode(subject: data[index]);
     //     });
 
-    return BlocProvider(
-      create: (context) => SubjectsTreeSelectedNodeCubit(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => SubjectsTreeSelectedNodeCubit(),
+        ),
+        BlocProvider(
+          create: (context) => SubjectsTreeCubit(subjects: data),
+        ),
+      ],
       child: ListView.builder(
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
         itemCount: data.length,
         itemBuilder: (BuildContext context, int index) {
-          return SubjectTreeNodeTile(subject: data[index]);
+          return Container(
+            // color: Colors.green,
+            // margin: const EdgeInsets.only(bottom: 16),
+            child: NodeCard(node: data[index]),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class AccountsTree extends StatelessWidget {
+  const AccountsTree({
+    Key? key,
+    required this.data,
+  }) : super(key: key);
+
+  final List<SubjectWithChilds> data;
+
+  @override
+  Widget build(BuildContext context) {
+    // return ListView.builder(
+    //     itemCount: data.length,
+    //     itemBuilder: (BuildContext context, int index) {
+    //       return SubjectTreeNode(subject: data[index]);
+    //     });
+
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => SubjectsTreeSelectedNodeCubit(),
+        ),
+        BlocProvider(
+          create: (context) => SubjectsTreeCubit(subjects: data),
+        ),
+      ],
+      child: ListView.builder(
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+        itemCount: data.length,
+        itemBuilder: (BuildContext context, int index) {
+          return Container(
+            margin: const EdgeInsets.only(bottom: 16),
+            child: NodeCard(node: data[index]),
+          );
         },
       ),
     );

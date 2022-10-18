@@ -14,11 +14,11 @@ class SubjectTreeNodeTile extends StatelessWidget {
     Key? key,
     required this.subject,
   }) : super(key: key);
-  final TreeNode subject;
+  final SubjectWithChilds subject;
   @override
   Widget build(BuildContext context) {
     final locale = context.read<LocaleCubit>().state;
-    return BlocBuilder<SubjectsTreeSelectedNodeCubit, TreeNode?>(
+    return BlocBuilder<SubjectsTreeSelectedNodeCubit, SubjectWithChilds?>(
       builder: (context, state) {
         final bool isSelected = state == subject;
         return Container(

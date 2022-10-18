@@ -25,7 +25,8 @@ List<SubjectsCompanion> electricitySubSubjects() => [
 List<SubjectsCompanion> clothesSubSubjects() => [
       SubjectsCompanion.insert(
           id: const Value(4), parentId: const Value(3), title: 'Shirt'),
-      SubjectsCompanion.insert(parentId: const Value(3), title: 'Dresses'),
+      SubjectsCompanion.insert(
+          id: const Value(5), parentId: const Value(3), title: 'Dresses'),
       SubjectsCompanion.insert(parentId: const Value(3), title: 'Trousers'),
     ];
 
@@ -33,4 +34,7 @@ List<SubjectsCompanion> shirtsSubSubjects() => [
       SubjectsCompanion.insert(parentId: const Value(4), title: 'Green'),
       SubjectsCompanion.insert(parentId: const Value(4), title: 'Pink'),
       SubjectsCompanion.insert(parentId: const Value(4), title: 'White'),
+      SubjectsCompanion.insert(parentId: const Value(5), title: 'Type 1'),
+      SubjectsCompanion.insert(parentId: const Value(5), title: 'Type 2'),
+      SubjectsCompanion.insert(parentId: const Value(5), title: 'Type 3'),
     ];

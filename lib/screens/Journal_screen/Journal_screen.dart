@@ -40,7 +40,7 @@ class _JournalScreenState extends State<JournalScreen> {
         children: [
           _datePicker(context),
           Expanded(
-            child: _movementsCard(context),
+            child: _movementsCardContent(context),
           ),
           const SizedBox(height: 16),
         ],
@@ -70,15 +70,11 @@ class _JournalScreenState extends State<JournalScreen> {
   }
 
   Widget _movementsCardContent(BuildContext context) {
-    return Container(
-      color: Colors.transparent,
-      padding: const EdgeInsets.only(left: 16, right: 16, top: 8),
-      child: Column(
-        children: [
-          _movementsListTitle(context),
-          _movmentsStream(context),
-        ],
-      ),
+    return Column(
+      children: [
+        _movementsListTitle(context),
+        _movmentsStream(context),
+      ],
     );
   }
 
@@ -137,6 +133,27 @@ class _JournalScreenState extends State<JournalScreen> {
   }
 
   Widget _movmentsList(List<JournalEntry> entries) {
+    return Expanded(
+      child: entries.isEmpty
+          ? _noMovments()
+          : NewJournalList(
+              data: entries,
+            ),
+    );
+  }
+
+  Widget _noMovments() {
+    return Container(
+      alignment: Alignment.center,
+      child: Text(
+        Translator.translation(context).no_items,
+        style: Topology.darkMeduimBody.copyWith(),
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+
+  Widget _oldMovmentsList(List<JournalEntry> entries) {
     return Expanded(
       child: WidgetSize(
         onChange: (newSize) {

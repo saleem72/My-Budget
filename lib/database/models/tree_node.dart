@@ -1,11 +1,11 @@
 //
 
-import 'package:flutter/material.dart';
-
 abstract class TreeNode {
   int get id;
   int? get parentId;
+  String get title;
   List<TreeNode> get childs;
 
-  String get title;
+  bool get isExpanded;
+  set isExpanded(bool isExpanded);
 }

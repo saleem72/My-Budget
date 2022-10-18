@@ -15,12 +15,16 @@ class AccountWithChilds extends Equatable with TreeNode {
   final String title;
 
   @override
+  bool isExpanded;
+
+  @override
   final List<AccountWithChilds> childs;
   AccountWithChilds({
     required this.id,
     this.parentId,
     required this.title,
     required this.childs,
+    this.isExpanded = false,
   });
 
   factory AccountWithChilds.fromSubject(Account subject) {
