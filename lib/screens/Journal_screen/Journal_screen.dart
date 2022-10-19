@@ -59,15 +59,15 @@ class _JournalScreenState extends State<JournalScreen> {
     );
   }
 
-  Widget _movementsCard(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      elevation: 4,
-      child: _movementsCardContent(context),
-    );
-  }
+  // Widget _movementsCard(BuildContext context) {
+  //   return Card(
+  //     shape: RoundedRectangleBorder(
+  //       borderRadius: BorderRadius.circular(12),
+  //     ),
+  //     elevation: 4,
+  //     child: _movementsCardContent(context),
+  //   );
+  // }
 
   Widget _movementsCardContent(BuildContext context) {
     return Column(
@@ -153,21 +153,21 @@ class _JournalScreenState extends State<JournalScreen> {
     );
   }
 
-  Widget _oldMovmentsList(List<JournalEntry> entries) {
-    return Expanded(
-      child: WidgetSize(
-        onChange: (newSize) {
-          setState(() {
-            listHeight = newSize.height;
-          });
-        },
-        child: JournalList(
-          data: entries,
-          totalHeight: listHeight,
-        ),
-      ),
-    );
-  }
+  // Widget _oldMovmentsList(List<JournalEntry> entries) {
+  //   return Expanded(
+  //     child: WidgetSize(
+  //       onChange: (newSize) {
+  //         setState(() {
+  //           listHeight = newSize.height;
+  //         });
+  //       },
+  //       child: JournalList(
+  //         data: entries,
+  //         totalHeight: listHeight,
+  //       ),
+  //     ),
+  //   );
+  // }
 
   void _showAddDialog(BuildContext context) async {
     // final inputcontr accountId;
@@ -296,7 +296,8 @@ class _JournalScreenState extends State<JournalScreen> {
         });
     final action = result as String?;
     if (action == 'Save') {
-      print('Amount: $amount, Account: ${account?.title ?? 'No Account set'}');
+      debugPrint(
+          'Amount: $amount, Account: ${account?.title ?? 'No Account set'}');
       final newEntry = JournalEntry(
         id: 99,
         isIn: isIn,

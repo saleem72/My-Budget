@@ -2,16 +2,13 @@
 //
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_budget/helpers/localization/language_constants.dart';
 import 'package:my_budget/helpers/routing/nav_links.dart';
 import 'package:my_budget/screens/home_screen/models/home_more_menu_item.dart';
 import 'package:my_budget/screens/home_screen/models/home_screen_button.dart';
-import 'package:my_budget/styling/assets.dart';
 
 import 'package:my_budget/styling/styling.dart';
 
-import '../../database/buget_database_cubit/budget_database_cubit.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -57,11 +54,11 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final statusbarHeight = MediaQuery.of(context).viewPadding.top;
 
-    final double totalHeight = (size.height - kToolbarHeight - 24);
+    final double totalHeight = (size.height - kToolbarHeight - statusbarHeight);
     final cardHeight = ((totalHeight * 0.60)) / 2;
     final double itemWidth = size.width / 2;
-    final database = context.read<BudgetDatabaseCubit>().database;
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -69,28 +66,9 @@ class _HomeScreenState extends State<HomeScreen> {
           style: Topology.title,
         ),
         centerTitle: true,
-        leading: IconButton(
-          onPressed: () {},
-          icon: const Icon(
-            Icons.search,
-            size: 20,
-          ),
-        ),
+        leading: _searchButton(),
         actions: [
-          PopupMenuButton(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            onSelected: (item) => _actionForMenuItem(context, item: item),
-            itemBuilder: (context) => HomeMoreMenuItem.values
-                .map((e) => PopupMenuItem(
-                    value: e,
-                    child: PopupMenuItemCard(
-                      title: e.title(context),
-                      icon: e.icon,
-                    )))
-                .toList(),
-          ),
+          _moreMenu(context),
         ],
       ),
       body: Column(
@@ -98,6 +76,34 @@ class _HomeScreenState extends State<HomeScreen> {
           _summarySection(totalHeight),
           _mainActions(totalHeight, itemWidth, cardHeight),
         ],
+      ),
+    );
+  }
+
+  PopupMenuButton<HomeMoreMenuItem> _moreMenu(BuildContext context) {
+    return PopupMenuButton(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      offset: const Offset(0, kToolbarHeight),
+      onSelected: (item) => _actionForMenuItem(context, item: item),
+      itemBuilder: (context) => HomeMoreMenuItem.values
+          .map((e) => PopupMenuItem(
+              value: e,
+              child: PopupMenuItemCard(
+                title: e.title(context),
+                icon: e.icon,
+              )))
+          .toList(),
+    );
+  }
+
+  IconButton _searchButton() {
+    return IconButton(
+      onPressed: () {},
+      icon: const Icon(
+        Icons.search,
+        size: 20,
       ),
     );
   }

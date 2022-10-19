@@ -141,7 +141,7 @@ class NewJournalList extends StatelessWidget {
                         ),
                         flex: 1,
                         onPressed: (context) {
-                          print('Item will be deleted!');
+                          debugPrint('Item will be deleted!');
                         },
                         backgroundColor: Colors.redAccent,
                         foregroundColor: Colors.white,

@@ -1,5 +1,7 @@
 //
 
+// ignore_for_file: depend_on_referenced_packages
+
 import 'package:drift/drift.dart';
 import 'package:my_budget/database/entities/entities_imports.dart';
 import 'package:collection/collection.dart';

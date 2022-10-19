@@ -1,5 +1,6 @@
 //
 
+import 'package:flutter/material.dart';
 import 'package:my_budget/database/models/subject_with_childs.dart';
 
 import '../models/tree_node.dart';
@@ -45,7 +46,7 @@ class SortableTreeNodeList {
         }
       }
     }
-    print(resultArray.length);
+    debugPrint(resultArray.length.toString());
     return resultArray;
   }
 

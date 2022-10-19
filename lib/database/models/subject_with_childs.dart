@@ -4,13 +4,20 @@
 
 import 'dart:convert';
 
+import 'package:my_budget/database/models/tree_node.dart';
+
 import '../app_database.dart';
 
-class SubjectWithChilds {
+class SubjectWithChilds extends TreeNode {
+  @override
   final int id;
+  @override
   final int? parentId;
+  @override
   final String title;
+  @override
   bool isExpanded;
+  @override
   List<SubjectWithChilds> childs;
   SubjectWithChilds({
     required this.id,

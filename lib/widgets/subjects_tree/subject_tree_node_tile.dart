@@ -18,7 +18,7 @@ class SubjectTreeNodeTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final locale = context.read<LocaleCubit>().state;
-    return BlocBuilder<SubjectsTreeSelectedNodeCubit, SubjectWithChilds?>(
+    return BlocBuilder<TreeSelectedNodeCubit, TreeNode?>(
       builder: (context, state) {
         final bool isSelected = state == subject;
         return Container(
@@ -49,7 +49,7 @@ class SubjectTreeNodeTile extends StatelessWidget {
   Widget _subjectTitle(BuildContext context, {required bool isSelected}) {
     return GestureDetector(
       onTap: () {
-        context.read<SubjectsTreeSelectedNodeCubit>().selectNode(subject);
+        context.read<TreeSelectedNodeCubit>().selectNode(subject);
       },
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 4),

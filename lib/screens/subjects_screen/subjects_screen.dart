@@ -15,7 +15,7 @@ class SubjectsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final database = context.read<BudgetDatabaseCubit>().database;
     return BlocProvider(
-      create: (context) => SubjectsTreeSelectedNodeCubit(database: database),
+      create: (context) => TreeSelectedNodeCubit(database: database),
       child: Scaffold(
         appBar: AppBar(
           title: Text(Translator.translation(context).subjects_tag),
@@ -24,57 +24,16 @@ class SubjectsScreen extends StatelessWidget {
       ),
     );
   }
-
-  // Widget _content(BuildContext context) {
-  //   final cubit = context.read<SubjectsTreeSelectedNodeCubit>();
-  //   return Column(
-  //     children: [
-  //       Row(
-  //         children: [
-  //           ToolBarButton(
-  //             onPressed: () {},
-  //             icon: Icons.delete,
-  //             backgroundColor: Colors.pink,
-  //           ),
-  //           ToolBarButton(
-  //             onPressed: () {},
-  //             icon: Icons.add,
-  //             backgroundColor: Colors.green,
-  //           ),
-  //           ToolBarButton(
-  //             onPressed: () {},
-  //             icon: Icons.search,
-  //             backgroundColor: Colors.purple,
-  //           ),
-  //           ToolBarButton(
-  //             onPressed: () {},
-  //             icon: Icons.more_vert,
-  //             backgroundColor: Colors.blue,
-  //           ),
-  //         ],
-  //       ),
-  //       Expanded(
-  //         child: _subjectsTree(context),
-  //       ),
-  //     ],
-  //   );
-  // }
-
-  // Widget _subjectsTree(BuildContext context) {
-  //   final database = context.read<BudgetDatabaseCubit>().database;
-  //   final stream = database.subjectsDao.watchAllSubjects();
-  //   return StreamBuilder(
-  //       stream: stream,
-  //       builder: (context, snapshot) {
-  //         final data = snapshot.data ?? [];
-  //         return SubjectsTree(data: data);
-  //       });
-  // }
 }
 
-class _SubjectsScreenContent extends StatelessWidget {
+class _SubjectsScreenContent extends StatefulWidget {
   const _SubjectsScreenContent({Key? key}) : super(key: key);
 
+  @override
+  State<_SubjectsScreenContent> createState() => _SubjectsScreenContentState();
+}
+
+class _SubjectsScreenContentState extends State<_SubjectsScreenContent> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -89,7 +48,7 @@ class _SubjectsScreenContent extends StatelessWidget {
   }
 
   Row _toolbar(BuildContext context) {
-    final cubit = context.read<SubjectsTreeSelectedNodeCubit>();
+    final cubit = context.read<TreeSelectedNodeCubit>();
     return Row(
       children: [
         ToolBarButton(
@@ -98,7 +57,7 @@ class _SubjectsScreenContent extends StatelessWidget {
           backgroundColor: Colors.pink,
         ),
         ToolBarButton(
-          onPressed: () => cubit.addSubject(),
+          onPressed: () => _showAddSubjectDialog(context),
           icon: Icons.add,
           backgroundColor: Colors.green,
         ),
@@ -122,8 +81,57 @@ class _SubjectsScreenContent extends StatelessWidget {
     return StreamBuilder(
         stream: stream,
         builder: (context, snapshot) {
+          //todo: compare with the old arrays to expanded
           final data = snapshot.data ?? [];
           return SubjectsTree(data: data);
         });
+  }
+
+  _showAddSubjectDialog(BuildContext context) async {
+    if (mounted) {}
+    final cubit = context.read<TreeSelectedNodeCubit>();
+    final TextEditingController newSubject = TextEditingController();
+    final alert = _addSubjectAlert(context, newSubject);
+
+    final returned = await showDialog(context: context, builder: (_) => alert);
+
+    final result = returned as String?;
+
+    if (result != null && result == 'Save') {
+      cubit.addSubject(newSubject.text);
+    }
+  }
+
+  AlertDialog _addSubjectAlert(
+      BuildContext context, TextEditingController controller) {
+    final saveButton = TextButton(
+      onPressed: () {
+        Navigator.of(context).pop('Save');
+      },
+      child: const Text('Save'),
+    );
+    final cancelButtonButton = TextButton(
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+      child: const Text('Cancel'),
+    );
+    return AlertDialog(
+      title: const Text('Add Subject'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          AppTextField(
+            controller: controller,
+            hint: 'Subject name',
+          ),
+        ],
+      ),
+      actions: [
+        saveButton,
+        cancelButtonButton,
+      ],
+    );
   }
 }

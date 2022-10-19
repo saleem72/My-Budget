@@ -1,17 +1,16 @@
 //
 
-import 'package:equatable/equatable.dart';
-
 import '../app_database.dart';
 import 'tree_node.dart';
 
-class AccountWithChilds extends Equatable with TreeNode {
+class AccountWithChilds extends TreeNode {
   @override
   final int id;
 
   @override
   final int? parentId;
 
+  @override
   final String title;
 
   @override
@@ -35,7 +34,4 @@ class AccountWithChilds extends Equatable with TreeNode {
       childs: [],
     );
   }
-
-  @override
-  List<Object?> get props => [id, parentId, title];
 }

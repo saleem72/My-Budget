@@ -2,13 +2,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_budget/database/models/account_with_childs.dart';
 import 'package:my_budget/database/models/tree_node.dart';
 import 'package:my_budget/screens/subjects_screen/subjects_tree_cubit/subjects_tree_cubit.dart';
-import 'package:my_budget/widgets/subjects_tree/subjects_tree_selected_node_cubit/subjects_tree_selected_node_cubit.dart';
 
-import '../../database/models/subject_with_childs.dart';
 import 'node_card.dart';
-import 'subject_tree_node_tile.dart';
 
 class SubjectsTree extends StatelessWidget {
   const SubjectsTree({
@@ -16,7 +14,7 @@ class SubjectsTree extends StatelessWidget {
     required this.data,
   }) : super(key: key);
 
-  final List<SubjectWithChilds> data;
+  final List<TreeNode> data;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +37,7 @@ class AccountsTree extends StatelessWidget {
     required this.data,
   }) : super(key: key);
 
-  final List<SubjectWithChilds> data;
+  final List<AccountWithChilds> data;
 
   @override
   Widget build(BuildContext context) {

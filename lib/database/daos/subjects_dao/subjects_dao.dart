@@ -24,8 +24,12 @@ class SubjectsDao extends DatabaseAccessor<AppDatabase>
       // array.forEach((element) {
       //   print(element.toString());
       // });
-      final aaa = SortableTreeNodeList.sortSubjectsTree(array);
-      return aaa;
+      final aaa = SortableTreeNodeList.sortTree(array);
+      final bbb = aaa.map((e) => e as SubjectWithChilds).toList();
+      return bbb;
     });
   }
+
+  Future addSubject(SubjectsCompanion model) async =>
+      into(subjects).insert(model);
 }
