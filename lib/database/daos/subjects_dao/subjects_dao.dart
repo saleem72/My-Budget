@@ -2,8 +2,8 @@
 
 import 'package:my_budget/database/entities/subjects.dart';
 import 'package:drift/drift.dart';
-import 'package:my_budget/database/extensions/sortable_tree_node_list.dart';
 import 'package:my_budget/database/models/subject_with_childs.dart';
+import 'package:my_budget/database/models/tree_node.dart';
 
 import '../../app_database.dart';
 
@@ -18,18 +18,32 @@ class SubjectsDao extends DatabaseAccessor<AppDatabase>
 
   Stream<List<SubjectWithChilds>> watchAllSubjects() {
     return select(subjects)
-        .map((item) => SubjectWithChilds.fromSubject(item))
+        .map((item) {
+          return SubjectWithChilds.fromSubject(item, false);
+        })
         .watch()
         .map((array) {
-      // array.forEach((element) {
-      //   print(element.toString());
-      // });
-      final aaa = SortableTreeNodeList.sortTree(array);
-      final bbb = aaa.map((e) => e as SubjectWithChilds).toList();
-      return bbb;
-    });
+          // array.forEach((element) {
+          //   print(element.toString());
+          // });
+          // final aaa = SortableTreeNodeList.sortTree(array);
+          final aaa = array.sortTree();
+          final bbb = aaa.map((e) => e as SubjectWithChilds).toList();
+          return bbb;
+        });
   }
 
-  Future addSubject(SubjectsCompanion model) async =>
-      into(subjects).insert(model);
+  Future<int> addSubject(SubjectsCompanion model) async {
+    final id = await into(subjects).insert(model);
+
+    return id;
+  }
+
+  Future deleteSubject(int id) async {
+    final modelList =
+        await (select(subjects)..where((tbl) => tbl.id.equals(id))).get();
+    if (modelList.isNotEmpty) {
+      delete(subjects).delete(modelList.first);
+    }
+  }
 }

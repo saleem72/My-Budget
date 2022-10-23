@@ -34,4 +34,7 @@ class AccountWithChilds extends TreeNode {
       childs: [],
     );
   }
+
+  @override
+  List<Object?> get props => [id];
 }

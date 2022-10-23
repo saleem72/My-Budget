@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:my_budget/database/models/subject_with_childs.dart';
 
 import '../models/tree_node.dart';
-
+/*
 class SortableTreeNodeList {
   static TreeNode? _getParent(List<TreeNode> array, int id) {
     for (final subject in array) {
@@ -46,7 +46,6 @@ class SortableTreeNodeList {
         }
       }
     }
-    debugPrint(resultArray.length.toString());
     return resultArray;
   }
 
@@ -94,4 +93,22 @@ class SortableTreeNodeList {
     }
     return resultArray;
   }
+
+  static TreeNode? nodeForId(List<TreeNode> array, int id) {
+    for (final node in array) {
+      if (node.id == id) {
+        return node;
+      }
+      if (node.childs.isNotEmpty) {
+        final optional = nodeForId(node.childs, id);
+        if (optional != null) {
+          return optional;
+        }
+      } else {
+        return null;
+      }
+    }
+    return null;
+  }
 }
+*/

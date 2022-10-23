@@ -2,10 +2,10 @@
 
 import 'package:drift/drift.dart';
 import 'package:my_budget/database/models/account_with_childs.dart';
+import 'package:my_budget/database/models/tree_node.dart';
 
 import '../../app_database.dart';
 import '../../entities/accounts.dart';
-import '../../extensions/sortable_tree_node_list.dart';
 
 part 'accounts_dao.g.dart';
 
@@ -24,7 +24,7 @@ class AccountsDao extends DatabaseAccessor<AppDatabase>
       // array.forEach((element) {
       //   print(element.toString());
       // });
-      final aaa = SortableTreeNodeList.sortTree(array);
+      final aaa = array.sortTree();
       return aaa.map((e) => e as AccountWithChilds).toList();
     });
   }

@@ -18,11 +18,11 @@ class RoutesGenerator {
       case NavLinks.subjects:
         return MaterialPageRoute(builder: (_) => const SubjectsScreen());
       case NavLinks.accounts:
-        return MaterialPageRoute(builder: (_) => const AccountsScreen());
+        return MaterialPageRoute(builder: (_) => const SubjectsScreen());
       case NavLinks.journal:
         return MaterialPageRoute(builder: (_) => const JournalScreen());
       case NavLinks.accountStatment:
-        return MaterialPageRoute(builder: (_) => const AccountStatmentScreen());
+        return MaterialPageRoute(builder: (_) => const SubjectsScreen());
       default:
         final String errorMessage = '${settings.name} is not valid route';
         return MaterialPageRoute(

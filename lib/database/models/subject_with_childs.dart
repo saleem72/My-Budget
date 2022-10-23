@@ -27,11 +27,12 @@ class SubjectWithChilds extends TreeNode {
     this.isExpanded = false,
   });
 
-  factory SubjectWithChilds.fromSubject(Subject subject) {
+  factory SubjectWithChilds.fromSubject(Subject subject, bool isExpanded) {
     return SubjectWithChilds(
       id: subject.id,
       parentId: subject.parentId,
       title: subject.title,
+      isExpanded: isExpanded,
       childs: [],
     );
   }
@@ -77,4 +78,7 @@ class SubjectWithChilds extends TreeNode {
       childs: childs ?? this.childs,
     );
   }
+
+  @override
+  List<Object?> get props => [id];
 }
