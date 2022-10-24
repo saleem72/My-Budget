@@ -11,33 +11,34 @@ abstract class TreeNode extends Equatable {
   bool get isExpanded;
   set isExpanded(bool isExpanded);
 
-  List<int> _expandedChilds(TreeNode node) {
-    if (node.childs.isNotEmpty) {
-      List<int> allExpandedChilds = [];
-      for (final child in node.childs) {
-        final array = _expandedChilds(child);
-        if (array.isNotEmpty) {
-          allExpandedChilds.addAll(array);
-        }
-      }
+  // List<int> _expandedChilds(TreeNode node) {
+  //   if (node.childs.isNotEmpty) {
+  //     List<int> allExpandedChilds = [];
+  //     for (final child in node.childs) {
+  //       final array = _expandedChilds(child);
+  //       if (array.isNotEmpty) {
+  //         allExpandedChilds.addAll(array);
+  //       }
+  //     }
 
-      if (node.isExpanded) {
-        allExpandedChilds.add(node.id);
-      }
-      return allExpandedChilds;
-    } else {
-      if (node.isExpanded) {
-        return [id];
-      } else {
-        return [];
-      }
-    }
-  }
+  //     if (node.isExpanded) {
+  //       allExpandedChilds.add(node.id);
+  //     }
+  //     return allExpandedChilds;
+  //   } else {
+  //     if (node.isExpanded) {
+  //       return [node.id];
+  //     } else {
+  //       return [];
+  //     }
+  //   }
+  // }
 
-  List<int> getExpandedNodes() {
-    final result = _expandedChilds(this);
-    return result;
-  }
+  // List<int> getExpandedNodes() {
+  //   final result = _expandedChilds(this);
+  //   print(result);
+  //   return result;
+  // }
 }
 
 extension MyCustomList on List<TreeNode> {
@@ -48,6 +49,24 @@ extension MyCustomList on List<TreeNode> {
       }
       if (node.childs.isNotEmpty) {
         final optional = _nodeForId(node.childs, id);
+        if (optional != null) {
+          return optional;
+        }
+      } else {
+        return null;
+      }
+    }
+    return null;
+  }
+
+  TreeNode? _nodeFormTitle(List<TreeNode> array, String title) {
+    //TODO: function to convert tree to list
+    for (final node in array) {
+      if (node.title.toLowerCase().contains(title.toLowerCase())) {
+        return node;
+      }
+      if (node.childs.isNotEmpty) {
+        final optional = _nodeFormTitle(node.childs, title);
         if (optional != null) {
           return optional;
         }
@@ -101,5 +120,60 @@ extension MyCustomList on List<TreeNode> {
 
   TreeNode? nodeForId(int id) {
     return _nodeForId(this, id);
+  }
+
+  List<int> _expandedChilds(TreeNode node) {
+    if (node.childs.isNotEmpty) {
+      List<int> allExpandedChilds = [];
+      for (final child in node.childs) {
+        final array = _expandedChilds(child);
+        if (array.isNotEmpty) {
+          allExpandedChilds.addAll(array);
+        }
+      }
+
+      if (node.isExpanded) {
+        allExpandedChilds.add(node.id);
+      }
+      return allExpandedChilds;
+    } else {
+      if (node.isExpanded) {
+        return [node.id];
+      } else {
+        return [];
+      }
+    }
+  }
+
+  List<int> getExpandedNodes() {
+    final childsExpanded = map((e) => _expandedChilds(e)).toList();
+    List<int> allExpandedChilds = [];
+    for (var element in childsExpanded) {
+      allExpandedChilds.addAll(element);
+    }
+    return allExpandedChilds;
+  }
+
+  TreeNode? nodeFromTilte(String title) {
+    return _nodeFormTitle(this, title);
+  }
+
+  _treeToList(TreeNode node, List<TreeNode> result) {
+    result.add(node);
+    if (node.childs.isNotEmpty) {
+      for (final child in node.childs) {
+        _treeToList(child, result);
+      }
+    }
+  }
+
+  List<TreeNode> treeToList() {
+    List<TreeNode> result = [];
+    if (isNotEmpty) {
+      for (final child in this) {
+        _treeToList(child, result);
+      }
+    }
+    return result;
   }
 }

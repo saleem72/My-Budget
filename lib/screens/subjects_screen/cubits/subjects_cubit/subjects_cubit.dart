@@ -2,12 +2,11 @@ import 'package:bloc/bloc.dart';
 import 'package:drift/drift.dart' as drift;
 
 import '../../../../database/app_database.dart';
-import '../../../../database/extensions/sortable_tree_node_list.dart';
 import '../../../../database/models/tree_node.dart';
 import '../../../../helpers/constants.dart';
 
-class OtherSubjectsCubit extends Cubit<bool> {
-  OtherSubjectsCubit({
+class SubjectsCubit extends Cubit<bool> {
+  SubjectsCubit({
     required this.database,
   }) : super(true);
 
@@ -43,6 +42,7 @@ class OtherSubjectsCubit extends Cubit<bool> {
   }
 
   void expandSelected(int? id) {
+    print(getExpandedNodes());
     if (id != null) {
       final selected = subjects.nodeForId(id);
       if (selected != null) {
@@ -53,6 +53,8 @@ class OtherSubjectsCubit extends Cubit<bool> {
         print('Node was not found');
       }
     }
+
+    print(getExpandedNodes());
   }
 
   double heightForNode(TreeNode node) {
@@ -79,11 +81,26 @@ class OtherSubjectsCubit extends Cubit<bool> {
   }
 
   List<int> getExpandedNodes() {
-    final childsExpanded = subjects.map((e) => e.getExpandedNodes()).toList();
-    List<int> allExpandedChilds = [];
-    for (var element in childsExpanded) {
-      allExpandedChilds.addAll(element);
-    }
-    return allExpandedChilds;
+    return subjects.getExpandedNodes();
+    // final childsExpanded = subjects.map((e) => e.getExpandedNodes()).toList();
+    // List<int> allExpandedChilds = [];
+    // for (var element in childsExpanded) {
+    //   allExpandedChilds.addAll(element);
+    // }
+    // return allExpandedChilds;
+  }
+
+  TreeNode? nodeFromTitle(String title) {
+    final list = subjects.treeToList();
+    final nodes = list.where(
+        (element) => element.title.toLowerCase().contains(title.toLowerCase()));
+
+    final names = nodes.map((e) => e.title).toList();
+    print(names);
+    return subjects.nodeFromTilte(title);
+  }
+
+  List<TreeNode> treeToList() {
+    return subjects.treeToList();
   }
 }

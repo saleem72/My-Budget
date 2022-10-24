@@ -161,7 +161,7 @@ class $SubjectsTable extends Subjects with TableInfo<$SubjectsTable, Subject> {
       'parent_id', aliasedName, true,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
-      defaultConstraints: 'REFERENCES "subjects" ("id")');
+      $customConstraints: 'REFERENCES subjects(id) ON DELETE CASCADE');
   final VerificationMeta _titleMeta = const VerificationMeta('title');
   @override
   late final GeneratedColumn<String> title =
@@ -373,7 +373,7 @@ class $AccountsTable extends Accounts with TableInfo<$AccountsTable, Account> {
       'parent_id', aliasedName, true,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
-      defaultConstraints: 'REFERENCES "accounts" ("id")');
+      $customConstraints: 'REFERENCES accounts(id) ON DELETE CASCADE');
   final VerificationMeta _titleMeta = const VerificationMeta('title');
   @override
   late final GeneratedColumn<String> title =

@@ -1,11 +1,17 @@
+//
+
 import 'package:bloc/bloc.dart';
 import 'package:my_budget/database/models/tree_node.dart';
 
-class OtherSubjectsSelectedCubit extends Cubit<int?> {
-  OtherSubjectsSelectedCubit() : super(null);
+class SelectedAccountCubit extends Cubit<int?> {
+  SelectedAccountCubit() : super(null);
 
   void selectNode(TreeNode node) {
-    emit(node.id);
+    if (state == node.id) {
+      emit(null);
+    } else {
+      emit(node.id);
+    }
   }
 
   void selectNodeById(int? id) {

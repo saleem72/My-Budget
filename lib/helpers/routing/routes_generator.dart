@@ -18,7 +18,7 @@ class RoutesGenerator {
       case NavLinks.subjects:
         return MaterialPageRoute(builder: (_) => const SubjectsScreen());
       case NavLinks.accounts:
-        return MaterialPageRoute(builder: (_) => const SubjectsScreen());
+        return MaterialPageRoute(builder: (_) => const AccountsScreen());
       case NavLinks.journal:
         return MaterialPageRoute(builder: (_) => const JournalScreen());
       case NavLinks.accountStatment:

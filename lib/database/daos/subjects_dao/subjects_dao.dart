@@ -35,15 +35,16 @@ class SubjectsDao extends DatabaseAccessor<AppDatabase>
 
   Future<int> addSubject(SubjectsCompanion model) async {
     final id = await into(subjects).insert(model);
-
     return id;
   }
 
   Future deleteSubject(int id) async {
     final modelList =
         await (select(subjects)..where((tbl) => tbl.id.equals(id))).get();
+
     if (modelList.isNotEmpty) {
-      delete(subjects).delete(modelList.first);
+      final model = modelList.first;
+      delete(subjects).delete(model);
     }
   }
 }

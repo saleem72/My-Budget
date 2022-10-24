@@ -2,54 +2,54 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my_budget/database/buget_database_cubit/budget_database_cubit.dart';
-import 'package:my_budget/screens/subjects_screen/cubits/subjects_cubit/subjects_cubit.dart';
-import 'package:my_budget/screens/subjects_screen/cubits/selected_subject_cubit/selected_subject.dart';
+import 'package:my_budget/screens/accounts_screen/cubits/accounts_cubit/accounts_cubit.dart';
+import 'package:my_budget/screens/accounts_screen/cubits/selected_account_cubit/selected_account_cubit.dart';
 
+import '../../database/buget_database_cubit/budget_database_cubit.dart';
 import '../../helpers/localization/language_constants.dart';
 import '../../widgets/main_widgets_imports.dart';
-import 'widgets/subjects_tree.dart';
+import 'widgets/accounts_tree.dart';
 
-class SubjectsScreen extends StatelessWidget {
-  const SubjectsScreen({Key? key}) : super(key: key);
+class AccountsScreen extends StatelessWidget {
+  const AccountsScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final database = context.read<BudgetDatabaseCubit>().database;
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => SubjectsCubit(database: database)),
-        BlocProvider(create: (_) => SelectedSubjectCubit()),
+        BlocProvider(create: (_) => AccountsCubit(database: database)),
+        BlocProvider(create: (_) => SelectedAccountCubit()),
       ],
       child: Scaffold(
         appBar: AppBar(
-          title: Text(Translator.translation(context).subjects_tag),
+          title: Text(Translator.translation(context).accounts_tag),
         ),
-        body: const _SubjectsScreenContent(),
+        body: const _AccountsScreenContent(),
       ),
     );
   }
 }
 
-class _SubjectsScreenContent extends StatelessWidget {
-  const _SubjectsScreenContent({Key? key}) : super(key: key);
+class _AccountsScreenContent extends StatelessWidget {
+  const _AccountsScreenContent({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final subjectsCubit = context.read<SubjectsCubit>();
+    final accountsCubit = context.read<AccountsCubit>();
     final database = context.read<BudgetDatabaseCubit>().database;
-    final stream = database.subjectsDao.watchAllSubjects();
+    final stream = database.accountsDao.watchAllAccounts();
     return StreamBuilder(
       stream: stream,
       builder: (context, snapshot) {
         final data = snapshot.data ?? [];
-        subjectsCubit.setSubjects(data);
+        accountsCubit.setAccounts(data);
 
         return Column(
           children: [
             _toolbar(context),
             const Expanded(
-              child: SubjectsTree(),
+              child: AccountsTree(),
             ),
           ],
         );
@@ -58,14 +58,14 @@ class _SubjectsScreenContent extends StatelessWidget {
   }
 
   Widget _toolbar(BuildContext context) {
-    final subjectsCubit = context.read<SubjectsCubit>();
-    final selectedSubjectCubit = context.read<SelectedSubjectCubit>();
+    final accountsCubit = context.read<AccountsCubit>();
+    final selectedAccountCubit = context.read<SelectedAccountCubit>();
     return Row(
       children: [
         ToolBarButton(
           onPressed: () {
-            subjectsCubit.deleteSubject(selectedSubjectCubit.state);
-            selectedSubjectCubit.selectNodeById(null);
+            accountsCubit.deleteAccount(selectedAccountCubit.state);
+            selectedAccountCubit.selectNodeById(null);
           },
           icon: Icons.delete,
           backgroundColor: Colors.pink,
@@ -84,7 +84,9 @@ class _SubjectsScreenContent extends StatelessWidget {
         ),
         ToolBarButton(
           onPressed: () {
-            print(subjectsCubit.nodeFromTitle('tr'));
+            print(accountsCubit.getExpandedNodes());
+            print(
+                'selectedSubjectCubit selected: ${selectedAccountCubit.state}');
           },
           icon: Icons.more_vert,
           backgroundColor: Colors.blue,
@@ -94,8 +96,8 @@ class _SubjectsScreenContent extends StatelessWidget {
   }
 
   _showAddSubjectDialog(BuildContext context) async {
-    final subjectsCubit = context.read<SubjectsCubit>();
-    final subjectSelectedCubit = context.read<SelectedSubjectCubit>();
+    final accountsCubit = context.read<AccountsCubit>();
+    final selectedAccountCubit = context.read<SelectedAccountCubit>();
     final TextEditingController newSubject = TextEditingController();
     final alert = _addSubjectAlert(context, newSubject);
 
@@ -103,9 +105,9 @@ class _SubjectsScreenContent extends StatelessWidget {
 
     final result = returned as String?;
     if (result != null && result == 'Save') {
-      final addedNodeId = await subjectsCubit.addSubject(
-          subjectSelectedCubit.state, newSubject.text);
-      subjectSelectedCubit.selectNodeById(addedNodeId);
+      final addedNodeId = await accountsCubit.addAccount(
+          selectedAccountCubit.state, newSubject.text);
+      selectedAccountCubit.selectNodeById(addedNodeId);
     }
   }
 

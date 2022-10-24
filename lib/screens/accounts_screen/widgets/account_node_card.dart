@@ -3,43 +3,43 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../database/models/tree_node.dart';
-import '../helpers/constants.dart';
-import '../screens/subjects_screen/cubits/other_subjects_cubit/other_subjects_cubit.dart';
-import '../screens/subjects_screen/cubits/other_subjects_selected/other_subjects_selected_cubit.dart';
-import '../styling/styling.dart';
+import '../../../database/models/tree_node.dart';
+import '../../../helpers/constants.dart';
+import '../../../styling/styling.dart';
+import '../cubits/accounts_cubit/accounts_cubit.dart';
+import '../cubits/selected_account_cubit/selected_account_cubit.dart';
 
-class NodeCard extends StatefulWidget {
-  const NodeCard({
+class AccountNodeCard extends StatefulWidget {
+  const AccountNodeCard({
     Key? key,
     required this.node,
   }) : super(key: key);
   final TreeNode node;
 
   @override
-  State<NodeCard> createState() => _NodeCardState();
+  State<AccountNodeCard> createState() => _AccountNodeCardState();
 }
 
-class _NodeCardState extends State<NodeCard> {
+class _AccountNodeCardState extends State<AccountNodeCard> {
   // bool _isSelected = false;
   @override
   Widget build(BuildContext context) {
-    final subjectsCubit = context.read<OtherSubjectsCubit>();
+    final accountsCubit = context.read<AccountsCubit>();
 
-    return BlocBuilder<OtherSubjectsSelectedCubit, int?>(
+    return BlocBuilder<SelectedAccountCubit, int?>(
       builder: (context, state) => IntrinsicHeight(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _expantionSection(subjectsCubit),
-            _node(subjectsCubit, widget.node.id == state),
+            _expantionSection(accountsCubit),
+            _node(accountsCubit, widget.node.id == state),
           ],
         ),
       ),
     );
   }
 
-  Expanded _node(OtherSubjectsCubit cubit, bool isSelected) {
+  Expanded _node(AccountsCubit cubit, bool isSelected) {
     return Expanded(
       child: SizedBox(
         // duration: const Duration(milliseconds: 250),
@@ -54,7 +54,7 @@ class _NodeCardState extends State<NodeCard> {
     );
   }
 
-  Widget _expantionSection(OtherSubjectsCubit cubit) {
+  Widget _expantionSection(AccountsCubit cubit) {
     return Container(
       width: Constants.subjectTileChildsYOffset,
       margin: const EdgeInsets.only(
@@ -85,7 +85,7 @@ class _NodeCardState extends State<NodeCard> {
         : const SizedBox.shrink();
   }
 
-  Widget _expantionIcon(OtherSubjectsCubit cubit) {
+  Widget _expantionIcon(AccountsCubit cubit) {
     return widget.node.childs.isNotEmpty
         ? Align(
             // SubjectsTreeCubit cubit
@@ -128,7 +128,7 @@ class _NodeCardState extends State<NodeCard> {
       height: Constants.subjectTileHeight,
       child: GestureDetector(
         onTap: () {
-          context.read<OtherSubjectsSelectedCubit>().selectNode(widget.node);
+          context.read<SelectedAccountCubit>().selectNode(widget.node);
         },
         child: Container(
           color: Colors.transparent,
@@ -160,7 +160,8 @@ class _NodeCardState extends State<NodeCard> {
   Widget _buildChildsList() {
     return Column(
       mainAxisSize: MainAxisSize.min,
-      children: widget.node.childs.map((e) => NodeCard(node: e)).toList(),
+      children:
+          widget.node.childs.map((e) => AccountNodeCard(node: e)).toList(),
     );
   }
 }

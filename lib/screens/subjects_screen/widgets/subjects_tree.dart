@@ -2,20 +2,20 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my_budget/screens/subjects_screen/cubits/other_subjects_cubit/other_subjects_cubit.dart';
+import 'package:my_budget/screens/subjects_screen/cubits/subjects_cubit/subjects_cubit.dart';
 
-import '../database/models/tree_node.dart';
-import 'node_card.dart';
+import '../../../database/models/tree_node.dart';
+import 'subject_node_card.dart';
 
-class NodesTree extends StatelessWidget {
-  const NodesTree({
+class SubjectsTree extends StatelessWidget {
+  const SubjectsTree({
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final subjectsCubit = context.read<OtherSubjectsCubit>();
-    return BlocBuilder<OtherSubjectsCubit, bool>(
+    final subjectsCubit = context.read<SubjectsCubit>();
+    return BlocBuilder<SubjectsCubit, bool>(
       builder: (context, state) {
         List<TreeNode> subjects = subjectsCubit.subjects;
         return ListView.builder(
@@ -24,7 +24,7 @@ class NodesTree extends StatelessWidget {
           itemBuilder: (BuildContext context, int index) {
             return SizedBox(
               height: subjectsCubit.heightForNode(subjects[index]),
-              child: NodeCard(node: subjects[index]),
+              child: SubjectNodeCard(node: subjects[index]),
             );
           },
         );
