@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_budget/database/models/account_with_childs.dart';
 
 import '../../../database/models/tree_node.dart';
 import '../../../helpers/constants.dart';
@@ -14,7 +15,7 @@ class AccountNodeCard extends StatefulWidget {
     Key? key,
     required this.node,
   }) : super(key: key);
-  final TreeNode node;
+  final AccountWithChilds node;
 
   @override
   State<AccountNodeCard> createState() => _AccountNodeCardState();
@@ -143,11 +144,29 @@ class _AccountNodeCardState extends State<AccountNodeCard> {
                       isSelected ? Colors.grey.shade400 : Colors.grey.shade200,
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Text(
-                  widget.node.title,
-                  style: Topology.darkLargBody.copyWith(
-                    color: isSelected ? Colors.green : Colors.black,
-                  ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      widget.node.title,
+                      style: Topology.darkLargBody.copyWith(
+                        color: isSelected ? Colors.green : Colors.black,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: Image.asset(
+                        widget.node.isCredit
+                            ? Assests.journalIn
+                            : Assests.journalOut,
+                        color: widget.node.isCredit
+                            ? Colors.green
+                            : Colors.redAccent,
+                      ),
+                    )
+                  ],
                 ),
               ),
             ],

@@ -2,6 +2,7 @@
 
 import 'package:my_budget/database/entities/subjects.dart';
 import 'package:drift/drift.dart';
+import 'package:my_budget/database/models/object_label.dart';
 import 'package:my_budget/database/models/subject_with_childs.dart';
 import 'package:my_budget/database/models/tree_node.dart';
 
@@ -47,4 +48,8 @@ class SubjectsDao extends DatabaseAccessor<AppDatabase>
       delete(subjects).delete(model);
     }
   }
+
+  Future<List<ObjectTitle>> subjectsTitles() async => select(subjects)
+      .map((p0) => ObjectTitle(id: p0.id, title: p0.title))
+      .get();
 }

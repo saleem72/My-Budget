@@ -17,4 +17,6 @@ class Assests {
   static const account = '${_iconsPath}account.png';
   static const journalIn = '${_iconsPath}journal_in.png';
   static const journalOut = '${_iconsPath}journal_out.png';
+  static const filter = '${_iconsPath}filter.png';
+  static const calendar = '${_iconsPath}calendar.png';
 }

@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_budget/database/buget_database_cubit/budget_database_cubit.dart';
 import 'package:my_budget/database/models/journal_entry.dart';
-import 'package:my_budget/styling/pallet.dart';
+import 'package:my_budget/database/models/object_label.dart';
+import 'package:my_budget/styling/assets.dart';
+import 'package:my_budget/styling/topology.dart';
 
 import '../../database/app_database.dart';
 import '../../helpers/localization/language_constants.dart';
@@ -22,6 +24,42 @@ class _AccountStatmentScreenState extends State<AccountStatmentScreen> {
   bool isTableVisible = false;
   double listHeight = 0;
 
+  List<ObjectTitle> _accountList = [];
+  ObjectTitle? _selectedAccount;
+  List<JournalEntry> journals = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadAccountsList();
+  }
+
+  void _loadAccountsList() async {
+    final database = context.read<BudgetDatabaseCubit>().database;
+
+    final result = await database.accountsDao.accountsTitles();
+    print('Autocomplete has ${result.length} accounts');
+    setState(() {
+      _accountList = result;
+    });
+  }
+
+  void getJournalsFor() async {
+    if (_selectedAccount != null) {
+      journals.clear();
+      final list = await context
+          .read<BudgetDatabaseCubit>()
+          .database
+          .debenturesDao
+          .getOtherStatmentForAccountById(_selectedAccount!.id);
+      if (mounted) {
+        setState(() {
+          journals = list;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,73 +74,75 @@ class _AccountStatmentScreenState extends State<AccountStatmentScreen> {
     return Column(
       children: [
         const SizedBox(height: 16),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: _buildAccountPicker(context),
-        ),
+        // _buildAutoComplete(context),
+        _buildSearchBar(context),
+        const SizedBox(height: 16),
         Expanded(
-          child: (isTableVisible && account != null)
-              ? _buildAccountStatmentFutur(context, account!)
-              : Container(),
+          child: _buildAccountStatment(journals),
         ),
       ],
     );
   }
 
-  Widget _buildAccountPicker(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Text('${Translator.translation(context).account_tag}:'),
-        const SizedBox(width: 8),
-        Expanded(
-          child: AccountPicker(
-            onSelect: (item) {
-              setState(() {
-                account = item;
-              });
-            },
+  Widget _buildSearchBar(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Material(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
+        elevation: 4,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(22),
+            border: Border.all(),
+          ),
+          child: Row(
+            children: [
+              InkWell(
+                onTap: () {},
+                child: Container(
+                  height: 24,
+                  width: 24,
+                  alignment: Alignment.center,
+                  child: SizedBox(
+                    height: 14,
+                    width: 14,
+                    child: Image.asset(
+                      Assests.search,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 4),
+              Expanded(
+                child: AppAutoComplete(
+                  objectsList: _accountList,
+                  onSelected: (item) {
+                    setState(() {
+                      _selectedAccount = item;
+                    });
+                  },
+                ),
+              ),
+              const SizedBox(width: 4),
+              InkWell(
+                onTap: () => getJournalsFor(),
+                child: Container(
+                  height: 24,
+                  width: 24,
+                  alignment: Alignment.center,
+                  child: SizedBox(
+                    height: 14,
+                    width: 14,
+                    child: Image.asset(Assests.filter),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
-        const SizedBox(width: 8),
-        TextButton(
-            onPressed: account != null
-                ? () => setState(() {
-                      isTableVisible = true;
-                    })
-                : null,
-            style: TextButton.styleFrom(
-              backgroundColor: Pallet.appBar,
-              foregroundColor: Colors.white,
-              disabledBackgroundColor: Pallet.appBar.withOpacity(0.3),
-              disabledForegroundColor: Colors.white.withOpacity(0.4),
-            ),
-            child: const Center(child: Text('Display'))),
-      ],
-    );
-  }
-
-  Widget _buildAccountStatmentFutur(
-      BuildContext context, Account selectedAccount) {
-    final accountsDao =
-        context.read<BudgetDatabaseCubit>().database.debenturesDao;
-    return FutureBuilder(
-      future: accountsDao.getStatmentForAccount(selectedAccount),
-      builder: (context, snapshot) {
-        final data = snapshot.data ?? [];
-        switch (snapshot.connectionState) {
-          default:
-            if (snapshot.hasError) {
-              return Text(snapshot.error.toString());
-            } else {
-              if (data.isNotEmpty) {
-                return _buildAccountStatment(data);
-              } else {
-                return const Text('No Accounts');
-              }
-            }
-        }
-      },
+      ),
     );
   }
 
@@ -111,12 +151,26 @@ class _AccountStatmentScreenState extends State<AccountStatmentScreen> {
       padding: const EdgeInsets.only(bottom: 16, left: 16, right: 16),
       child: Card(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        elevation: 4,
         child: Container(
           padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
           child: Column(
             children: [
-              const Text('Hello there'),
-              const SizedBox(height: 8),
+              Container(
+                decoration: const BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(),
+                  ),
+                ),
+                child: Text(
+                  _selectedAccount?.title != null
+                      ? '${_selectedAccount!.title} statments'
+                      : 'Please select an account',
+                  style: Topology.darkMeduimBody.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
               Expanded(
                 child: WidgetSize(
                   onChange: (newSize) {

@@ -8,4 +8,5 @@ class Accounts extends Table {
       .nullable()
       .customConstraint('REFERENCES accounts(id) ON DELETE CASCADE')();
   TextColumn get title => text().withLength(min: 2)();
+  BoolColumn get isCredit => boolean()();
 }

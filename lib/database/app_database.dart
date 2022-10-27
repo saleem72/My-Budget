@@ -22,7 +22,7 @@ LazyDatabase _openConnection() {
 }
 
 @DriftDatabase(
-  tables: [Subjects, Accounts, Debentures, DebentureItems],
+  tables: [Subjects, Accounts, Debentures, DebentureItems, Transactions],
   daos: [SubjectsDao, AccountsDao, DebenturesDao],
 )
 class AppDatabase extends _$AppDatabase {
@@ -57,19 +57,27 @@ class AppDatabase extends _$AppDatabase {
 
 // indebted credit
 List<AccountsCompanion> mainAccounts() => [
-      AccountsCompanion.insert(id: const Value(1), title: 'Debit'),
-      AccountsCompanion.insert(id: const Value(2), title: 'Credit'),
+      AccountsCompanion.insert(
+          id: const Value(1), title: 'Debit', isCredit: false),
+      AccountsCompanion.insert(
+          id: const Value(2), title: 'Credit', isCredit: true),
     ];
 
 // cashier salary
 List<AccountsCompanion> indebtedSubAccounts() => [
       AccountsCompanion.insert(
-          id: const Value(3), parentId: const Value(1), title: 'Cashier'),
-      AccountsCompanion.insert(parentId: const Value(1), title: 'Salary'),
+          id: const Value(3),
+          parentId: const Value(2),
+          title: 'Cashier',
+          isCredit: false),
+      AccountsCompanion.insert(
+          parentId: const Value(2), title: 'Salary', isCredit: true),
     ];
 
 // cashier salary
 List<AccountsCompanion> creditSubAccounts() => [
-      AccountsCompanion.insert(parentId: const Value(2), title: 'Purchases'),
-      AccountsCompanion.insert(parentId: const Value(2), title: 'Bills'),
+      AccountsCompanion.insert(
+          parentId: const Value(1), title: 'Purchases', isCredit: false),
+      AccountsCompanion.insert(
+          parentId: const Value(1), title: 'Bills', isCredit: false),
     ];

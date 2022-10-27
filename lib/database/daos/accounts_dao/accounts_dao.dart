@@ -6,6 +6,7 @@ import 'package:my_budget/database/models/tree_node.dart';
 
 import '../../app_database.dart';
 import '../../entities/accounts.dart';
+import '../../models/object_label.dart';
 
 part 'accounts_dao.g.dart';
 
@@ -28,4 +29,11 @@ class AccountsDao extends DatabaseAccessor<AppDatabase>
       return aaa.map((e) => e as AccountWithChilds).toList();
     });
   }
+
+  Future<List<ObjectTitle>> accountsTitles() async => select(accounts)
+      .map((p0) => ObjectTitle(id: p0.id, title: p0.title))
+      .get();
+
+  Future updateAccount(Account account) async =>
+      update(accounts).replace(account);
 }

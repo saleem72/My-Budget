@@ -11,7 +11,7 @@ import '../../app_database.dart';
 
 part 'debentures_dao.g.dart';
 
-@DriftAccessor(tables: [Debentures, DebentureItems, Accounts])
+@DriftAccessor(tables: [Debentures, DebentureItems, Accounts, Transactions])
 class DebenturesDao extends DatabaseAccessor<AppDatabase>
     with _$DebenturesDaoMixin {
   DebenturesDao(AppDatabase db) : super(db);
@@ -47,13 +47,33 @@ class DebenturesDao extends DatabaseAccessor<AppDatabase>
 
     const cashierId = 3;
     final related = entry.accountId;
+    final cashierPart = TransactionsCompanion.insert(
+      debentureId: debentureId,
+      source: cashierId,
+      related: related,
+      date: entry.date,
+      amount: entry.amount,
+      isCredit: Value(entry.isIn),
+    );
+
+    final accountPart = TransactionsCompanion.insert(
+      debentureId: debentureId,
+      source: related,
+      related: cashierId,
+      date: entry.date,
+      amount: entry.amount,
+      isCredit: Value(!entry.isIn),
+    );
+
+    into(transactions).insert(cashierPart);
+    into(transactions).insert(accountPart);
 
     final debentureItem1 = DebentureItemsCompanion.insert(
       debentureId: debentureId,
       debit: cashierId,
       credit: related,
       date: entry.date,
-      amount: entry.isIn ? entry.amount : -entry.amount,
+      amount: entry.amount,
     );
 
     final debentureItem2 = DebentureItemsCompanion.insert(
@@ -61,7 +81,7 @@ class DebenturesDao extends DatabaseAccessor<AppDatabase>
       debit: related,
       credit: cashierId,
       date: entry.date,
-      amount: entry.isIn ? -entry.amount : entry.amount,
+      amount: entry.amount,
     );
 
     into(debentureItems).insert(debentureItem1);
@@ -89,6 +109,34 @@ class DebenturesDao extends DatabaseAccessor<AppDatabase>
     }).watch();
   }
 
+  Stream<List<JournalEntry>> watchOtherJournalForDate(DateTime date) {
+    final otherAccounts = db.alias(db.accounts, 'other');
+    return (select(transactions)
+          ..where((row) {
+            return row.source.equals(3) &
+                row.date.year.equals(date.year) &
+                row.date.month.equals(date.month) &
+                row.date.day.equals(date.day);
+          }))
+        .join([
+      leftOuterJoin(accounts, transactions.related.equalsExp(accounts.id)),
+      leftOuterJoin(
+          otherAccounts, transactions.source.equalsExp(otherAccounts.id)),
+    ]).map((p0) {
+      final debentureItem = p0.readTable(transactions);
+      final related = p0.readTable(accounts);
+      final source = p0.readTable(otherAccounts);
+      // return JournalEntry.fromTransaction(debentureItem, source, related);
+      return JournalEntry.fromTransaction(
+          item: debentureItem, source: source, related: related);
+
+      // final item = JournalEntry.fromTransaction(debentureItem, credit.title);
+      // return item.copyWith(
+      //   relatedAccount: credit.title,
+      // );
+    }).watch();
+  }
+
   Future<List<JournalEntry>> getStatmentForAccount(Account account) {
     return (select(debentureItems)
           ..where((row) {
@@ -103,6 +151,48 @@ class DebenturesDao extends DatabaseAccessor<AppDatabase>
       return item.copyWith(
         relatedAccount: credit.title,
       );
+    }).get();
+  }
+
+  Future<List<JournalEntry>> getStatmentForAccountById(int accountId) {
+    return (select(debentureItems)
+          ..where((row) {
+            return row.debit.equals(accountId);
+          }))
+        .join([
+      leftOuterJoin(accounts, debentureItems.credit.equalsExp(accounts.id))
+    ]).map((p0) {
+      final debentureItem = p0.readTable(debentureItems);
+      final credit = p0.readTable(accounts);
+      final item = JournalEntry.fromDebentureItem(debentureItem);
+      return item.copyWith(
+        relatedAccount: credit.title,
+      );
+    }).get();
+  }
+
+  Future<List<JournalEntry>> getOtherStatmentForAccountById(int accountId) {
+    final otherAccounts = db.alias(db.accounts, 'other');
+    return (select(transactions)
+          ..where((row) {
+            return row.source.equals(accountId);
+          }))
+        .join([
+      leftOuterJoin(accounts, transactions.related.equalsExp(accounts.id)),
+      leftOuterJoin(
+          otherAccounts, transactions.source.equalsExp(otherAccounts.id)),
+    ]).map((p0) {
+      final debentureItem = p0.readTable(transactions);
+      final related = p0.readTable(accounts);
+      final source = p0.readTable(otherAccounts);
+      return JournalEntry.fromTransaction(
+          item: debentureItem,
+          source: source,
+          related: related,
+          isStatment: true);
+      // return item.copyWith(
+      //   relatedAccount: credit.title,
+      // );
     }).get();
   }
 }

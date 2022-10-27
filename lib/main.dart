@@ -30,26 +30,27 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-        providers: [
-          BlocProvider(create: (_) => BudgetDatabaseCubit()),
-          BlocProvider(create: (_) => LocaleCubit(safe: di.locator())),
-        ],
-        child: BlocBuilder<LocaleCubit, Locale>(
-          builder: (context, state) {
-            return MaterialApp(
-              title: 'My Budjet',
-              debugShowCheckedModeBanner: false,
-              localizationsDelegates: AppLocalizations.localizationsDelegates,
-              supportedLocales: AppLocalizations.supportedLocales,
-              locale: state,
-              theme: ThemeData(
-                primarySwatch: Pallet.appBarSwatch,
-              ),
-              onGenerateRoute: RoutesGenerator.generate,
-              initialRoute: NavLinks.home,
-            );
-          },
-        ));
+      providers: [
+        BlocProvider(create: (_) => BudgetDatabaseCubit()),
+        BlocProvider(create: (_) => LocaleCubit(safe: di.locator())),
+      ],
+      child: BlocBuilder<LocaleCubit, Locale>(
+        builder: (context, state) {
+          return MaterialApp(
+            title: 'My Budjet',
+            debugShowCheckedModeBanner: false,
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            locale: state,
+            theme: ThemeData(
+              primarySwatch: Pallet.appBarSwatch,
+            ),
+            onGenerateRoute: RoutesGenerator.generate,
+            initialRoute: NavLinks.home,
+          );
+        },
+      ),
+    );
   }
 }
 

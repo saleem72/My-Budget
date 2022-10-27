@@ -2,6 +2,7 @@
 
 import 'package:bloc/bloc.dart';
 import 'package:drift/drift.dart' as drift;
+import 'package:my_budget/database/models/account_with_childs.dart';
 
 import '../../../../database/app_database.dart';
 import '../../../../database/models/tree_node.dart';
@@ -12,14 +13,14 @@ class AccountsCubit extends Cubit<bool> {
     required this.database,
   }) : super(true);
 
-  List<TreeNode> subjects = [];
+  List<AccountWithChilds> accounts = [];
   final AppDatabase database;
 
-  void setAccounts(List<TreeNode> data) {
+  void setAccounts(List<AccountWithChilds> data) {
     final selected = getExpandedNodes();
-    subjects = data;
+    accounts = data;
     for (final id in selected) {
-      final node = subjects.nodeForId(id);
+      final node = accounts.nodeForId(id);
       node?.isExpanded = true;
     }
 
@@ -46,7 +47,7 @@ class AccountsCubit extends Cubit<bool> {
   void expandSelected(int? id) {
     print(getExpandedNodes());
     if (id != null) {
-      final selected = subjects.nodeForId(id);
+      final selected = accounts.nodeForId(id);
       if (selected != null) {
         selected.isExpanded = true;
 
@@ -83,7 +84,7 @@ class AccountsCubit extends Cubit<bool> {
   }
 
   List<int> getExpandedNodes() {
-    return subjects.getExpandedNodes();
+    return accounts.getExpandedNodes();
     // final childsExpanded = subjects.map((e) => e.getExpandedNodes()).toList();
     // List<int> allExpandedChilds = [];
     // for (var element in childsExpanded) {
@@ -93,16 +94,16 @@ class AccountsCubit extends Cubit<bool> {
   }
 
   TreeNode? nodeFromTitle(String title) {
-    final list = subjects.treeToList();
+    final list = accounts.treeToList();
     final nodes = list.where(
         (element) => element.title.toLowerCase().contains(title.toLowerCase()));
 
     final names = nodes.map((e) => e.title).toList();
     print(names);
-    return subjects.nodeFromTilte(title);
+    return accounts.nodeFromTilte(title);
   }
 
   List<TreeNode> treeToList() {
-    return subjects.treeToList();
+    return accounts.treeToList();
   }
 }

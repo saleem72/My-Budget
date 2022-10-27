@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:my_budget/helpers/constants.dart';
 
 import '../../database/models/journal_entry.dart';
 import '../../styling/styling.dart';
@@ -71,50 +72,59 @@ class NewJournalEntryTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 80,
+      height: Constants.journalRowHeight,
       padding: const EdgeInsets.symmetric(horizontal: 16),
+      alignment: Alignment.center,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.grey.shade200,
         borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.3),
-            offset: const Offset(4, 4),
-            blurRadius: 8,
-          ),
-        ],
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Image.asset(
-                entry.isIn ? Assests.journalIn : Assests.journalOut,
-                width: 18,
-                height: 13,
-                color: entry.isIn ? Colors.green : Colors.red,
+              Row(
+                children: [
+                  Image.asset(
+                    entry.isIn ? Assests.journalIn : Assests.journalOut,
+                    width: 18,
+                    height: 13,
+                    color: entry.isIn ? Colors.green : Colors.red,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    '\$${entry.amount.abs()}',
+                    style: Topology.darkMeduimBody.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  )
+                ],
               ),
               const SizedBox(width: 8),
               Text(
-                DateFormat('dd/MM/yyyy').format(entry.date),
-                style: Topology.darkMeduimBody,
+                entry.relatedAccount,
+                style: Topology.darkMeduimBody.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ],
           ),
-          const SizedBox(width: 8),
-          Text(
-            entry.relatedAccount,
-            style: Topology.darkMeduimBody,
-          ),
-          const SizedBox(width: 8),
-          SizedBox(
-            width: 75,
-            child: Text(
-              '\$${entry.amount.abs()}',
-              style: Topology.darkMeduimBody,
-            ),
-          ),
+          entry.notes != null
+              ? const SizedBox(height: 8)
+              : const SizedBox.shrink(),
+          entry.notes != null
+              ? Row(
+                  children: [
+                    Text(
+                      entry.notes!,
+                      style: Topology.darkMeduimBody,
+                    ),
+                  ],
+                )
+              : const SizedBox.shrink(),
         ],
       ),
     );

@@ -35,60 +35,86 @@ class _JournalScreenState extends State<JournalScreen> {
 
   Widget _buildContent(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       child: Column(
         children: [
-          _datePicker(context),
-          Expanded(
-            child: _movementsCardContent(context),
-          ),
+          // _datePicker(context),
+          _buildSearchBar(context),
           const SizedBox(height: 16),
+          Expanded(
+            child: _movmentsStream(context),
+          ),
         ],
       ),
     );
   }
 
-  Widget _datePicker(BuildContext context) {
-    return AppTextFieldWithDate(
-      label: '${Translator.translation(context).selected_date}: ',
-      onChange: (date) {
-        setState(() {
-          _selectedDate = date;
-        });
-      },
-    );
-  }
-
-  // Widget _movementsCard(BuildContext context) {
-  //   return Card(
-  //     shape: RoundedRectangleBorder(
-  //       borderRadius: BorderRadius.circular(12),
-  //     ),
-  //     elevation: 4,
-  //     child: _movementsCardContent(context),
-  //   );
-  // }
-
-  Widget _movementsCardContent(BuildContext context) {
-    return Column(
-      children: [
-        _movementsListTitle(context),
-        _movmentsStream(context),
-      ],
+  Widget _buildSearchBar(BuildContext context) {
+    return PopupWidget(
+      borderWidth: 0.5,
+      child: Row(
+        children: [
+          InkWell(
+            onTap: () {},
+            child: Container(
+              height: 24,
+              width: 24,
+              alignment: Alignment.center,
+              child: SizedBox(
+                height: 14,
+                width: 14,
+                child: Image.asset(
+                  Assests.calendar,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 4),
+          Expanded(
+            child: AnotherDatePicker(
+              label: 'Select date',
+              onChange: (date) {
+                setState(() {
+                  _selectedDate = date;
+                });
+              },
+            ),
+          ),
+          const SizedBox(width: 4),
+          InkWell(
+            onTap: () {},
+            child: Container(
+              height: 24,
+              width: 24,
+              alignment: Alignment.center,
+              child: SizedBox(
+                height: 14,
+                width: 14,
+                child: Image.asset(Assests.filter),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
   Widget _movementsListTitle(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        const SizedBox(width: 50),
-        Text(
-          Translator.translation(context).list_of_movement,
-          style: Topology.title,
-        ),
-        _addMovementButton(),
-      ],
+    return Padding(
+      padding: const EdgeInsets.only(left: 6),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            Translator.translation(context).list_of_movement,
+            style: Topology.darkLargBody.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          _addMovementButton(),
+        ],
+      ),
     );
   }
 
@@ -123,51 +149,42 @@ class _JournalScreenState extends State<JournalScreen> {
         .read<BudgetDatabaseCubit>()
         .database
         .debenturesDao
-        .watchJournalForDate(_selectedDate);
+        .watchOtherJournalForDate(_selectedDate);
     return StreamBuilder(
         stream: movmentsStream,
         builder: (context, snapshot) {
           final data = snapshot.data ?? [];
-          return _movmentsList(data);
+          print('data: $_selectedDate, data: ${data.length}');
+          return _buildMovementsList(data);
         });
   }
 
-  Widget _movmentsList(List<JournalEntry> entries) {
-    return Expanded(
-      child: entries.isEmpty
-          ? _noMovments()
-          : NewJournalList(
-              data: entries,
+  Widget _buildMovementsList(List<JournalEntry> entries) {
+    return PopupWidget(
+      borderColor: Colors.black,
+      borderWidth: 0.5,
+      child: Column(
+        children: [
+          _movementsListTitle(context),
+          Expanded(
+            child: WidgetSize(
+              onChange: (newSize) {
+                setState(() {
+                  listHeight = newSize.height;
+                });
+              },
+              child: NewJournalList(
+                data: entries,
+              ),
+              // child: Container(
+              //   color: Colors.amber,
+              // ),
             ),
-    );
-  }
-
-  Widget _noMovments() {
-    return Container(
-      alignment: Alignment.center,
-      child: Text(
-        Translator.translation(context).no_items,
-        style: Topology.darkMeduimBody.copyWith(),
-        textAlign: TextAlign.center,
+          ),
+        ],
       ),
     );
   }
-
-  // Widget _oldMovmentsList(List<JournalEntry> entries) {
-  //   return Expanded(
-  //     child: WidgetSize(
-  //       onChange: (newSize) {
-  //         setState(() {
-  //           listHeight = newSize.height;
-  //         });
-  //       },
-  //       child: JournalList(
-  //         data: entries,
-  //         totalHeight: listHeight,
-  //       ),
-  //     ),
-  //   );
-  // }
 
   void _showAddDialog(BuildContext context) async {
     // final inputcontr accountId;
@@ -311,9 +328,35 @@ class _JournalScreenState extends State<JournalScreen> {
   }
 }
 
-// const accounts = [
-//   'المبيعات',
-//   'المشتريات',
-//   'ابو حسين',
-//   'الراتب',
-// ];
+class PopupWidget extends StatelessWidget {
+  const PopupWidget({
+    Key? key,
+    required this.child,
+    this.borderColor = Colors.black,
+    this.borderWidth = 1,
+    this.radius = 10,
+  }) : super(key: key);
+  final Color borderColor;
+  final double borderWidth;
+  final double radius;
+  final Widget child;
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      shape:
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(radius)),
+      elevation: 4,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(radius),
+          border: Border.all(
+            color: borderColor,
+            width: borderWidth,
+          ),
+        ),
+        child: child,
+      ),
+    );
+  }
+}

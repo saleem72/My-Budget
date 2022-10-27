@@ -18,19 +18,27 @@ class AccountWithChilds extends TreeNode {
 
   @override
   final List<AccountWithChilds> childs;
+
+  final bool isCredit;
+
+  final Account? account;
   AccountWithChilds({
     required this.id,
     this.parentId,
     required this.title,
     required this.childs,
+    required this.isCredit,
     this.isExpanded = false,
+    this.account,
   });
 
-  factory AccountWithChilds.fromSubject(Account subject) {
+  factory AccountWithChilds.fromSubject(Account account) {
     return AccountWithChilds(
-      id: subject.id,
-      parentId: subject.parentId,
-      title: subject.title,
+      id: account.id,
+      parentId: account.parentId,
+      title: account.title,
+      isCredit: account.isCredit,
+      account: account,
       childs: [],
     );
   }

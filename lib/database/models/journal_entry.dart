@@ -1,6 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 //
 
+import 'package:my_budget/database/entities/debentures.dart';
+
 import '../app_database.dart';
 
 class JournalEntry {
@@ -10,6 +12,8 @@ class JournalEntry {
   final String relatedAccount;
   final int accountId;
   final double amount;
+  final String? notes;
+
   JournalEntry({
     required this.id,
     this.isIn = false,
@@ -17,16 +21,40 @@ class JournalEntry {
     required this.relatedAccount,
     required this.amount,
     required this.accountId,
+    this.notes,
   });
 
   factory JournalEntry.fromDebentureItem(DebentureItem item) {
     return JournalEntry(
-        id: item.id,
-        isIn: item.amount > 0,
-        date: item.date,
-        relatedAccount: '',
-        amount: item.amount,
-        accountId: item.credit);
+      id: item.id,
+      isIn: item.amount > 0,
+      date: item.date,
+      relatedAccount: '',
+      amount: item.amount,
+      accountId: item.credit,
+      notes: item.notes,
+    );
+  }
+
+  factory JournalEntry.fromTransaction({
+    required Transaction item,
+    required Account source,
+    required Account related,
+    bool isStatment = false,
+  }) {
+    return JournalEntry(
+      id: item.id,
+      isIn: isStatment
+          ? source.isCredit
+              ? !item.isCredit
+              : item.isCredit
+          : item.isCredit,
+      date: item.date,
+      relatedAccount: related.title,
+      amount: item.amount,
+      accountId: item.source,
+      notes: 'Hello there', // item.notes,
+    );
   }
 
   static JournalEntry example = JournalEntry(
@@ -35,6 +63,7 @@ class JournalEntry {
     relatedAccount: 'Purchase',
     accountId: 1,
     amount: 32.15,
+    notes: '',
   );
 
   static List<JournalEntry> dummyData = [
@@ -44,6 +73,7 @@ class JournalEntry {
       relatedAccount: 'Purchase',
       accountId: 1,
       amount: 32.15,
+      notes: '',
     ),
     JournalEntry(
       id: 2,
@@ -52,6 +82,7 @@ class JournalEntry {
       relatedAccount: 'ابو غياث',
       accountId: 1,
       amount: 32.15,
+      notes: '',
     ),
     JournalEntry(
       id: 3,
@@ -59,6 +90,7 @@ class JournalEntry {
       relatedAccount: 'Bills',
       accountId: 1,
       amount: 32.15,
+      notes: '',
     ),
     JournalEntry(
       id: 4,
@@ -67,6 +99,7 @@ class JournalEntry {
       relatedAccount: 'Telephone',
       accountId: 1,
       amount: 32.15,
+      notes: '',
     ),
     JournalEntry(
       id: 5,
@@ -74,6 +107,7 @@ class JournalEntry {
       relatedAccount: 'Electricity',
       accountId: 1,
       amount: 32.15,
+      notes: '',
     ),
     JournalEntry(
       id: 6,
@@ -82,6 +116,7 @@ class JournalEntry {
       relatedAccount: 'Food',
       accountId: 1,
       amount: 32.15,
+      notes: '',
     ),
   ];
 
@@ -100,6 +135,7 @@ class JournalEntry {
       relatedAccount: relatedAccount ?? this.relatedAccount,
       accountId: accountId ?? this.accountId,
       amount: amount ?? this.amount,
+      notes: '',
     );
   }
 }

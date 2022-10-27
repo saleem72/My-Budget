@@ -59,6 +59,23 @@ extension MyCustomList on List<TreeNode> {
     return null;
   }
 
+  TreeNode? _anotherNodeForId(TreeNode node, int id) {
+    if (node.id == id) {
+      return node;
+    }
+    if (node.childs.isNotEmpty) {
+      for (final child in node.childs) {
+        final optional = _anotherNodeForId(child, id);
+        if (optional != null) {
+          return optional;
+        }
+      }
+    } else {
+      return null;
+    }
+    return null;
+  }
+
   TreeNode? _nodeFormTitle(List<TreeNode> array, String title) {
     //TODO: function to convert tree to list
     for (final node in array) {
@@ -119,7 +136,14 @@ extension MyCustomList on List<TreeNode> {
   }
 
   TreeNode? nodeForId(int id) {
-    return _nodeForId(this, id);
+    for (final node in this) {
+      final optional = _anotherNodeForId(node, id);
+      if (optional != null) {
+        return optional;
+      }
+    }
+    return null;
+    // return _nodeForId(this, id);
   }
 
   List<int> _expandedChilds(TreeNode node) {

@@ -67,6 +67,15 @@ class _SubjectNodeCardState extends State<SubjectNodeCard> {
         children: [
           _divider(),
           _expantionIcon(cubit),
+          widget.node.isExpanded && widget.node.childs.isNotEmpty
+              ? const Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Divider(
+                    indent: 12,
+                    color: Colors.green,
+                  ),
+                )
+              : const SizedBox.shrink(),
         ],
       ),
     );

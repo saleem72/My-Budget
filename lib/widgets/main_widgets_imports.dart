@@ -6,3 +6,5 @@ export 'widget_size.dart';
 export 'account_picker.dart';
 export 'toolbar_button.dart';
 export 'app_text_field.dart';
+export 'capsule_button.dart';
+export 'app_autocomplete.dart';

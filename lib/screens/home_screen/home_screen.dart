@@ -71,11 +71,13 @@ class _HomeScreenState extends State<HomeScreen> {
           _moreMenu(context),
         ],
       ),
-      body: Column(
-        children: [
-          _summarySection(totalHeight),
-          _mainActions(totalHeight, itemWidth, cardHeight),
-        ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            _summarySection(totalHeight),
+            _mainActions(totalHeight, itemWidth, cardHeight),
+          ],
+        ),
       ),
     );
   }
