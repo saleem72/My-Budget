@@ -10,7 +10,6 @@ import 'package:my_budget/styling/assets.dart';
 import 'package:my_budget/styling/pallet.dart';
 import 'package:my_budget/styling/topology.dart';
 
-import '../../database/app_database.dart';
 import '../../database/buget_database_cubit/budget_database_cubit.dart';
 import '../../helpers/localization/language_constants.dart';
 import '../../widgets/main_widgets_imports.dart';
@@ -124,7 +123,6 @@ class _AccountsScreenContentState extends State<_AccountsScreenContent> {
         builder: (context) {
           return _addEntryAlert(context, selectedAccount);
         });
-    print(result);
     final json = result as Map<String, dynamic>?;
 
     if (json != null) {
@@ -145,7 +143,7 @@ class _AccountsScreenContentState extends State<_AccountsScreenContent> {
         database.accountsDao.updateAccount(newAccount);
       }
     } else {
-      print('No result');
+      debugPrint('No result');
     }
   }
 
@@ -213,7 +211,7 @@ class _AccountsScreenContentState extends State<_AccountsScreenContent> {
                   ),
                   child: Row(
                     children: [
-                      Text('Is credit: '),
+                      const Text('Is credit: '),
                       Switch(
                         value: isCredit,
                         onChanged: (newValue) {
@@ -262,17 +260,6 @@ class _AccountsScreenContentState extends State<_AccountsScreenContent> {
           selectedAccountCubit.state, newSubject.text);
       selectedAccountCubit.selectNodeById(addedNodeId);
     }
-  }
-
-  Widget _saveButton(BuildContext context, Object result) {
-    return CapsuleButton(
-      onPressed: () {
-        Navigator.of(context).pop(result);
-      },
-      isDisable: false,
-      label: 'Save',
-      icon: Icons.person,
-    );
   }
 
   Widget _cancelButtonButton(BuildContext context) {
@@ -334,6 +321,7 @@ class _AccountsScreenContentState extends State<_AccountsScreenContent> {
     }
   }
 
+  // ignore: unused_element
   AlertDialog _editSubjectAlert(
       BuildContext context, TextEditingController controller) {
     final saveButton = TextButton(

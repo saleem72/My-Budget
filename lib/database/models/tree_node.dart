@@ -42,22 +42,22 @@ abstract class TreeNode extends Equatable {
 }
 
 extension MyCustomList on List<TreeNode> {
-  TreeNode? _nodeForId(List<TreeNode> array, int id) {
-    for (final node in array) {
-      if (node.id == id) {
-        return node;
-      }
-      if (node.childs.isNotEmpty) {
-        final optional = _nodeForId(node.childs, id);
-        if (optional != null) {
-          return optional;
-        }
-      } else {
-        return null;
-      }
-    }
-    return null;
-  }
+  // TreeNode? _nodeForId(List<TreeNode> array, int id) {
+  //   for (final node in array) {
+  //     if (node.id == id) {
+  //       return node;
+  //     }
+  //     if (node.childs.isNotEmpty) {
+  //       final optional = _nodeForId(node.childs, id);
+  //       if (optional != null) {
+  //         return optional;
+  //       }
+  //     } else {
+  //       return null;
+  //     }
+  //   }
+  //   return null;
+  // }
 
   TreeNode? _anotherNodeForId(TreeNode node, int id) {
     if (node.id == id) {
@@ -77,7 +77,6 @@ extension MyCustomList on List<TreeNode> {
   }
 
   TreeNode? _nodeFormTitle(List<TreeNode> array, String title) {
-    //TODO: function to convert tree to list
     for (final node in array) {
       if (node.title.toLowerCase().contains(title.toLowerCase())) {
         return node;

@@ -1,5 +1,7 @@
 //
 
+// ignore_for_file: must_be_immutable, prefer_const_literals_to_create_immutables
+
 import '../app_database.dart';
 import 'tree_node.dart';
 

@@ -6,13 +6,15 @@ import '../database/models/object_label.dart';
 import '../styling/styling.dart';
 
 class AppAutoComplete extends StatelessWidget {
-  const AppAutoComplete({
-    Key? key,
-    required this.objectsList,
-    required this.onSelected,
-  }) : super(key: key);
+  const AppAutoComplete(
+      {Key? key,
+      required this.objectsList,
+      required this.onSelected,
+      this.hint})
+      : super(key: key);
 
   final List<ObjectTitle> objectsList;
+  final String? hint;
   final Function(ObjectTitle) onSelected;
   @override
   Widget build(BuildContext context) {
@@ -30,7 +32,7 @@ class AppAutoComplete extends StatelessWidget {
             border: InputBorder.none,
             focusColor: Colors.amber,
             isCollapsed: true,
-            hintText: 'Select accnount',
+            hintText: hint,
 
             hintStyle: Topology.darkMeduimBody.copyWith(
               color: Colors.grey,

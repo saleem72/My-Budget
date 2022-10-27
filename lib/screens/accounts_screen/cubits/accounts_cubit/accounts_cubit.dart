@@ -1,7 +1,10 @@
 //
 
+// ignore_for_file: depend_on_referenced_packages
+
 import 'package:bloc/bloc.dart';
 import 'package:drift/drift.dart' as drift;
+import 'package:flutter/material.dart';
 import 'package:my_budget/database/models/account_with_childs.dart';
 
 import '../../../../database/app_database.dart';
@@ -45,7 +48,6 @@ class AccountsCubit extends Cubit<bool> {
   }
 
   void expandSelected(int? id) {
-    print(getExpandedNodes());
     if (id != null) {
       final selected = accounts.nodeForId(id);
       if (selected != null) {
@@ -53,11 +55,9 @@ class AccountsCubit extends Cubit<bool> {
 
         emit(!state);
       } else {
-        print('Node was not found');
+        debugPrint('Node was not found');
       }
     }
-
-    print(getExpandedNodes());
   }
 
   double heightForNode(TreeNode node) {
@@ -94,12 +94,6 @@ class AccountsCubit extends Cubit<bool> {
   }
 
   TreeNode? nodeFromTitle(String title) {
-    final list = accounts.treeToList();
-    final nodes = list.where(
-        (element) => element.title.toLowerCase().contains(title.toLowerCase()));
-
-    final names = nodes.map((e) => e.title).toList();
-    print(names);
     return accounts.nodeFromTilte(title);
   }
 

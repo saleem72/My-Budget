@@ -23,5 +23,8 @@
     "balance": "Balance",
     "is_it_income": "Is it income",
     "account_tag": "Account",
-    "no_items": "There is no movments for this day\ndo you to add any?"
+    "no_items": "There is no movments for this day\ndo you to add any?",
+    "statments": "statments",
+    "select_account_hint": "Select Account",
+    "select_account_tag": "Please select an account"
 }

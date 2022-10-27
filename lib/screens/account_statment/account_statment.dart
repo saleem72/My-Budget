@@ -38,7 +38,6 @@ class _AccountStatmentScreenState extends State<AccountStatmentScreen> {
     final database = context.read<BudgetDatabaseCubit>().database;
 
     final result = await database.accountsDao.accountsTitles();
-    print('Autocomplete has ${result.length} accounts');
     setState(() {
       _accountList = result;
     });
@@ -87,60 +86,53 @@ class _AccountStatmentScreenState extends State<AccountStatmentScreen> {
   Widget _buildSearchBar(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Material(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
-        elevation: 4,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(22),
-            border: Border.all(),
-          ),
-          child: Row(
-            children: [
-              InkWell(
-                onTap: () {},
-                child: Container(
-                  height: 24,
-                  width: 24,
-                  alignment: Alignment.center,
-                  child: SizedBox(
-                    height: 14,
-                    width: 14,
-                    child: Image.asset(
-                      Assests.search,
-                      color: Colors.black,
-                    ),
+      child: PopupWidget(
+        borderWidth: 0.5,
+        child: Row(
+          children: [
+            InkWell(
+              onTap: () {},
+              child: Container(
+                height: 24,
+                width: 24,
+                alignment: Alignment.center,
+                child: SizedBox(
+                  height: 14,
+                  width: 14,
+                  child: Image.asset(
+                    Assests.search,
+                    color: Colors.black,
                   ),
                 ),
               ),
-              const SizedBox(width: 4),
-              Expanded(
-                child: AppAutoComplete(
-                  objectsList: _accountList,
-                  onSelected: (item) {
-                    setState(() {
-                      _selectedAccount = item;
-                    });
-                  },
+            ),
+            const SizedBox(width: 4),
+            Expanded(
+              child: AppAutoComplete(
+                hint: Translator.translation(context).select_account_hint,
+                objectsList: _accountList,
+                onSelected: (item) {
+                  setState(() {
+                    _selectedAccount = item;
+                  });
+                },
+              ),
+            ),
+            const SizedBox(width: 4),
+            InkWell(
+              onTap: () => getJournalsFor(),
+              child: Container(
+                height: 24,
+                width: 24,
+                alignment: Alignment.center,
+                child: SizedBox(
+                  height: 14,
+                  width: 14,
+                  child: Image.asset(Assests.filter),
                 ),
               ),
-              const SizedBox(width: 4),
-              InkWell(
-                onTap: () => getJournalsFor(),
-                child: Container(
-                  height: 24,
-                  width: 24,
-                  alignment: Alignment.center,
-                  child: SizedBox(
-                    height: 14,
-                    width: 14,
-                    child: Image.asset(Assests.filter),
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -149,43 +141,39 @@ class _AccountStatmentScreenState extends State<AccountStatmentScreen> {
   Widget _buildAccountStatment(List<JournalEntry> entries) {
     return Container(
       padding: const EdgeInsets.only(bottom: 16, left: 16, right: 16),
-      child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        elevation: 4,
-        child: Container(
-          padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
-          child: Column(
-            children: [
-              Container(
-                decoration: const BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(),
-                  ),
-                ),
-                child: Text(
-                  _selectedAccount?.title != null
-                      ? '${_selectedAccount!.title} statments'
-                      : 'Please select an account',
-                  style: Topology.darkMeduimBody.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+      child: PopupWidget(
+        borderWidth: 0.5,
+        child: Column(
+          children: [
+            Container(
+              decoration: const BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(),
                 ),
               ),
-              Expanded(
-                child: WidgetSize(
-                  onChange: (newSize) {
-                    setState(() {
-                      listHeight = newSize.height;
-                    });
-                  },
-                  child: JournalList(
-                    data: entries,
-                    totalHeight: listHeight,
-                  ),
+              child: Text(
+                _selectedAccount?.title != null
+                    ? '${_selectedAccount!.title} ${Translator.translation(context).statments}'
+                    : Translator.translation(context).select_account_tag,
+                style: Topology.darkMeduimBody.copyWith(
+                  fontWeight: FontWeight.w600,
                 ),
               ),
-            ],
-          ),
+            ),
+            Expanded(
+              child: WidgetSize(
+                onChange: (newSize) {
+                  setState(() {
+                    listHeight = newSize.height;
+                  });
+                },
+                child: JournalList(
+                  data: entries,
+                  totalHeight: listHeight,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

@@ -8,3 +8,4 @@ export 'toolbar_button.dart';
 export 'app_text_field.dart';
 export 'capsule_button.dart';
 export 'app_autocomplete.dart';
+export 'popup_widget.dart';

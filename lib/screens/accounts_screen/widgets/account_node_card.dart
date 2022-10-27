@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_budget/database/models/account_with_childs.dart';
 
-import '../../../database/models/tree_node.dart';
 import '../../../helpers/constants.dart';
 import '../../../styling/styling.dart';
 import '../cubits/accounts_cubit/accounts_cubit.dart';

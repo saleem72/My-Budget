@@ -83,9 +83,7 @@ class _SubjectsScreenContent extends StatelessWidget {
           backgroundColor: Colors.purple,
         ),
         ToolBarButton(
-          onPressed: () {
-            print(subjectsCubit.nodeFromTitle('tr'));
-          },
+          onPressed: () {},
           icon: Icons.more_vert,
           backgroundColor: Colors.blue,
         ),

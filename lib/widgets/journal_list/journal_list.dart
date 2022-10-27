@@ -113,7 +113,7 @@ class NewJournalList extends StatelessWidget {
           height: 44,
           alignment: Alignment.center,
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             border: Border(
               top: BorderSide(),
             ),
@@ -123,14 +123,14 @@ class NewJournalList extends StatelessWidget {
               Text(
                 '${Translator.translation(context).balance}: ',
                 style: Topology.darkMeduimBody.copyWith(
-                  fontWeight: FontWeight.w900,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
               const SizedBox(width: 8),
               Text(
                 '\$$balance',
                 style: Topology.darkMeduimBody.copyWith(
-                  fontWeight: FontWeight.w900,
+                  fontWeight: FontWeight.w600,
                 ),
               )
             ],

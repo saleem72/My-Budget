@@ -1,3 +1,5 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'package:bloc/bloc.dart';
 import 'package:drift/drift.dart' as drift;
 
@@ -42,7 +44,6 @@ class SubjectsCubit extends Cubit<bool> {
   }
 
   void expandSelected(int? id) {
-    print(getExpandedNodes());
     if (id != null) {
       final selected = subjects.nodeForId(id);
       if (selected != null) {
@@ -50,11 +51,10 @@ class SubjectsCubit extends Cubit<bool> {
 
         emit(!state);
       } else {
+        // ignore: avoid_print
         print('Node was not found');
       }
     }
-
-    print(getExpandedNodes());
   }
 
   double heightForNode(TreeNode node) {
@@ -91,12 +91,6 @@ class SubjectsCubit extends Cubit<bool> {
   }
 
   TreeNode? nodeFromTitle(String title) {
-    final list = subjects.treeToList();
-    final nodes = list.where(
-        (element) => element.title.toLowerCase().contains(title.toLowerCase()));
-
-    final names = nodes.map((e) => e.title).toList();
-    print(names);
     return subjects.nodeFromTilte(title);
   }
 
