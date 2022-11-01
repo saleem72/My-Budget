@@ -26,5 +26,19 @@
     "no_items": "لا يوجد اي حركة في هذا اليوم\nهل تريد الاضافة الان؟",
     "statments": "كشف حساب",
     "select_account_hint": "اختر حساب",
-    "select_account_tag": "رجاءاً قم باختيار حساب"
+    "select_account_tag": "رجاءاً قم باختيار حساب",
+    "title": "الاسم",
+    "edit": "تعديل",
+    "is_credit": "هل مدين",
+    "notes": "ملاحظات",
+    "bills": "الفواتير",
+    "select_bill_hint": "اختر فاتورة",
+    "add_new_bill": "اضافة فاتورة",
+    "select_date": "اختر التاريخ",
+    "subject": "المادة",
+    "quantity": "الكمية",
+    "price": "السعر",
+    "total": "اجمالي",
+    "add_subject": "اضافة مادة",
+    "select_subject_hint": "اختر مادة"
 }

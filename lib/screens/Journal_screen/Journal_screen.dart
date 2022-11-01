@@ -8,7 +8,7 @@ import 'package:my_budget/database/buget_database_cubit/budget_database_cubit.da
 import 'package:my_budget/styling/styling.dart';
 import 'package:my_budget/widgets/main_widgets_imports.dart';
 
-import '../../database/app_database.dart';
+import '../../database/models/object_label.dart';
 import '../../helpers/localization/language_constants.dart';
 import '../../database/models/journal_entry.dart';
 
@@ -183,143 +183,163 @@ class _JournalScreenState extends State<JournalScreen> {
   }
 
   void _showAddDialog(BuildContext context) async {
-    // final inputcontr accountId;
-    bool isIn = false;
-    final TextEditingController amountText = TextEditingController();
-    double amount = 0;
     final database = context.read<BudgetDatabaseCubit>().database;
-    final accounts = await database.accountsDao.getAllAccounts();
-
-    Account? account = accounts.first;
+    final accounts = await database.accountsDao.accountsTitles();
 
     if (mounted) {}
 
-    final saveButton = TextButton(
-      onPressed: () {
-        Navigator.pop(context, 'Save');
-      },
-      child: Text(
-        Translator.translation(context).save,
-        style: Topology.darkLargBody,
-      ),
-    );
-    final cancelButton = TextButton(
-      onPressed: () {
-        Navigator.pop(context, 'Cancel');
-      },
-      child: Text(
-        Translator.translation(context).cancel,
-        style: Topology.darkLargBody,
-      ),
-    );
-
-    final alert = AlertDialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      title: Text(
-        Translator.translation(context).add_movment,
-        style: Topology.title,
-      ),
-      content: StatefulBuilder(
-        builder: (context, setState) => Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              children: [
-                Text(
-                  Translator.translation(context).is_it_income,
-                  style: Topology.darkLargBody,
-                ),
-                Switch(
-                    value: isIn,
-                    onChanged: ((value) {
-                      setState(() {
-                        isIn = value;
-                      });
-                    }))
-              ],
-            ),
-            TextField(
-              controller: amountText,
-              keyboardType: TextInputType.number,
-              style: Topology.darkLargBody,
-              onChanged: (value) {
-                final temp = double.tryParse(value);
-                if (temp != null) {
-                  amount = temp;
-                } else {
-                  amountText.text = amount.toString();
-                }
-              },
-              decoration: InputDecoration(
-                hintText: Translator.translation(context).amount,
-                hintStyle: Topology.darkLargBody.copyWith(
-                  color: Colors.grey,
-                ),
-                isCollapsed: true,
-              ),
-            ),
-            const SizedBox(height: 16),
-            InputDecorator(
-              decoration: const InputDecoration(
-                labelStyle: Topology.darkLargBody,
-                isCollapsed: true,
-                errorStyle: TextStyle(color: Colors.redAccent, fontSize: 16.0),
-                hintText: 'Please select expense',
-                // border: OutlineInputBorder(
-                //   borderRadius: BorderRadius.circular(5.0),
-                // ),
-              ),
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton<Account>(
-                  value: account,
-                  isExpanded: true,
-                  isDense: true,
-                  style: Topology.darkLargBody,
-                  items: accounts
-                      .map((e) => DropdownMenuItem(
-                            value: e,
-                            child: Text(
-                              e.title,
-                              style: Topology.darkLargBody,
-                            ),
-                          ))
-                      .toList(),
-                  onChanged: (item) {
-                    setState(() {
-                      account = item; // InputDecoration
-                    });
-                  },
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-      actions: [
-        saveButton,
-        cancelButton,
-      ],
-    );
+    final alert = _addEntryAlert(context, accounts);
     final result = await showDialog(
         context: context,
         builder: (context) {
           return alert;
         });
-    final action = result as String?;
-    if (action == 'Save') {
+    final json = result as Map<String, dynamic>?;
+
+    if (json != null) {
+      final amountString = json['amount'] as String;
+      final accountId = json['account'] as int;
+      final isCredit = json['isCredit'] as bool? ?? false;
+      final notes = json['notes'] as String;
+      final amount = double.parse(amountString.replaceArabicNumber());
+
       debugPrint(
-          'Amount: $amount, Account: ${account?.title ?? 'No Account set'}');
+          'Amount: $amount, Account: $accountId, notes: $notes isCredit: $isCredit');
+
       final newEntry = JournalEntry(
         id: 99,
-        isIn: isIn,
+        isIn: isCredit,
         date: _selectedDate,
-        relatedAccount: account?.title ?? '',
-        accountId: account?.id ?? 0,
+        relatedAccount: '',
+        accountId: accountId,
         amount: amount,
+        notes: notes,
       );
       database.debenturesDao.addJournalEntry(newEntry);
     }
+  }
+
+  Widget _addEntryAlert(BuildContext context, List<ObjectTitle> entries) {
+    final TextEditingController amountText = TextEditingController();
+    final TextEditingController notes = TextEditingController();
+    bool isCredit = false;
+    ObjectTitle? account;
+    return AlertDialog(
+      contentPadding:
+          const EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 0),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      elevation: 8,
+      content: StatefulBuilder(
+        builder: (context, setState) => SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    Translator.translation(context).add_movment,
+                    style: Topology.darkMeduimBody.copyWith(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 18,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              VerticalTextField(
+                radius: 8,
+                controller: amountText,
+                keyboard: TextInputType.number,
+                label: Translator.translation(context).amount,
+                hint: Translator.translation(context).amount,
+              ),
+              const SizedBox(height: 16),
+              PopupWidget(
+                radius: 8,
+                child: AppAutoComplete(
+                  objectsList: entries,
+                  hint: Translator.translation(context).select_account_hint,
+                  onSelected: (p0) {
+                    setState(() {
+                      account = p0;
+                    });
+                  },
+                ),
+              ),
+              const SizedBox(height: 16),
+              PopupWidget(
+                child: TextField(
+                  controller: notes,
+                  style: Topology.darkLargBody,
+                  decoration: InputDecoration(
+                    hintText: Translator.translation(context).notes,
+                    border: InputBorder.none,
+                    isCollapsed: true,
+                    hintStyle: Topology.darkLargBody.copyWith(
+                      color: Colors.grey,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              PopupWidget(
+                child: Row(
+                  children: [
+                    Text('${Translator.translation(context).is_credit}: '),
+                    Switch(
+                      value: isCredit,
+                      onChanged: (newValue) {
+                        setState(() {
+                          isCredit = newValue;
+                        });
+                      },
+                    )
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text(Translator.translation(context).cancel),
+                  ),
+                  CapsuleButton(
+                    onPressed: () {
+                      Navigator.of(context).pop({
+                        "amount": amountText.text,
+                        "account": account?.id,
+                        "isCredit": isCredit,
+                        "notes": notes.text,
+                      });
+                    },
+                    isDisable: false,
+                    label: Translator.translation(context).save,
+                    icon: Icons.person,
+                  ),
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+extension ArabicDigits on String {
+  String replaceArabicNumber() {
+    const english = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+    const arabic = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+    String input = this;
+    for (int i = 0; i < english.length; i++) {
+      input = replaceAll(english[i], arabic[i]);
+    }
+
+    return input;
   }
 }

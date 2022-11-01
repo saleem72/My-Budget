@@ -24,17 +24,16 @@ class AppAutoComplete extends StatelessWidget {
       fieldViewBuilder:
           (context, textEditingController, focusNode, onFieldSubmitted) {
         return TextFormField(
-          style: Topology.darkMeduimBody,
+          style: Topology.darkLargBody,
           controller: textEditingController,
           focusNode: focusNode,
           onFieldSubmitted: (value) => onFieldSubmitted(),
           decoration: InputDecoration(
             border: InputBorder.none,
-            focusColor: Colors.amber,
             isCollapsed: true,
             hintText: hint,
 
-            hintStyle: Topology.darkMeduimBody.copyWith(
+            hintStyle: Topology.darkLargBody.copyWith(
               color: Colors.grey,
             ),
             // suffixIcon: IconButton(

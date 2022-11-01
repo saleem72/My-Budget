@@ -53,6 +53,7 @@ class DebenturesDao extends DatabaseAccessor<AppDatabase>
       related: related,
       date: entry.date,
       amount: entry.amount,
+      notes: Value(entry.notes),
       isCredit: Value(entry.isIn),
     );
 
@@ -62,6 +63,7 @@ class DebenturesDao extends DatabaseAccessor<AppDatabase>
       related: cashierId,
       date: entry.date,
       amount: entry.amount,
+      notes: Value(entry.notes),
       isCredit: Value(!entry.isIn),
     );
 
@@ -73,6 +75,7 @@ class DebenturesDao extends DatabaseAccessor<AppDatabase>
       debit: cashierId,
       credit: related,
       date: entry.date,
+      notes: Value(entry.notes),
       amount: entry.amount,
     );
 
@@ -81,6 +84,7 @@ class DebenturesDao extends DatabaseAccessor<AppDatabase>
       debit: related,
       credit: cashierId,
       date: entry.date,
+      notes: Value(entry.notes),
       amount: entry.amount,
     );
 

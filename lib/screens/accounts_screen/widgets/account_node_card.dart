@@ -43,10 +43,10 @@ class _AccountNodeCardState extends State<AccountNodeCard> {
     return Expanded(
       child: SizedBox(
         // duration: const Duration(milliseconds: 250),
-        height: cubit.heightForNode(widget.node),
+        height: cubit.heightForNode(context, widget.node),
         child: Column(
           children: [
-            _nodeTitle(isSelected),
+            _nodeTitle(context, isSelected),
             _nodeChildren(),
           ],
         ),
@@ -57,9 +57,9 @@ class _AccountNodeCardState extends State<AccountNodeCard> {
   Widget _expantionSection(AccountsCubit cubit) {
     return Container(
       width: Constants.subjectTileChildsYOffset,
-      margin: const EdgeInsets.only(
-        top: Constants.subjectTileHeight * 0.5 - 14,
-        bottom: Constants.subjectTileHeight * 0.2,
+      margin: EdgeInsets.only(
+        top: Constants.subjectTileHeight(context) * 0.5 - 14,
+        bottom: Constants.subjectTileHeight(context) * 0.2,
       ),
       alignment: Alignment.center,
       child: Stack(
@@ -123,9 +123,9 @@ class _AccountNodeCardState extends State<AccountNodeCard> {
         : const SizedBox.shrink();
   }
 
-  Widget _nodeTitle(bool isSelected) {
+  Widget _nodeTitle(BuildContext context, bool isSelected) {
     return SizedBox(
-      height: Constants.subjectTileHeight,
+      height: Constants.subjectTileHeight(context),
       child: GestureDetector(
         onTap: () {
           context.read<SelectedAccountCubit>().selectNode(widget.node);

@@ -177,7 +177,7 @@ class _AccountsScreenContentState extends State<_AccountsScreenContent> {
           ),
           const SizedBox(width: 8),
           Text(
-            'Edit ${account.title}',
+            '${Translator.translation(context).edit} ${account.title}',
             style: Topology.darkLargBody.copyWith(
               // fontWeight: FontWeight.w600,
               fontSize: 20,
@@ -193,8 +193,8 @@ class _AccountsScreenContentState extends State<_AccountsScreenContent> {
             children: [
               VerticalTextField(
                 controller: title,
-                label: 'Title',
-                hint: 'Title',
+                label: Translator.translation(context).title,
+                hint: Translator.translation(context).title,
               ),
               const SizedBox(height: 16),
               Material(
@@ -211,7 +211,7 @@ class _AccountsScreenContentState extends State<_AccountsScreenContent> {
                   ),
                   child: Row(
                     children: [
-                      const Text('Is credit: '),
+                      Text('${Translator.translation(context).is_credit}: '),
                       Switch(
                         value: isCredit,
                         onChanged: (newValue) {
@@ -236,7 +236,7 @@ class _AccountsScreenContentState extends State<_AccountsScreenContent> {
                 .pop({"title": title.text, "isCredit": isCredit});
           },
           isDisable: false,
-          label: 'Save',
+          label: Translator.translation(context).save,
           icon: Icons.person,
         ),
       ],
@@ -267,7 +267,7 @@ class _AccountsScreenContentState extends State<_AccountsScreenContent> {
       onPressed: () {
         Navigator.of(context).pop();
       },
-      child: const Text('Cancel'),
+      child: Text(Translator.translation(context).cancel),
     );
   }
 
@@ -351,54 +351,6 @@ class _AccountsScreenContentState extends State<_AccountsScreenContent> {
       actions: [
         saveButton,
         cancelButtonButton,
-      ],
-    );
-  }
-}
-
-class VerticalTextField extends StatelessWidget {
-  const VerticalTextField({
-    Key? key,
-    required this.label,
-    required this.controller,
-    this.hint = '',
-  }) : super(key: key);
-
-  final String label;
-  final String hint;
-  final TextEditingController controller;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: Topology.darkLargBody,
-        ),
-        const SizedBox(height: 4),
-        Material(
-          elevation: 4,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
-          child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
-            decoration: BoxDecoration(
-              // color: Colors.grey.shade300,
-              borderRadius: BorderRadius.circular(6),
-              border: Border.all(),
-            ),
-            child: TextField(
-              controller: controller,
-              style: Topology.darkLargBody,
-              decoration: InputDecoration(
-                hintText: hint,
-                border: InputBorder.none,
-                isCollapsed: true,
-              ),
-            ),
-          ),
-        ),
       ],
     );
   }

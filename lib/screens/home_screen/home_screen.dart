@@ -22,6 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void _actionFor(BuildContext context, {required HomeScreenButton button}) {
     switch (button) {
       case HomeScreenButton.bill:
+        Navigator.of(context).pushNamed(NavLinks.bills);
         break;
       case HomeScreenButton.diary:
         Navigator.of(context).pushNamed(NavLinks.journal);

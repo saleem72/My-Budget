@@ -23,7 +23,7 @@ class AccountsTree extends StatelessWidget {
           itemCount: subjects.length,
           itemBuilder: (BuildContext context, int index) {
             return SizedBox(
-              height: accountsCubit.heightForNode(subjects[index]),
+              height: accountsCubit.heightForNode(context, subjects[index]),
               child: AccountNodeCard(node: subjects[index]),
             );
           },

@@ -1439,6 +1439,534 @@ class $TransactionsTable extends Transactions
   }
 }
 
+class Bill extends DataClass implements Insertable<Bill> {
+  final int id;
+  final String? notes;
+  final DateTime date;
+  const Bill({required this.id, this.notes, required this.date});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    if (!nullToAbsent || notes != null) {
+      map['notes'] = Variable<String>(notes);
+    }
+    map['date'] = Variable<DateTime>(date);
+    return map;
+  }
+
+  BillsCompanion toCompanion(bool nullToAbsent) {
+    return BillsCompanion(
+      id: Value(id),
+      notes:
+          notes == null && nullToAbsent ? const Value.absent() : Value(notes),
+      date: Value(date),
+    );
+  }
+
+  factory Bill.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Bill(
+      id: serializer.fromJson<int>(json['id']),
+      notes: serializer.fromJson<String?>(json['notes']),
+      date: serializer.fromJson<DateTime>(json['date']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'notes': serializer.toJson<String?>(notes),
+      'date': serializer.toJson<DateTime>(date),
+    };
+  }
+
+  Bill copyWith(
+          {int? id,
+          Value<String?> notes = const Value.absent(),
+          DateTime? date}) =>
+      Bill(
+        id: id ?? this.id,
+        notes: notes.present ? notes.value : this.notes,
+        date: date ?? this.date,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('Bill(')
+          ..write('id: $id, ')
+          ..write('notes: $notes, ')
+          ..write('date: $date')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, notes, date);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Bill &&
+          other.id == this.id &&
+          other.notes == this.notes &&
+          other.date == this.date);
+}
+
+class BillsCompanion extends UpdateCompanion<Bill> {
+  final Value<int> id;
+  final Value<String?> notes;
+  final Value<DateTime> date;
+  const BillsCompanion({
+    this.id = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.date = const Value.absent(),
+  });
+  BillsCompanion.insert({
+    this.id = const Value.absent(),
+    this.notes = const Value.absent(),
+    required DateTime date,
+  }) : date = Value(date);
+  static Insertable<Bill> custom({
+    Expression<int>? id,
+    Expression<String>? notes,
+    Expression<DateTime>? date,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (notes != null) 'notes': notes,
+      if (date != null) 'date': date,
+    });
+  }
+
+  BillsCompanion copyWith(
+      {Value<int>? id, Value<String?>? notes, Value<DateTime>? date}) {
+    return BillsCompanion(
+      id: id ?? this.id,
+      notes: notes ?? this.notes,
+      date: date ?? this.date,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (date.present) {
+      map['date'] = Variable<DateTime>(date.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BillsCompanion(')
+          ..write('id: $id, ')
+          ..write('notes: $notes, ')
+          ..write('date: $date')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $BillsTable extends Bills with TableInfo<$BillsTable, Bill> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $BillsTable(this.attachedDatabase, [this._alias]);
+  final VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
+  final VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+      'notes', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  final VerificationMeta _dateMeta = const VerificationMeta('date');
+  @override
+  late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
+      'date', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [id, notes, date];
+  @override
+  String get aliasedName => _alias ?? 'bills';
+  @override
+  String get actualTableName => 'bills';
+  @override
+  VerificationContext validateIntegrity(Insertable<Bill> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+          _notesMeta, notes.isAcceptableOrUnknown(data['notes']!, _notesMeta));
+    }
+    if (data.containsKey('date')) {
+      context.handle(
+          _dateMeta, date.isAcceptableOrUnknown(data['date']!, _dateMeta));
+    } else if (isInserting) {
+      context.missing(_dateMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Bill map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Bill(
+      id: attachedDatabase.options.types
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      notes: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}notes']),
+      date: attachedDatabase.options.types
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}date'])!,
+    );
+  }
+
+  @override
+  $BillsTable createAlias(String alias) {
+    return $BillsTable(attachedDatabase, alias);
+  }
+}
+
+class BillItem extends DataClass implements Insertable<BillItem> {
+  final int id;
+  final int? parentId;
+  final int? subjectId;
+  final int quantity;
+  final double price;
+  final String? notes;
+  const BillItem(
+      {required this.id,
+      this.parentId,
+      this.subjectId,
+      required this.quantity,
+      required this.price,
+      this.notes});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    if (!nullToAbsent || parentId != null) {
+      map['parent_id'] = Variable<int>(parentId);
+    }
+    if (!nullToAbsent || subjectId != null) {
+      map['subject_id'] = Variable<int>(subjectId);
+    }
+    map['quantity'] = Variable<int>(quantity);
+    map['price'] = Variable<double>(price);
+    if (!nullToAbsent || notes != null) {
+      map['notes'] = Variable<String>(notes);
+    }
+    return map;
+  }
+
+  BillItemsCompanion toCompanion(bool nullToAbsent) {
+    return BillItemsCompanion(
+      id: Value(id),
+      parentId: parentId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(parentId),
+      subjectId: subjectId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(subjectId),
+      quantity: Value(quantity),
+      price: Value(price),
+      notes:
+          notes == null && nullToAbsent ? const Value.absent() : Value(notes),
+    );
+  }
+
+  factory BillItem.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return BillItem(
+      id: serializer.fromJson<int>(json['id']),
+      parentId: serializer.fromJson<int?>(json['parentId']),
+      subjectId: serializer.fromJson<int?>(json['subjectId']),
+      quantity: serializer.fromJson<int>(json['quantity']),
+      price: serializer.fromJson<double>(json['price']),
+      notes: serializer.fromJson<String?>(json['notes']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'parentId': serializer.toJson<int?>(parentId),
+      'subjectId': serializer.toJson<int?>(subjectId),
+      'quantity': serializer.toJson<int>(quantity),
+      'price': serializer.toJson<double>(price),
+      'notes': serializer.toJson<String?>(notes),
+    };
+  }
+
+  BillItem copyWith(
+          {int? id,
+          Value<int?> parentId = const Value.absent(),
+          Value<int?> subjectId = const Value.absent(),
+          int? quantity,
+          double? price,
+          Value<String?> notes = const Value.absent()}) =>
+      BillItem(
+        id: id ?? this.id,
+        parentId: parentId.present ? parentId.value : this.parentId,
+        subjectId: subjectId.present ? subjectId.value : this.subjectId,
+        quantity: quantity ?? this.quantity,
+        price: price ?? this.price,
+        notes: notes.present ? notes.value : this.notes,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('BillItem(')
+          ..write('id: $id, ')
+          ..write('parentId: $parentId, ')
+          ..write('subjectId: $subjectId, ')
+          ..write('quantity: $quantity, ')
+          ..write('price: $price, ')
+          ..write('notes: $notes')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, parentId, subjectId, quantity, price, notes);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is BillItem &&
+          other.id == this.id &&
+          other.parentId == this.parentId &&
+          other.subjectId == this.subjectId &&
+          other.quantity == this.quantity &&
+          other.price == this.price &&
+          other.notes == this.notes);
+}
+
+class BillItemsCompanion extends UpdateCompanion<BillItem> {
+  final Value<int> id;
+  final Value<int?> parentId;
+  final Value<int?> subjectId;
+  final Value<int> quantity;
+  final Value<double> price;
+  final Value<String?> notes;
+  const BillItemsCompanion({
+    this.id = const Value.absent(),
+    this.parentId = const Value.absent(),
+    this.subjectId = const Value.absent(),
+    this.quantity = const Value.absent(),
+    this.price = const Value.absent(),
+    this.notes = const Value.absent(),
+  });
+  BillItemsCompanion.insert({
+    this.id = const Value.absent(),
+    this.parentId = const Value.absent(),
+    this.subjectId = const Value.absent(),
+    this.quantity = const Value.absent(),
+    required double price,
+    this.notes = const Value.absent(),
+  }) : price = Value(price);
+  static Insertable<BillItem> custom({
+    Expression<int>? id,
+    Expression<int>? parentId,
+    Expression<int>? subjectId,
+    Expression<int>? quantity,
+    Expression<double>? price,
+    Expression<String>? notes,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (parentId != null) 'parent_id': parentId,
+      if (subjectId != null) 'subject_id': subjectId,
+      if (quantity != null) 'quantity': quantity,
+      if (price != null) 'price': price,
+      if (notes != null) 'notes': notes,
+    });
+  }
+
+  BillItemsCompanion copyWith(
+      {Value<int>? id,
+      Value<int?>? parentId,
+      Value<int?>? subjectId,
+      Value<int>? quantity,
+      Value<double>? price,
+      Value<String?>? notes}) {
+    return BillItemsCompanion(
+      id: id ?? this.id,
+      parentId: parentId ?? this.parentId,
+      subjectId: subjectId ?? this.subjectId,
+      quantity: quantity ?? this.quantity,
+      price: price ?? this.price,
+      notes: notes ?? this.notes,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (parentId.present) {
+      map['parent_id'] = Variable<int>(parentId.value);
+    }
+    if (subjectId.present) {
+      map['subject_id'] = Variable<int>(subjectId.value);
+    }
+    if (quantity.present) {
+      map['quantity'] = Variable<int>(quantity.value);
+    }
+    if (price.present) {
+      map['price'] = Variable<double>(price.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BillItemsCompanion(')
+          ..write('id: $id, ')
+          ..write('parentId: $parentId, ')
+          ..write('subjectId: $subjectId, ')
+          ..write('quantity: $quantity, ')
+          ..write('price: $price, ')
+          ..write('notes: $notes')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $BillItemsTable extends BillItems
+    with TableInfo<$BillItemsTable, BillItem> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $BillItemsTable(this.attachedDatabase, [this._alias]);
+  final VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
+  final VerificationMeta _parentIdMeta = const VerificationMeta('parentId');
+  @override
+  late final GeneratedColumn<int> parentId = GeneratedColumn<int>(
+      'parent_id', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      $customConstraints: 'REFERENCES bills(id) ON DELETE CASCADE');
+  final VerificationMeta _subjectIdMeta = const VerificationMeta('subjectId');
+  @override
+  late final GeneratedColumn<int> subjectId = GeneratedColumn<int>(
+      'subject_id', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      $customConstraints: 'REFERENCES subjects(id) ON DELETE CASCADE');
+  final VerificationMeta _quantityMeta = const VerificationMeta('quantity');
+  @override
+  late final GeneratedColumn<int> quantity = GeneratedColumn<int>(
+      'quantity', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(1));
+  final VerificationMeta _priceMeta = const VerificationMeta('price');
+  @override
+  late final GeneratedColumn<double> price = GeneratedColumn<double>(
+      'price', aliasedName, false,
+      type: DriftSqlType.double, requiredDuringInsert: true);
+  final VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+      'notes', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, parentId, subjectId, quantity, price, notes];
+  @override
+  String get aliasedName => _alias ?? 'bill_items';
+  @override
+  String get actualTableName => 'bill_items';
+  @override
+  VerificationContext validateIntegrity(Insertable<BillItem> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('parent_id')) {
+      context.handle(_parentIdMeta,
+          parentId.isAcceptableOrUnknown(data['parent_id']!, _parentIdMeta));
+    }
+    if (data.containsKey('subject_id')) {
+      context.handle(_subjectIdMeta,
+          subjectId.isAcceptableOrUnknown(data['subject_id']!, _subjectIdMeta));
+    }
+    if (data.containsKey('quantity')) {
+      context.handle(_quantityMeta,
+          quantity.isAcceptableOrUnknown(data['quantity']!, _quantityMeta));
+    }
+    if (data.containsKey('price')) {
+      context.handle(
+          _priceMeta, price.isAcceptableOrUnknown(data['price']!, _priceMeta));
+    } else if (isInserting) {
+      context.missing(_priceMeta);
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+          _notesMeta, notes.isAcceptableOrUnknown(data['notes']!, _notesMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  BillItem map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return BillItem(
+      id: attachedDatabase.options.types
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      parentId: attachedDatabase.options.types
+          .read(DriftSqlType.int, data['${effectivePrefix}parent_id']),
+      subjectId: attachedDatabase.options.types
+          .read(DriftSqlType.int, data['${effectivePrefix}subject_id']),
+      quantity: attachedDatabase.options.types
+          .read(DriftSqlType.int, data['${effectivePrefix}quantity'])!,
+      price: attachedDatabase.options.types
+          .read(DriftSqlType.double, data['${effectivePrefix}price'])!,
+      notes: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}notes']),
+    );
+  }
+
+  @override
+  $BillItemsTable createAlias(String alias) {
+    return $BillItemsTable(attachedDatabase, alias);
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   late final $SubjectsTable subjects = $SubjectsTable(this);
@@ -1446,13 +1974,23 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $DebenturesTable debentures = $DebenturesTable(this);
   late final $DebentureItemsTable debentureItems = $DebentureItemsTable(this);
   late final $TransactionsTable transactions = $TransactionsTable(this);
+  late final $BillsTable bills = $BillsTable(this);
+  late final $BillItemsTable billItems = $BillItemsTable(this);
   late final SubjectsDao subjectsDao = SubjectsDao(this as AppDatabase);
   late final AccountsDao accountsDao = AccountsDao(this as AppDatabase);
   late final DebenturesDao debenturesDao = DebenturesDao(this as AppDatabase);
+  late final BillsDao billsDao = BillsDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, dynamic>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [subjects, accounts, debentures, debentureItems, transactions];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [
+        subjects,
+        accounts,
+        debentures,
+        debentureItems,
+        transactions,
+        bills,
+        billItems
+      ];
 }

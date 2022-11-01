@@ -51,7 +51,7 @@ class JournalEntry {
       relatedAccount: related.title,
       amount: item.amount,
       accountId: item.source,
-      notes: 'Hello there', // item.notes,
+      notes: item.notes,
     );
   }
 

@@ -2,6 +2,7 @@
 
 import 'package:bloc/bloc.dart';
 import 'package:drift/drift.dart' as drift;
+import 'package:flutter/material.dart';
 
 import '../../../../database/app_database.dart';
 import '../../../../database/models/tree_node.dart';
@@ -57,15 +58,16 @@ class SubjectsCubit extends Cubit<bool> {
     }
   }
 
-  double heightForNode(TreeNode node) {
-    const tileHeight = Constants.subjectTileHeight;
+  double heightForNode(BuildContext context, TreeNode node) {
+    final tileHeight = Constants.subjectTileHeight(context);
     if (!node.isExpanded) {
       return tileHeight;
     } else {
       if (node.childs.isEmpty) {
         return tileHeight;
       } else {
-        final childsHeights = node.childs.map((e) => heightForNode(e)).toList();
+        final childsHeights =
+            node.childs.map((e) => heightForNode(context, e)).toList();
         final totalHeight =
             childsHeights.reduce((value, element) => value + element);
         final result = totalHeight;

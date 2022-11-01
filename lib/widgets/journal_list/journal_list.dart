@@ -1,5 +1,7 @@
 //
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
@@ -162,7 +164,7 @@ class ExpenseTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: Constants.journalRowHeight,
+      height: Constants.journalRowHeight(context),
       margin: const EdgeInsets.only(bottom: 16),
       child: Stack(
         children: [
@@ -179,9 +181,19 @@ class ExpenseTile extends StatelessWidget {
               motion: const ScrollMotion(),
               children: [
                 SlidableAction(
-                  borderRadius: const BorderRadius.only(
-                    topRight: Radius.circular(12),
-                    bottomRight: Radius.circular(12),
+                  borderRadius: BorderRadius.only(
+                    topRight: Platform.localeName == 'ar'
+                        ? Radius.zero
+                        : const Radius.circular(12),
+                    bottomRight: Platform.localeName == 'ar'
+                        ? Radius.zero
+                        : const Radius.circular(12),
+                    topLeft: Platform.localeName == 'ar'
+                        ? Radius.zero
+                        : const Radius.circular(12),
+                    bottomLeft: Platform.localeName == 'ar'
+                        ? Radius.zero
+                        : const Radius.circular(12),
                   ),
                   flex: 1,
                   onPressed: (context) {

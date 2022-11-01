@@ -26,5 +26,19 @@
     "no_items": "There is no movments for this day\ndo you to add any?",
     "statments": "statments",
     "select_account_hint": "Select Account",
-    "select_account_tag": "Please select an account"
+    "select_account_tag": "Please select an account",
+    "title": "Title",
+    "edit": "Edit",
+    "is_credit": "Is credit",
+    "notes": "Notes",
+    "bills": "Bills",
+    "select_bill_hint": "Select bill",
+    "add_new_bill": "Add new bill",
+    "select_date": "Select Date",
+    "subject": "Subject",
+    "quantity": "Quantity",
+    "price": "Price",
+    "total": "Total",
+    "add_subject": "Add Subject",
+    "select_subject_hint": "Select Subject"
 }

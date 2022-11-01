@@ -22,8 +22,16 @@ LazyDatabase _openConnection() {
 }
 
 @DriftDatabase(
-  tables: [Subjects, Accounts, Debentures, DebentureItems, Transactions],
-  daos: [SubjectsDao, AccountsDao, DebenturesDao],
+  tables: [
+    Subjects,
+    Accounts,
+    Debentures,
+    DebentureItems,
+    Transactions,
+    Bills,
+    BillItems,
+  ],
+  daos: [SubjectsDao, AccountsDao, DebenturesDao, BillsDao],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
