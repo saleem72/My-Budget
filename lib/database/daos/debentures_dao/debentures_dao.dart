@@ -11,7 +11,7 @@ import '../../app_database.dart';
 
 part 'debentures_dao.g.dart';
 
-@DriftAccessor(tables: [Debentures, DebentureItems, Accounts, Transactions])
+@DriftAccessor(tables: [Debentures, Accounts])
 class DebenturesDao extends DatabaseAccessor<AppDatabase>
     with _$DebenturesDaoMixin {
   DebenturesDao(AppDatabase db) : super(db);
@@ -32,16 +32,17 @@ class DebenturesDao extends DatabaseAccessor<AppDatabase>
     return result.firstOrNull;
   }
 
-  Future<List<DebentureItem>> getDebentureByDebit(
-      {required int debitId}) async {
-    final query = select(debentureItems)
-      ..where((tbl) => tbl.debit.equals(debitId));
+  // Future<List<DebentureItem>> getDebentureByDebit(
+  //     {required int debitId}) async {
+  //   final query = select(debentureItems)
+  //     ..where((tbl) => tbl.debit.equals(debitId));
 
-    final result = await query.get();
-    return result;
-  }
+  //   final result = await query.get();
+  //   return result;
+  // }
 
   Future addJournalEntry(JournalEntry entry) async {
+    /*
     final debenture = DebenturesCompanion.insert(source: 1, sourceId: 1);
     final debentureId = await into(debentures).insert(debenture);
 
@@ -69,58 +70,20 @@ class DebenturesDao extends DatabaseAccessor<AppDatabase>
 
     into(transactions).insert(cashierPart);
     into(transactions).insert(accountPart);
-
-    final debentureItem1 = DebentureItemsCompanion.insert(
-      debentureId: debentureId,
-      debit: cashierId,
-      credit: related,
-      date: entry.date,
-      notes: Value(entry.notes),
-      amount: entry.amount,
-    );
-
-    final debentureItem2 = DebentureItemsCompanion.insert(
-      debentureId: debentureId,
-      debit: related,
-      credit: cashierId,
-      date: entry.date,
-      notes: Value(entry.notes),
-      amount: entry.amount,
-    );
-
-    into(debentureItems).insert(debentureItem1);
-    into(debentureItems).insert(debentureItem2);
+    */
   }
 
-  //
-  Stream<List<JournalEntry>> watchJournalForDate(DateTime date) {
-    return (select(debentureItems)
-          ..where((row) {
-            return row.debit.equals(3) &
-                row.date.year.equals(date.year) &
-                row.date.month.equals(date.month) &
-                row.date.day.equals(date.day);
-          }))
-        .join([
-      leftOuterJoin(accounts, debentureItems.credit.equalsExp(accounts.id))
-    ]).map((p0) {
-      final debentureItem = p0.readTable(debentureItems);
-      final credit = p0.readTable(accounts);
-      final item = JournalEntry.fromDebentureItem(debentureItem);
-      return item.copyWith(
-        relatedAccount: credit.title,
-      );
-    }).watch();
-  }
-
+  /*
   Stream<List<JournalEntry>> watchOtherJournalForDate(DateTime date) {
     final otherAccounts = db.alias(db.accounts, 'other');
     return (select(transactions)
           ..where((row) {
-            return row.source.equals(3) &
-                row.date.year.equals(date.year) &
-                row.date.month.equals(date.month) &
-                row.date.day.equals(date.day);
+            final cashier = row.source.equals(3);
+            final rowDate = row.date;
+            final sameYear = rowDate.year.equals(date.year);
+            final sameMonth = rowDate.month.equals(date.month);
+            final sameDay = rowDate.day.equals(date.day);
+            return cashier & sameYear;
           }))
         .join([
       leftOuterJoin(accounts, transactions.related.equalsExp(accounts.id)),
@@ -130,49 +93,15 @@ class DebenturesDao extends DatabaseAccessor<AppDatabase>
       final debentureItem = p0.readTable(transactions);
       final related = p0.readTable(accounts);
       final source = p0.readTable(otherAccounts);
-      // return JournalEntry.fromTransaction(debentureItem, source, related);
+      final label =
+          (debentureItem.notes != null && debentureItem.notes?.length == 0)
+              ? debentureItem.id.toString()
+              : debentureItem.notes;
+      print(' $label ${debentureItem.date}, $date');
       return JournalEntry.fromTransaction(
           item: debentureItem, source: source, related: related);
-
-      // final item = JournalEntry.fromTransaction(debentureItem, credit.title);
-      // return item.copyWith(
-      //   relatedAccount: credit.title,
-      // );
     }).watch();
-  }
-
-  Future<List<JournalEntry>> getStatmentForAccount(Account account) {
-    return (select(debentureItems)
-          ..where((row) {
-            return row.debit.equals(account.id);
-          }))
-        .join([
-      leftOuterJoin(accounts, debentureItems.credit.equalsExp(accounts.id))
-    ]).map((p0) {
-      final debentureItem = p0.readTable(debentureItems);
-      final credit = p0.readTable(accounts);
-      final item = JournalEntry.fromDebentureItem(debentureItem);
-      return item.copyWith(
-        relatedAccount: credit.title,
-      );
-    }).get();
-  }
-
-  Future<List<JournalEntry>> getStatmentForAccountById(int accountId) {
-    return (select(debentureItems)
-          ..where((row) {
-            return row.debit.equals(accountId);
-          }))
-        .join([
-      leftOuterJoin(accounts, debentureItems.credit.equalsExp(accounts.id))
-    ]).map((p0) {
-      final debentureItem = p0.readTable(debentureItems);
-      final credit = p0.readTable(accounts);
-      final item = JournalEntry.fromDebentureItem(debentureItem);
-      return item.copyWith(
-        relatedAccount: credit.title,
-      );
-    }).get();
+    
   }
 
   Future<List<JournalEntry>> getOtherStatmentForAccountById(int accountId) {
@@ -199,6 +128,7 @@ class DebenturesDao extends DatabaseAccessor<AppDatabase>
       // );
     }).get();
   }
+  */
 }
 
 extension DateOnlyCompare on DateTime {

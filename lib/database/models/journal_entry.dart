@@ -21,19 +21,7 @@ class JournalEntry {
     required this.accountId,
     this.notes,
   });
-
-  factory JournalEntry.fromDebentureItem(DebentureItem item) {
-    return JournalEntry(
-      id: item.id,
-      isIn: item.amount > 0,
-      date: item.date,
-      relatedAccount: '',
-      amount: item.amount,
-      accountId: item.credit,
-      notes: item.notes,
-    );
-  }
-
+  /*
   factory JournalEntry.fromTransaction({
     required Transaction item,
     required Account source,
@@ -54,6 +42,7 @@ class JournalEntry {
       notes: item.notes,
     );
   }
+  */
 
   static JournalEntry example = JournalEntry(
     id: 1,

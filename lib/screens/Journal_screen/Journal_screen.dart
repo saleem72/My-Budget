@@ -49,6 +49,12 @@ class _JournalScreenState extends State<JournalScreen> {
     );
   }
 
+  void updateSelectedDate(DateTime date) {
+    setState(() {
+      _selectedDate = date; // date.add(const Duration(hours: 5));
+    });
+  }
+
   Widget _buildSearchBar(BuildContext context) {
     return PopupWidget(
       borderWidth: 0.5,
@@ -74,11 +80,7 @@ class _JournalScreenState extends State<JournalScreen> {
           Expanded(
             child: AnotherDatePicker(
               label: 'Select date',
-              onChange: (date) {
-                setState(() {
-                  _selectedDate = date;
-                });
-              },
+              onChange: (date) => updateSelectedDate(date),
             ),
           ),
           const SizedBox(width: 4),
@@ -148,13 +150,13 @@ class _JournalScreenState extends State<JournalScreen> {
     final movmentsStream = context
         .read<BudgetDatabaseCubit>()
         .database
-        .debenturesDao
-        .watchOtherJournalForDate(_selectedDate);
+        .billsDao
+        .watchAllBills(); //(_selectedDate);
     return StreamBuilder(
         stream: movmentsStream,
         builder: (context, snapshot) {
           final data = snapshot.data ?? [];
-          return _buildMovementsList(data);
+          return _buildMovementsList([]);
         });
   }
 

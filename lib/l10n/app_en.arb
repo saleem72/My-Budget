@@ -40,5 +40,8 @@
     "price": "Price",
     "total": "Total",
     "add_subject": "Add Subject",
-    "select_subject_hint": "Select Subject"
+    "select_subject_hint": "Select Subject",
+    "date": "Date",
+    "can_not_save": "Can not save for now",
+    "save_bill": "Save bill"
 }

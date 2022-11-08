@@ -76,11 +76,14 @@ return LayoutBuilder(builder: (context, constraints) {
         48 -
         billRowGap -
         billRowGap -
+        billRowGap -
         billQantityWidth -
         billPriceWidth -
         billTotalWidth;
     tp.layout(maxWidth: maxWidth);
     final numLines = tp.computeLineMetrics().length;
-    return (numLines * _lineHeight(context, style)) + 8;
+    final height = (numLines * _lineHeight(context, style)) + 8;
+    // print('$title, Lines: $numLines');
+    return height;
   }
 }

@@ -44,19 +44,19 @@ class _AccountStatmentScreenState extends State<AccountStatmentScreen> {
   }
 
   void getJournalsFor() async {
-    if (_selectedAccount != null) {
-      journals.clear();
-      final list = await context
-          .read<BudgetDatabaseCubit>()
-          .database
-          .debenturesDao
-          .getOtherStatmentForAccountById(_selectedAccount!.id);
-      if (mounted) {
-        setState(() {
-          journals = list;
-        });
-      }
-    }
+    // if (_selectedAccount != null) {
+    //   journals.clear();
+    //   final list = await context
+    //       .read<BudgetDatabaseCubit>()
+    //       .database
+    //       .debenturesDao
+    //       .getOtherStatmentForAccountById(_selectedAccount!.id);
+    //   if (mounted) {
+    //     setState(() {
+    //       journals = list;
+    //     });
+    //   }
+    // }
   }
 
   @override

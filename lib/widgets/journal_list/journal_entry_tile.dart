@@ -78,6 +78,7 @@ class NewJournalEntryTile extends StatelessWidget {
   final JournalEntry entry;
   @override
   Widget build(BuildContext context) {
+    DateFormat formatter = DateFormat('dd-MMM');
     return Container(
       height: Constants.journalRowHeight(context),
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -105,7 +106,7 @@ class NewJournalEntryTile extends StatelessWidget {
                   )
                 ],
               ),
-              const SizedBox(width: 8),
+              Text(formatter.format(entry.date)),
               Text(
                 entry.relatedAccount,
                 style: Topology.darkMeduimBody.copyWith(

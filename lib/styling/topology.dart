@@ -38,14 +38,14 @@ class Topology {
   static const TextStyle darkMeduimBody = TextStyle(
     fontFamily: _fontFamily,
     fontWeight: FontWeight.w400,
-    fontSize: 12,
+    fontSize: 14,
     color: Pallet.appBar,
   );
 
   static const TextStyle lightMeduimBody = TextStyle(
     fontFamily: _fontFamily,
     fontWeight: FontWeight.w400,
-    fontSize: 12,
+    fontSize: 14,
     color: Colors.white,
   );
 

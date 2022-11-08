@@ -3,6 +3,7 @@
 import 'package:drift/drift.dart';
 import 'package:my_budget/database/models/account_with_childs.dart';
 import 'package:my_budget/database/models/tree_node.dart';
+import 'package:collection/collection.dart';
 
 import '../../app_database.dart';
 import '../../entities/accounts.dart';
@@ -16,6 +17,19 @@ class AccountsDao extends DatabaseAccessor<AppDatabase>
   AccountsDao(AppDatabase db) : super(db);
 
   Future<List<Account>> getAllAccounts() async => await select(accounts).get();
+
+  Future<Account?> getAccountForId(int id) async {
+    final temp =
+        await ((select(accounts)..where((tbl) => tbl.id.equals(id))).get());
+    return temp.firstOrNull;
+  }
+
+  Future<Account?> getAccountForTitle(String title) async {
+    final temp = await ((select(accounts)
+          ..where((tbl) => tbl.title.equals(title)))
+        .get());
+    return temp.firstOrNull;
+  }
 
   Stream<List<AccountWithChilds>> watchAllAccounts() {
     return select(accounts)

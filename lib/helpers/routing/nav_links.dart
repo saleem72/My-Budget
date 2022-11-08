@@ -11,4 +11,5 @@ class NavLinks {
   static const accountStatment = '/account_statment';
   static const bills = '/bills_screen';
   static const addBill = '/add_bill';
+  static const aboutUs = '/about_us';
 }

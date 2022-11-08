@@ -17,7 +17,7 @@ LazyDatabase _openConnection() {
   return LazyDatabase(() async {
     final dbFolder = await getApplicationDocumentsDirectory();
     final file = File(path.join(dbFolder.path, 'db.sqlite'));
-    return NativeDatabase(file, logStatements: true);
+    return NativeDatabase(file);
   });
 }
 
@@ -26,8 +26,6 @@ LazyDatabase _openConnection() {
     Subjects,
     Accounts,
     Debentures,
-    DebentureItems,
-    Transactions,
     Bills,
     BillItems,
   ],

@@ -1,6 +1,8 @@
 //
 
 import 'package:flutter/material.dart';
+import 'package:my_budget/styling/topology.dart';
+import 'package:my_budget/widgets/main_widgets_imports.dart';
 
 class Utilities {
   Utilities._();
@@ -11,5 +13,30 @@ class Utilities {
     if (!currentFocus.hasPrimaryFocus) {
       currentFocus.unfocus();
     }
+  }
+
+  static showMessage(
+    BuildContext context, {
+    required String message,
+    String title = 'Warnning',
+    TextStyle titleTextStyle = Topology.darkMeduimBody,
+    TextStyle messageTextStyle = Topology.darkMeduimBody,
+  }) {
+    final alert = AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      title: Text(title, style: titleTextStyle),
+      content: Text(message, style: messageTextStyle),
+      actions: [
+        CapsuleButton(
+          label: 'Ok',
+          isDisable: false,
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+      ],
+    );
+
+    showDialog(context: context, builder: (context) => alert);
   }
 }

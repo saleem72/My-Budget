@@ -40,5 +40,8 @@
     "price": "السعر",
     "total": "اجمالي",
     "add_subject": "اضافة مادة",
-    "select_subject_hint": "اختر مادة"
+    "select_subject_hint": "اختر مادة",
+    "date": "التاريخ",
+    "can_not_save": "لا استطيع الحفظ الان",
+    "save_bill": "حفظ فاتورة"
 }

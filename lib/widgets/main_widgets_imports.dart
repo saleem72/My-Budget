@@ -17,3 +17,5 @@ export 'new_app_text_field.dart';
 export 'bills/bill_item_row.dart';
 export 'bills/bill_table_header.dart';
 export 'bills/bill_table.dart';
+export 'bills/bill_row.dart';
+export 'bills/bills_header.dart';

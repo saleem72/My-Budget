@@ -680,770 +680,13 @@ class $DebenturesTable extends Debentures
   }
 }
 
-class DebentureItem extends DataClass implements Insertable<DebentureItem> {
-  final int id;
-  final int debentureId;
-  final int debit;
-  final int credit;
-  final DateTime date;
-  final double amount;
-  final String? notes;
-  const DebentureItem(
-      {required this.id,
-      required this.debentureId,
-      required this.debit,
-      required this.credit,
-      required this.date,
-      required this.amount,
-      this.notes});
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
-    map['debenture_id'] = Variable<int>(debentureId);
-    map['debit'] = Variable<int>(debit);
-    map['credit'] = Variable<int>(credit);
-    map['date'] = Variable<DateTime>(date);
-    map['amount'] = Variable<double>(amount);
-    if (!nullToAbsent || notes != null) {
-      map['notes'] = Variable<String>(notes);
-    }
-    return map;
-  }
-
-  DebentureItemsCompanion toCompanion(bool nullToAbsent) {
-    return DebentureItemsCompanion(
-      id: Value(id),
-      debentureId: Value(debentureId),
-      debit: Value(debit),
-      credit: Value(credit),
-      date: Value(date),
-      amount: Value(amount),
-      notes:
-          notes == null && nullToAbsent ? const Value.absent() : Value(notes),
-    );
-  }
-
-  factory DebentureItem.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return DebentureItem(
-      id: serializer.fromJson<int>(json['id']),
-      debentureId: serializer.fromJson<int>(json['debentureId']),
-      debit: serializer.fromJson<int>(json['debit']),
-      credit: serializer.fromJson<int>(json['credit']),
-      date: serializer.fromJson<DateTime>(json['date']),
-      amount: serializer.fromJson<double>(json['amount']),
-      notes: serializer.fromJson<String?>(json['notes']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
-      'debentureId': serializer.toJson<int>(debentureId),
-      'debit': serializer.toJson<int>(debit),
-      'credit': serializer.toJson<int>(credit),
-      'date': serializer.toJson<DateTime>(date),
-      'amount': serializer.toJson<double>(amount),
-      'notes': serializer.toJson<String?>(notes),
-    };
-  }
-
-  DebentureItem copyWith(
-          {int? id,
-          int? debentureId,
-          int? debit,
-          int? credit,
-          DateTime? date,
-          double? amount,
-          Value<String?> notes = const Value.absent()}) =>
-      DebentureItem(
-        id: id ?? this.id,
-        debentureId: debentureId ?? this.debentureId,
-        debit: debit ?? this.debit,
-        credit: credit ?? this.credit,
-        date: date ?? this.date,
-        amount: amount ?? this.amount,
-        notes: notes.present ? notes.value : this.notes,
-      );
-  @override
-  String toString() {
-    return (StringBuffer('DebentureItem(')
-          ..write('id: $id, ')
-          ..write('debentureId: $debentureId, ')
-          ..write('debit: $debit, ')
-          ..write('credit: $credit, ')
-          ..write('date: $date, ')
-          ..write('amount: $amount, ')
-          ..write('notes: $notes')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode =>
-      Object.hash(id, debentureId, debit, credit, date, amount, notes);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is DebentureItem &&
-          other.id == this.id &&
-          other.debentureId == this.debentureId &&
-          other.debit == this.debit &&
-          other.credit == this.credit &&
-          other.date == this.date &&
-          other.amount == this.amount &&
-          other.notes == this.notes);
-}
-
-class DebentureItemsCompanion extends UpdateCompanion<DebentureItem> {
-  final Value<int> id;
-  final Value<int> debentureId;
-  final Value<int> debit;
-  final Value<int> credit;
-  final Value<DateTime> date;
-  final Value<double> amount;
-  final Value<String?> notes;
-  const DebentureItemsCompanion({
-    this.id = const Value.absent(),
-    this.debentureId = const Value.absent(),
-    this.debit = const Value.absent(),
-    this.credit = const Value.absent(),
-    this.date = const Value.absent(),
-    this.amount = const Value.absent(),
-    this.notes = const Value.absent(),
-  });
-  DebentureItemsCompanion.insert({
-    this.id = const Value.absent(),
-    required int debentureId,
-    required int debit,
-    required int credit,
-    required DateTime date,
-    required double amount,
-    this.notes = const Value.absent(),
-  })  : debentureId = Value(debentureId),
-        debit = Value(debit),
-        credit = Value(credit),
-        date = Value(date),
-        amount = Value(amount);
-  static Insertable<DebentureItem> custom({
-    Expression<int>? id,
-    Expression<int>? debentureId,
-    Expression<int>? debit,
-    Expression<int>? credit,
-    Expression<DateTime>? date,
-    Expression<double>? amount,
-    Expression<String>? notes,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (debentureId != null) 'debenture_id': debentureId,
-      if (debit != null) 'debit': debit,
-      if (credit != null) 'credit': credit,
-      if (date != null) 'date': date,
-      if (amount != null) 'amount': amount,
-      if (notes != null) 'notes': notes,
-    });
-  }
-
-  DebentureItemsCompanion copyWith(
-      {Value<int>? id,
-      Value<int>? debentureId,
-      Value<int>? debit,
-      Value<int>? credit,
-      Value<DateTime>? date,
-      Value<double>? amount,
-      Value<String?>? notes}) {
-    return DebentureItemsCompanion(
-      id: id ?? this.id,
-      debentureId: debentureId ?? this.debentureId,
-      debit: debit ?? this.debit,
-      credit: credit ?? this.credit,
-      date: date ?? this.date,
-      amount: amount ?? this.amount,
-      notes: notes ?? this.notes,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<int>(id.value);
-    }
-    if (debentureId.present) {
-      map['debenture_id'] = Variable<int>(debentureId.value);
-    }
-    if (debit.present) {
-      map['debit'] = Variable<int>(debit.value);
-    }
-    if (credit.present) {
-      map['credit'] = Variable<int>(credit.value);
-    }
-    if (date.present) {
-      map['date'] = Variable<DateTime>(date.value);
-    }
-    if (amount.present) {
-      map['amount'] = Variable<double>(amount.value);
-    }
-    if (notes.present) {
-      map['notes'] = Variable<String>(notes.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('DebentureItemsCompanion(')
-          ..write('id: $id, ')
-          ..write('debentureId: $debentureId, ')
-          ..write('debit: $debit, ')
-          ..write('credit: $credit, ')
-          ..write('date: $date, ')
-          ..write('amount: $amount, ')
-          ..write('notes: $notes')
-          ..write(')'))
-        .toString();
-  }
-}
-
-class $DebentureItemsTable extends DebentureItems
-    with TableInfo<$DebentureItemsTable, DebentureItem> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $DebentureItemsTable(this.attachedDatabase, [this._alias]);
-  final VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
-  final VerificationMeta _debentureIdMeta =
-      const VerificationMeta('debentureId');
-  @override
-  late final GeneratedColumn<int> debentureId = GeneratedColumn<int>(
-      'debenture_id', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: true,
-      defaultConstraints: 'REFERENCES "debentures" ("id")');
-  final VerificationMeta _debitMeta = const VerificationMeta('debit');
-  @override
-  late final GeneratedColumn<int> debit = GeneratedColumn<int>(
-      'debit', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: true,
-      defaultConstraints: 'REFERENCES "accounts" ("id")');
-  final VerificationMeta _creditMeta = const VerificationMeta('credit');
-  @override
-  late final GeneratedColumn<int> credit = GeneratedColumn<int>(
-      'credit', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: true,
-      defaultConstraints: 'REFERENCES "accounts" ("id")');
-  final VerificationMeta _dateMeta = const VerificationMeta('date');
-  @override
-  late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
-      'date', aliasedName, false,
-      type: DriftSqlType.dateTime, requiredDuringInsert: true);
-  final VerificationMeta _amountMeta = const VerificationMeta('amount');
-  @override
-  late final GeneratedColumn<double> amount = GeneratedColumn<double>(
-      'amount', aliasedName, false,
-      type: DriftSqlType.double, requiredDuringInsert: true);
-  final VerificationMeta _notesMeta = const VerificationMeta('notes');
-  @override
-  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
-      'notes', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  @override
-  List<GeneratedColumn> get $columns =>
-      [id, debentureId, debit, credit, date, amount, notes];
-  @override
-  String get aliasedName => _alias ?? 'debenture_items';
-  @override
-  String get actualTableName => 'debenture_items';
-  @override
-  VerificationContext validateIntegrity(Insertable<DebentureItem> instance,
-      {bool isInserting = false}) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    }
-    if (data.containsKey('debenture_id')) {
-      context.handle(
-          _debentureIdMeta,
-          debentureId.isAcceptableOrUnknown(
-              data['debenture_id']!, _debentureIdMeta));
-    } else if (isInserting) {
-      context.missing(_debentureIdMeta);
-    }
-    if (data.containsKey('debit')) {
-      context.handle(
-          _debitMeta, debit.isAcceptableOrUnknown(data['debit']!, _debitMeta));
-    } else if (isInserting) {
-      context.missing(_debitMeta);
-    }
-    if (data.containsKey('credit')) {
-      context.handle(_creditMeta,
-          credit.isAcceptableOrUnknown(data['credit']!, _creditMeta));
-    } else if (isInserting) {
-      context.missing(_creditMeta);
-    }
-    if (data.containsKey('date')) {
-      context.handle(
-          _dateMeta, date.isAcceptableOrUnknown(data['date']!, _dateMeta));
-    } else if (isInserting) {
-      context.missing(_dateMeta);
-    }
-    if (data.containsKey('amount')) {
-      context.handle(_amountMeta,
-          amount.isAcceptableOrUnknown(data['amount']!, _amountMeta));
-    } else if (isInserting) {
-      context.missing(_amountMeta);
-    }
-    if (data.containsKey('notes')) {
-      context.handle(
-          _notesMeta, notes.isAcceptableOrUnknown(data['notes']!, _notesMeta));
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-  @override
-  DebentureItem map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return DebentureItem(
-      id: attachedDatabase.options.types
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      debentureId: attachedDatabase.options.types
-          .read(DriftSqlType.int, data['${effectivePrefix}debenture_id'])!,
-      debit: attachedDatabase.options.types
-          .read(DriftSqlType.int, data['${effectivePrefix}debit'])!,
-      credit: attachedDatabase.options.types
-          .read(DriftSqlType.int, data['${effectivePrefix}credit'])!,
-      date: attachedDatabase.options.types
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}date'])!,
-      amount: attachedDatabase.options.types
-          .read(DriftSqlType.double, data['${effectivePrefix}amount'])!,
-      notes: attachedDatabase.options.types
-          .read(DriftSqlType.string, data['${effectivePrefix}notes']),
-    );
-  }
-
-  @override
-  $DebentureItemsTable createAlias(String alias) {
-    return $DebentureItemsTable(attachedDatabase, alias);
-  }
-}
-
-class Transaction extends DataClass implements Insertable<Transaction> {
-  final int id;
-  final int debentureId;
-  final int source;
-  final int related;
-  final bool isCredit;
-  final DateTime date;
-  final double amount;
-  final String? notes;
-  const Transaction(
-      {required this.id,
-      required this.debentureId,
-      required this.source,
-      required this.related,
-      required this.isCredit,
-      required this.date,
-      required this.amount,
-      this.notes});
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
-    map['debenture_id'] = Variable<int>(debentureId);
-    map['source'] = Variable<int>(source);
-    map['related'] = Variable<int>(related);
-    map['is_credit'] = Variable<bool>(isCredit);
-    map['date'] = Variable<DateTime>(date);
-    map['amount'] = Variable<double>(amount);
-    if (!nullToAbsent || notes != null) {
-      map['notes'] = Variable<String>(notes);
-    }
-    return map;
-  }
-
-  TransactionsCompanion toCompanion(bool nullToAbsent) {
-    return TransactionsCompanion(
-      id: Value(id),
-      debentureId: Value(debentureId),
-      source: Value(source),
-      related: Value(related),
-      isCredit: Value(isCredit),
-      date: Value(date),
-      amount: Value(amount),
-      notes:
-          notes == null && nullToAbsent ? const Value.absent() : Value(notes),
-    );
-  }
-
-  factory Transaction.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Transaction(
-      id: serializer.fromJson<int>(json['id']),
-      debentureId: serializer.fromJson<int>(json['debentureId']),
-      source: serializer.fromJson<int>(json['source']),
-      related: serializer.fromJson<int>(json['related']),
-      isCredit: serializer.fromJson<bool>(json['isCredit']),
-      date: serializer.fromJson<DateTime>(json['date']),
-      amount: serializer.fromJson<double>(json['amount']),
-      notes: serializer.fromJson<String?>(json['notes']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
-      'debentureId': serializer.toJson<int>(debentureId),
-      'source': serializer.toJson<int>(source),
-      'related': serializer.toJson<int>(related),
-      'isCredit': serializer.toJson<bool>(isCredit),
-      'date': serializer.toJson<DateTime>(date),
-      'amount': serializer.toJson<double>(amount),
-      'notes': serializer.toJson<String?>(notes),
-    };
-  }
-
-  Transaction copyWith(
-          {int? id,
-          int? debentureId,
-          int? source,
-          int? related,
-          bool? isCredit,
-          DateTime? date,
-          double? amount,
-          Value<String?> notes = const Value.absent()}) =>
-      Transaction(
-        id: id ?? this.id,
-        debentureId: debentureId ?? this.debentureId,
-        source: source ?? this.source,
-        related: related ?? this.related,
-        isCredit: isCredit ?? this.isCredit,
-        date: date ?? this.date,
-        amount: amount ?? this.amount,
-        notes: notes.present ? notes.value : this.notes,
-      );
-  @override
-  String toString() {
-    return (StringBuffer('Transaction(')
-          ..write('id: $id, ')
-          ..write('debentureId: $debentureId, ')
-          ..write('source: $source, ')
-          ..write('related: $related, ')
-          ..write('isCredit: $isCredit, ')
-          ..write('date: $date, ')
-          ..write('amount: $amount, ')
-          ..write('notes: $notes')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(
-      id, debentureId, source, related, isCredit, date, amount, notes);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is Transaction &&
-          other.id == this.id &&
-          other.debentureId == this.debentureId &&
-          other.source == this.source &&
-          other.related == this.related &&
-          other.isCredit == this.isCredit &&
-          other.date == this.date &&
-          other.amount == this.amount &&
-          other.notes == this.notes);
-}
-
-class TransactionsCompanion extends UpdateCompanion<Transaction> {
-  final Value<int> id;
-  final Value<int> debentureId;
-  final Value<int> source;
-  final Value<int> related;
-  final Value<bool> isCredit;
-  final Value<DateTime> date;
-  final Value<double> amount;
-  final Value<String?> notes;
-  const TransactionsCompanion({
-    this.id = const Value.absent(),
-    this.debentureId = const Value.absent(),
-    this.source = const Value.absent(),
-    this.related = const Value.absent(),
-    this.isCredit = const Value.absent(),
-    this.date = const Value.absent(),
-    this.amount = const Value.absent(),
-    this.notes = const Value.absent(),
-  });
-  TransactionsCompanion.insert({
-    this.id = const Value.absent(),
-    required int debentureId,
-    required int source,
-    required int related,
-    this.isCredit = const Value.absent(),
-    required DateTime date,
-    required double amount,
-    this.notes = const Value.absent(),
-  })  : debentureId = Value(debentureId),
-        source = Value(source),
-        related = Value(related),
-        date = Value(date),
-        amount = Value(amount);
-  static Insertable<Transaction> custom({
-    Expression<int>? id,
-    Expression<int>? debentureId,
-    Expression<int>? source,
-    Expression<int>? related,
-    Expression<bool>? isCredit,
-    Expression<DateTime>? date,
-    Expression<double>? amount,
-    Expression<String>? notes,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (debentureId != null) 'debenture_id': debentureId,
-      if (source != null) 'source': source,
-      if (related != null) 'related': related,
-      if (isCredit != null) 'is_credit': isCredit,
-      if (date != null) 'date': date,
-      if (amount != null) 'amount': amount,
-      if (notes != null) 'notes': notes,
-    });
-  }
-
-  TransactionsCompanion copyWith(
-      {Value<int>? id,
-      Value<int>? debentureId,
-      Value<int>? source,
-      Value<int>? related,
-      Value<bool>? isCredit,
-      Value<DateTime>? date,
-      Value<double>? amount,
-      Value<String?>? notes}) {
-    return TransactionsCompanion(
-      id: id ?? this.id,
-      debentureId: debentureId ?? this.debentureId,
-      source: source ?? this.source,
-      related: related ?? this.related,
-      isCredit: isCredit ?? this.isCredit,
-      date: date ?? this.date,
-      amount: amount ?? this.amount,
-      notes: notes ?? this.notes,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<int>(id.value);
-    }
-    if (debentureId.present) {
-      map['debenture_id'] = Variable<int>(debentureId.value);
-    }
-    if (source.present) {
-      map['source'] = Variable<int>(source.value);
-    }
-    if (related.present) {
-      map['related'] = Variable<int>(related.value);
-    }
-    if (isCredit.present) {
-      map['is_credit'] = Variable<bool>(isCredit.value);
-    }
-    if (date.present) {
-      map['date'] = Variable<DateTime>(date.value);
-    }
-    if (amount.present) {
-      map['amount'] = Variable<double>(amount.value);
-    }
-    if (notes.present) {
-      map['notes'] = Variable<String>(notes.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('TransactionsCompanion(')
-          ..write('id: $id, ')
-          ..write('debentureId: $debentureId, ')
-          ..write('source: $source, ')
-          ..write('related: $related, ')
-          ..write('isCredit: $isCredit, ')
-          ..write('date: $date, ')
-          ..write('amount: $amount, ')
-          ..write('notes: $notes')
-          ..write(')'))
-        .toString();
-  }
-}
-
-class $TransactionsTable extends Transactions
-    with TableInfo<$TransactionsTable, Transaction> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $TransactionsTable(this.attachedDatabase, [this._alias]);
-  final VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
-  final VerificationMeta _debentureIdMeta =
-      const VerificationMeta('debentureId');
-  @override
-  late final GeneratedColumn<int> debentureId = GeneratedColumn<int>(
-      'debenture_id', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: true,
-      defaultConstraints: 'REFERENCES "debentures" ("id")');
-  final VerificationMeta _sourceMeta = const VerificationMeta('source');
-  @override
-  late final GeneratedColumn<int> source = GeneratedColumn<int>(
-      'source', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: true,
-      defaultConstraints: 'REFERENCES "accounts" ("id")');
-  final VerificationMeta _relatedMeta = const VerificationMeta('related');
-  @override
-  late final GeneratedColumn<int> related = GeneratedColumn<int>(
-      'related', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: true,
-      defaultConstraints: 'REFERENCES "accounts" ("id")');
-  final VerificationMeta _isCreditMeta = const VerificationMeta('isCredit');
-  @override
-  late final GeneratedColumn<bool> isCredit = GeneratedColumn<bool>(
-      'is_credit', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints: 'CHECK ("is_credit" IN (0, 1))',
-      defaultValue: const Constant(false));
-  final VerificationMeta _dateMeta = const VerificationMeta('date');
-  @override
-  late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
-      'date', aliasedName, false,
-      type: DriftSqlType.dateTime, requiredDuringInsert: true);
-  final VerificationMeta _amountMeta = const VerificationMeta('amount');
-  @override
-  late final GeneratedColumn<double> amount = GeneratedColumn<double>(
-      'amount', aliasedName, false,
-      type: DriftSqlType.double, requiredDuringInsert: true);
-  final VerificationMeta _notesMeta = const VerificationMeta('notes');
-  @override
-  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
-      'notes', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  @override
-  List<GeneratedColumn> get $columns =>
-      [id, debentureId, source, related, isCredit, date, amount, notes];
-  @override
-  String get aliasedName => _alias ?? 'transactions';
-  @override
-  String get actualTableName => 'transactions';
-  @override
-  VerificationContext validateIntegrity(Insertable<Transaction> instance,
-      {bool isInserting = false}) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    }
-    if (data.containsKey('debenture_id')) {
-      context.handle(
-          _debentureIdMeta,
-          debentureId.isAcceptableOrUnknown(
-              data['debenture_id']!, _debentureIdMeta));
-    } else if (isInserting) {
-      context.missing(_debentureIdMeta);
-    }
-    if (data.containsKey('source')) {
-      context.handle(_sourceMeta,
-          source.isAcceptableOrUnknown(data['source']!, _sourceMeta));
-    } else if (isInserting) {
-      context.missing(_sourceMeta);
-    }
-    if (data.containsKey('related')) {
-      context.handle(_relatedMeta,
-          related.isAcceptableOrUnknown(data['related']!, _relatedMeta));
-    } else if (isInserting) {
-      context.missing(_relatedMeta);
-    }
-    if (data.containsKey('is_credit')) {
-      context.handle(_isCreditMeta,
-          isCredit.isAcceptableOrUnknown(data['is_credit']!, _isCreditMeta));
-    }
-    if (data.containsKey('date')) {
-      context.handle(
-          _dateMeta, date.isAcceptableOrUnknown(data['date']!, _dateMeta));
-    } else if (isInserting) {
-      context.missing(_dateMeta);
-    }
-    if (data.containsKey('amount')) {
-      context.handle(_amountMeta,
-          amount.isAcceptableOrUnknown(data['amount']!, _amountMeta));
-    } else if (isInserting) {
-      context.missing(_amountMeta);
-    }
-    if (data.containsKey('notes')) {
-      context.handle(
-          _notesMeta, notes.isAcceptableOrUnknown(data['notes']!, _notesMeta));
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-  @override
-  Transaction map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Transaction(
-      id: attachedDatabase.options.types
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      debentureId: attachedDatabase.options.types
-          .read(DriftSqlType.int, data['${effectivePrefix}debenture_id'])!,
-      source: attachedDatabase.options.types
-          .read(DriftSqlType.int, data['${effectivePrefix}source'])!,
-      related: attachedDatabase.options.types
-          .read(DriftSqlType.int, data['${effectivePrefix}related'])!,
-      isCredit: attachedDatabase.options.types
-          .read(DriftSqlType.bool, data['${effectivePrefix}is_credit'])!,
-      date: attachedDatabase.options.types
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}date'])!,
-      amount: attachedDatabase.options.types
-          .read(DriftSqlType.double, data['${effectivePrefix}amount'])!,
-      notes: attachedDatabase.options.types
-          .read(DriftSqlType.string, data['${effectivePrefix}notes']),
-    );
-  }
-
-  @override
-  $TransactionsTable createAlias(String alias) {
-    return $TransactionsTable(attachedDatabase, alias);
-  }
-}
-
 class Bill extends DataClass implements Insertable<Bill> {
   final int id;
   final String? notes;
   final DateTime date;
-  const Bill({required this.id, this.notes, required this.date});
+  final double total;
+  const Bill(
+      {required this.id, this.notes, required this.date, required this.total});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -1452,6 +695,7 @@ class Bill extends DataClass implements Insertable<Bill> {
       map['notes'] = Variable<String>(notes);
     }
     map['date'] = Variable<DateTime>(date);
+    map['total'] = Variable<double>(total);
     return map;
   }
 
@@ -1461,6 +705,7 @@ class Bill extends DataClass implements Insertable<Bill> {
       notes:
           notes == null && nullToAbsent ? const Value.absent() : Value(notes),
       date: Value(date),
+      total: Value(total),
     );
   }
 
@@ -1471,6 +716,7 @@ class Bill extends DataClass implements Insertable<Bill> {
       id: serializer.fromJson<int>(json['id']),
       notes: serializer.fromJson<String?>(json['notes']),
       date: serializer.fromJson<DateTime>(json['date']),
+      total: serializer.fromJson<double>(json['total']),
     );
   }
   @override
@@ -1480,71 +726,86 @@ class Bill extends DataClass implements Insertable<Bill> {
       'id': serializer.toJson<int>(id),
       'notes': serializer.toJson<String?>(notes),
       'date': serializer.toJson<DateTime>(date),
+      'total': serializer.toJson<double>(total),
     };
   }
 
   Bill copyWith(
           {int? id,
           Value<String?> notes = const Value.absent(),
-          DateTime? date}) =>
+          DateTime? date,
+          double? total}) =>
       Bill(
         id: id ?? this.id,
         notes: notes.present ? notes.value : this.notes,
         date: date ?? this.date,
+        total: total ?? this.total,
       );
   @override
   String toString() {
     return (StringBuffer('Bill(')
           ..write('id: $id, ')
           ..write('notes: $notes, ')
-          ..write('date: $date')
+          ..write('date: $date, ')
+          ..write('total: $total')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, notes, date);
+  int get hashCode => Object.hash(id, notes, date, total);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Bill &&
           other.id == this.id &&
           other.notes == this.notes &&
-          other.date == this.date);
+          other.date == this.date &&
+          other.total == this.total);
 }
 
 class BillsCompanion extends UpdateCompanion<Bill> {
   final Value<int> id;
   final Value<String?> notes;
   final Value<DateTime> date;
+  final Value<double> total;
   const BillsCompanion({
     this.id = const Value.absent(),
     this.notes = const Value.absent(),
     this.date = const Value.absent(),
+    this.total = const Value.absent(),
   });
   BillsCompanion.insert({
     this.id = const Value.absent(),
     this.notes = const Value.absent(),
     required DateTime date,
-  }) : date = Value(date);
+    required double total,
+  })  : date = Value(date),
+        total = Value(total);
   static Insertable<Bill> custom({
     Expression<int>? id,
     Expression<String>? notes,
     Expression<DateTime>? date,
+    Expression<double>? total,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (notes != null) 'notes': notes,
       if (date != null) 'date': date,
+      if (total != null) 'total': total,
     });
   }
 
   BillsCompanion copyWith(
-      {Value<int>? id, Value<String?>? notes, Value<DateTime>? date}) {
+      {Value<int>? id,
+      Value<String?>? notes,
+      Value<DateTime>? date,
+      Value<double>? total}) {
     return BillsCompanion(
       id: id ?? this.id,
       notes: notes ?? this.notes,
       date: date ?? this.date,
+      total: total ?? this.total,
     );
   }
 
@@ -1560,6 +821,9 @@ class BillsCompanion extends UpdateCompanion<Bill> {
     if (date.present) {
       map['date'] = Variable<DateTime>(date.value);
     }
+    if (total.present) {
+      map['total'] = Variable<double>(total.value);
+    }
     return map;
   }
 
@@ -1568,7 +832,8 @@ class BillsCompanion extends UpdateCompanion<Bill> {
     return (StringBuffer('BillsCompanion(')
           ..write('id: $id, ')
           ..write('notes: $notes, ')
-          ..write('date: $date')
+          ..write('date: $date, ')
+          ..write('total: $total')
           ..write(')'))
         .toString();
   }
@@ -1596,8 +861,13 @@ class $BillsTable extends Bills with TableInfo<$BillsTable, Bill> {
   late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
       'date', aliasedName, false,
       type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  final VerificationMeta _totalMeta = const VerificationMeta('total');
   @override
-  List<GeneratedColumn> get $columns => [id, notes, date];
+  late final GeneratedColumn<double> total = GeneratedColumn<double>(
+      'total', aliasedName, false,
+      type: DriftSqlType.double, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [id, notes, date, total];
   @override
   String get aliasedName => _alias ?? 'bills';
   @override
@@ -1620,6 +890,12 @@ class $BillsTable extends Bills with TableInfo<$BillsTable, Bill> {
     } else if (isInserting) {
       context.missing(_dateMeta);
     }
+    if (data.containsKey('total')) {
+      context.handle(
+          _totalMeta, total.isAcceptableOrUnknown(data['total']!, _totalMeta));
+    } else if (isInserting) {
+      context.missing(_totalMeta);
+    }
     return context;
   }
 
@@ -1635,6 +911,8 @@ class $BillsTable extends Bills with TableInfo<$BillsTable, Bill> {
           .read(DriftSqlType.string, data['${effectivePrefix}notes']),
       date: attachedDatabase.options.types
           .read(DriftSqlType.dateTime, data['${effectivePrefix}date'])!,
+      total: attachedDatabase.options.types
+          .read(DriftSqlType.double, data['${effectivePrefix}total'])!,
     );
   }
 
@@ -1972,8 +1250,6 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $SubjectsTable subjects = $SubjectsTable(this);
   late final $AccountsTable accounts = $AccountsTable(this);
   late final $DebenturesTable debentures = $DebenturesTable(this);
-  late final $DebentureItemsTable debentureItems = $DebentureItemsTable(this);
-  late final $TransactionsTable transactions = $TransactionsTable(this);
   late final $BillsTable bills = $BillsTable(this);
   late final $BillItemsTable billItems = $BillItemsTable(this);
   late final SubjectsDao subjectsDao = SubjectsDao(this as AppDatabase);
@@ -1984,13 +1260,6 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   Iterable<TableInfo<Table, dynamic>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [
-        subjects,
-        accounts,
-        debentures,
-        debentureItems,
-        transactions,
-        bills,
-        billItems
-      ];
+  List<DatabaseSchemaEntity> get allSchemaEntities =>
+      [subjects, accounts, debentures, bills, billItems];
 }

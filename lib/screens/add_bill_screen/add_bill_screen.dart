@@ -3,16 +3,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_budget/helpers/localization/language_constants.dart';
+import 'package:my_budget/helpers/utilities.dart';
 import 'package:my_budget/models/bill_item_model.dart';
 
+import '../../database/app_database.dart';
 import '../../database/buget_database_cubit/budget_database_cubit.dart';
+import '../../database/models/journal_entry.dart';
 import '../../database/models/object_label.dart';
 import '../../models/dialog_option.dart';
 import '../../styling/styling.dart';
 import '../../widgets/main_widgets_imports.dart';
 
 class AddBillScreen extends StatefulWidget {
-  const AddBillScreen({Key? key}) : super(key: key);
+  const AddBillScreen({Key? key, this.bill}) : super(key: key);
+
+  final Bill? bill;
 
   @override
   State<AddBillScreen> createState() => _AddBillScreenState();
@@ -29,6 +34,12 @@ class _AddBillScreenState extends State<AddBillScreen> {
   bool dialogIsCredit = false;
   List<ObjectTitle> subjects = [];
   ObjectTitle? dialogSelectedSubject;
+  // "سيارة فورملا وان اخر موديل لون اسود" "سي"
+  // "بيجاما" "بي"
+  // "فاتورة من عند ابو غياث"
+  // "بعض الخضراوات"
+  double get _total =>
+      _items.fold(0, (previousValue, element) => previousValue + element.total);
 
   late DialogOption _addDialog = DialogOption(
     id: 1,
@@ -83,6 +94,71 @@ class _AddBillScreenState extends State<AddBillScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+
+    if (widget.bill != null) {
+      _setupBill(widget.bill!);
+    } else {
+      print('No bill at all');
+    }
+  }
+
+  void _setupBill(Bill bill) async {
+    final database = context.read<BudgetDatabaseCubit>().database;
+    final billItem = await database.billsDao.getBillItems(bill.id);
+    final newItems = billItem
+        .map(
+          (e) => BillItemModel(
+            subjectId: e.subject.id,
+            subject: e.subject.title,
+            quantity: e.item.quantity,
+            price: e.item.price,
+          ),
+        )
+        .toList();
+    setState(() {
+      _selectedDate = bill.date;
+      _notes.text = bill.notes ?? '';
+      _items = newItems;
+    });
+  }
+
+  void _saveBill(BuildContext context) async {
+    if (widget.bill != null) {
+      Utilities.showMessage(
+        context,
+        message: Translator.translation(context).can_not_save,
+        title: Translator.translation(context).save_bill,
+        titleTextStyle: Topology.darkMeduimBody.copyWith(
+          color: Colors.redAccent,
+        ),
+      );
+      return;
+    }
+    final database = context.read<BudgetDatabaseCubit>().database;
+
+    database.billsDao.insertBill(
+      date: _selectedDate.add(const Duration(hours: 5)),
+      notes: _notes.text,
+      items: _items,
+      totla: _total,
+    );
+    final billsId = await database.accountsDao.getAccountForTitle('Bills');
+    final entry = JournalEntry(
+      id: 0,
+      date: _selectedDate,
+      relatedAccount: 'Bills',
+      amount: _total,
+      accountId: billsId?.id ?? 0,
+      notes: _notes.text,
+    );
+    database.debenturesDao.addJournalEntry(entry);
+    if (mounted) {}
+    Navigator.of(context).pop();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return ScreenWithDialog(
       mainScreen: _buildMainScreen(context),
@@ -103,7 +179,7 @@ class _AddBillScreenState extends State<AddBillScreen> {
           ),
           ToolBarButton(
             icon: Icons.check,
-            onPressed: () {},
+            onPressed: () => _saveBill(context),
             backgroundColor: Colors.white,
             foregroundColor: Pallet.appBar,
           ),

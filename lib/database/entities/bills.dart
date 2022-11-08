@@ -6,6 +6,7 @@ class Bills extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get notes => text().nullable()();
   DateTimeColumn get date => dateTime()();
+  RealColumn get total => real()();
 }
 
 class BillItems extends Table {

@@ -48,6 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
         Navigator.of(context).pushNamed(NavLinks.settings);
         break;
       case HomeMoreMenuItem.about:
+        Navigator.of(context).pushNamed(NavLinks.aboutUs);
         break;
     }
   }
