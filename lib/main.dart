@@ -1,7 +1,11 @@
 //
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:json_theme/json_theme.dart';
 import 'package:my_budget/database/buget_database_cubit/budget_database_cubit.dart';
 import 'package:my_budget/dependancy_injection.dart' as di;
 import 'package:my_budget/helpers/localization/locale_cubit/locale_cubit.dart';
@@ -16,11 +20,21 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await di.initDependencies();
 
-  runApp(const MyApp());
+  final themeStr =
+      await rootBundle.loadString('assets/jsons/another_theme.json');
+  final themeJson = jsonDecode(themeStr);
+  final theme = ThemeDecoder.decodeThemeData(themeJson)!;
+
+  runApp(MyApp(themeData: theme));
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+  const MyApp({
+    super.key,
+    required this.themeData,
+  });
+
+  final ThemeData themeData;
 
   @override
   State<MyApp> createState() => _MyAppState();

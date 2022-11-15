@@ -13,13 +13,13 @@ class Debentures extends Table {
   IntColumn get sourceId => integer()();
 }
 
-// class Transactions extends Table {
-//   IntColumn get id => integer().autoIncrement()();
-//   IntColumn get debentureId => integer().references(Debentures, #id)();
-//   IntColumn get source => integer().references(Accounts, #id)();
-//   IntColumn get related => integer().references(Accounts, #id)();
-//   BoolColumn get isCredit => boolean().withDefault(const Constant(false))();
-//   DateTimeColumn get date => dateTime()();
-//   RealColumn get amount => real()();
-//   TextColumn get notes => text().nullable()();
-// }
+class DebentureItems extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get debentureId => integer().references(Debentures, #id)();
+  IntColumn get account => integer().references(Accounts, #id)();
+  IntColumn get releatedAccount => integer().references(Accounts, #id)();
+  DateTimeColumn get date => dateTime()();
+  RealColumn get debit => real().nullable()();
+  RealColumn get credit => real().nullable()();
+  TextColumn get notes => text().nullable()();
+}

@@ -10,12 +10,14 @@ class AppAutoComplete extends StatelessWidget {
       {Key? key,
       required this.objectsList,
       required this.onSelected,
-      this.hint})
+      this.hint,
+      this.onChange})
       : super(key: key);
 
   final List<ObjectTitle> objectsList;
   final String? hint;
   final Function(ObjectTitle) onSelected;
+  final Function(String)? onChange;
   @override
   Widget build(BuildContext context) {
     String displayStringForOption(ObjectTitle option) => option.title;
@@ -28,6 +30,11 @@ class AppAutoComplete extends StatelessWidget {
           controller: textEditingController,
           focusNode: focusNode,
           onFieldSubmitted: (value) => onFieldSubmitted(),
+          onChanged: (value) {
+            if (onChange != null) {
+              onChange!(value);
+            }
+          },
           decoration: InputDecoration(
             border: InputBorder.none,
             isCollapsed: true,

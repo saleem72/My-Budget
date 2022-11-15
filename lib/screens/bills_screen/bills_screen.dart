@@ -4,6 +4,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:my_budget/database/models/subject_title.dart';
 import 'package:my_budget/helpers/routing/nav_links.dart';
 
 import '../../database/app_database.dart';
@@ -98,7 +99,7 @@ class _BillsScreenState extends State<BillsScreen> {
               radius: 8,
               child: AppAutoComplete(
                 objectsList: bills
-                    .map((e) => ObjectTitle(
+                    .map((e) => SubjectTitle(
                         id: e.id, title: dateFormatter.format(e.date)))
                     .toList(),
                 hint: Translator.translation(context).select_bill_hint,

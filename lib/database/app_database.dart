@@ -26,10 +26,18 @@ LazyDatabase _openConnection() {
     Subjects,
     Accounts,
     Debentures,
+    DebentureItems,
     Bills,
     BillItems,
+    Journals,
   ],
-  daos: [SubjectsDao, AccountsDao, DebenturesDao, BillsDao],
+  daos: [
+    SubjectsDao,
+    AccountsDao,
+    DebenturesDao,
+    BillsDao,
+    JournalsDao,
+  ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());

@@ -2,76 +2,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:my_budget/helpers/constants.dart';
 
 import '../../database/models/journal_entry.dart';
-import '../../styling/styling.dart';
+import '../../helpers/constants.dart';
+import '../../styling/topology.dart';
 import '../movement_indicator.dart';
 
 class JournalEntryTile extends StatelessWidget {
-  const JournalEntryTile({Key? key, this.entry}) : super(key: key);
-
-  final JournalEntry? entry;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: Constants.journalRowHeight(context),
-      decoration: const BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: Colors.grey,
-            width: 1,
-          ),
-        ),
-      ),
-      child: entry == null
-          ? const SizedBox.shrink()
-          : Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        MovementIndicator(isIn: entry!.isIn),
-                        const SizedBox(width: 8),
-                        Text(
-                          DateFormat('dd/MMM').format(entry!.date),
-                          style: Topology.darkMeduimBody,
-                        ),
-                      ],
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      entry!.relatedAccount,
-                      style: Topology.darkMeduimBody,
-                    ),
-                    const SizedBox(width: 8),
-                    SizedBox(
-                      width: 75,
-                      child: Text(
-                        '\$${entry!.amount.abs()}',
-                        style: Topology.darkMeduimBody,
-                      ),
-                    ),
-                  ],
-                ),
-                Text(
-                  entry!.notes ?? '',
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                  style: Topology.darkMeduimBody,
-                )
-              ],
-            ),
-    );
-  }
-}
-
-class NewJournalEntryTile extends StatelessWidget {
-  const NewJournalEntryTile({
+  const JournalEntryTile({
     Key? key,
     required this.entry,
   }) : super(key: key);
@@ -96,7 +34,7 @@ class NewJournalEntryTile extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  MovementIndicator(isIn: entry.isIn),
+                  MovementIndicator(isIn: entry.isCredit),
                   const SizedBox(width: Constants.verticalGap),
                   Text(
                     '\$${entry.amount.abs()}',
@@ -108,7 +46,7 @@ class NewJournalEntryTile extends StatelessWidget {
               ),
               Text(formatter.format(entry.date)),
               Text(
-                entry.relatedAccount,
+                entry.releatedAccount,
                 style: Topology.darkMeduimBody.copyWith(
                   fontWeight: FontWeight.w600,
                 ),

@@ -8,6 +8,7 @@ import 'package:my_budget/database/buget_database_cubit/budget_database_cubit.da
 import 'package:my_budget/styling/styling.dart';
 import 'package:my_budget/widgets/main_widgets_imports.dart';
 
+import '../../database/app_database.dart';
 import '../../database/models/object_label.dart';
 import '../../helpers/localization/language_constants.dart';
 import '../../database/models/journal_entry.dart';
@@ -50,9 +51,32 @@ class _JournalScreenState extends State<JournalScreen> {
   }
 
   void updateSelectedDate(DateTime date) {
+    final newDate = date.add(date.timeZoneOffset);
+    flipTheDate(date);
     setState(() {
-      _selectedDate = date; // date.add(const Duration(hours: 5));
+      _selectedDate = newDate;
+      // _selectedDate = date.add(const Duration(
+      //     milliseconds:
+      //         (17 * 60 * 60 * 1000) + (59 * 60 * 1000) + (38 * 1000) + 250));
     });
+  }
+
+  void flipTheDate(DateTime date) {
+    Duration offset = date.timeZoneOffset;
+    date.add(offset);
+
+    // ----------
+    String dateTime = date.toIso8601String();
+    // - or -
+    // String dateTime = intl.DateFormat("yyyy-MM-dd'T'HH:mm:ss").format(now);
+    // ----------
+    String utcHourOffset = (offset.isNegative ? '-' : '+') +
+        offset.inHours.abs().toString().padLeft(2, '0');
+    String utcMinuteOffset =
+        (offset.inMinutes - offset.inHours * 60).toString().padLeft(2, '0');
+
+    String dateTimeWithOffset = '$dateTime$utcHourOffset:$utcMinuteOffset';
+    print('flipTheDate: $dateTimeWithOffset');
   }
 
   Widget _buildSearchBar(BuildContext context) {
@@ -80,7 +104,9 @@ class _JournalScreenState extends State<JournalScreen> {
           Expanded(
             child: AnotherDatePicker(
               label: 'Select date',
-              onChange: (date) => updateSelectedDate(date),
+              onChange: (date) {
+                updateSelectedDate(date);
+              },
             ),
           ),
           const SizedBox(width: 4),
@@ -150,13 +176,13 @@ class _JournalScreenState extends State<JournalScreen> {
     final movmentsStream = context
         .read<BudgetDatabaseCubit>()
         .database
-        .billsDao
-        .watchAllBills(); //(_selectedDate);
+        .journalsDao
+        .watchJournalForDate(_selectedDate); //(_selectedDate);
     return StreamBuilder(
         stream: movmentsStream,
         builder: (context, snapshot) {
           final data = snapshot.data ?? [];
-          return _buildMovementsList([]);
+          return _buildMovementsList(data);
         });
   }
 
@@ -174,7 +200,7 @@ class _JournalScreenState extends State<JournalScreen> {
                   listHeight = newSize.height;
                 });
               },
-              child: NewJournalList(
+              child: JournalList(
                 data: entries,
               ),
             ),
@@ -209,15 +235,17 @@ class _JournalScreenState extends State<JournalScreen> {
           'Amount: $amount, Account: $accountId, notes: $notes isCredit: $isCredit');
 
       final newEntry = JournalEntry(
-        id: 99,
-        isIn: isCredit,
+        id: 0,
         date: _selectedDate,
-        relatedAccount: '',
-        accountId: accountId,
+        debentureId: 0,
+        releatedAccountId: accountId,
+        releatedAccount: '',
+        isCredit: isCredit,
         amount: amount,
         notes: notes,
       );
-      database.debenturesDao.addJournalEntry(newEntry);
+
+      database.journalsDao.addJournalEntry(newEntry);
     }
   }
 

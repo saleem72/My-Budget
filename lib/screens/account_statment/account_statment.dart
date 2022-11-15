@@ -9,6 +9,7 @@ import 'package:my_budget/styling/assets.dart';
 import 'package:my_budget/styling/topology.dart';
 
 import '../../database/app_database.dart';
+import '../../database/models/account_title.dart';
 import '../../helpers/localization/language_constants.dart';
 import '../../widgets/main_widgets_imports.dart';
 
@@ -24,9 +25,9 @@ class _AccountStatmentScreenState extends State<AccountStatmentScreen> {
   bool isTableVisible = false;
   double listHeight = 0;
 
-  List<ObjectTitle> _accountList = [];
-  ObjectTitle? _selectedAccount;
-  List<JournalEntry> journals = [];
+  List<AccountTitle> _accountList = [];
+  AccountTitle? _selectedAccount;
+  List<StatementEntry> statements = [];
 
   @override
   void initState() {
@@ -43,20 +44,20 @@ class _AccountStatmentScreenState extends State<AccountStatmentScreen> {
     });
   }
 
-  void getJournalsFor() async {
-    // if (_selectedAccount != null) {
-    //   journals.clear();
-    //   final list = await context
-    //       .read<BudgetDatabaseCubit>()
-    //       .database
-    //       .debenturesDao
-    //       .getOtherStatmentForAccountById(_selectedAccount!.id);
-    //   if (mounted) {
-    //     setState(() {
-    //       journals = list;
-    //     });
-    //   }
-    // }
+  void getStatements() async {
+    if (_selectedAccount != null) {
+      statements.clear();
+      final list = await context
+          .read<BudgetDatabaseCubit>()
+          .database
+          .debenturesDao
+          .getStatmentForAccountById(_selectedAccount!.id);
+      if (mounted) {
+        setState(() {
+          statements = list;
+        });
+      }
+    }
   }
 
   @override
@@ -77,7 +78,7 @@ class _AccountStatmentScreenState extends State<AccountStatmentScreen> {
         _buildSearchBar(context),
         const SizedBox(height: 16),
         Expanded(
-          child: _buildAccountStatment(journals),
+          child: _buildAccountStatment(statements),
         ),
       ],
     );
@@ -111,16 +112,23 @@ class _AccountStatmentScreenState extends State<AccountStatmentScreen> {
               child: AppAutoComplete(
                 hint: Translator.translation(context).select_account_hint,
                 objectsList: _accountList,
+                onChange: (_) {
+                  if (statements.isNotEmpty) {
+                    setState(() {
+                      statements = [];
+                    });
+                  }
+                },
                 onSelected: (item) {
                   setState(() {
-                    _selectedAccount = item;
+                    _selectedAccount = item as AccountTitle;
                   });
                 },
               ),
             ),
             const SizedBox(width: 4),
             InkWell(
-              onTap: () => getJournalsFor(),
+              onTap: () => getStatements(),
               child: Container(
                 height: 24,
                 width: 24,
@@ -138,7 +146,7 @@ class _AccountStatmentScreenState extends State<AccountStatmentScreen> {
     );
   }
 
-  Widget _buildAccountStatment(List<JournalEntry> entries) {
+  Widget _buildAccountStatment(List<StatementEntry> entries) {
     return Container(
       padding: const EdgeInsets.only(bottom: 16, left: 16, right: 16),
       child: PopupWidget(
@@ -167,9 +175,10 @@ class _AccountStatmentScreenState extends State<AccountStatmentScreen> {
                     listHeight = newSize.height;
                   });
                 },
-                child: JournalList(
+                child: StatementsList(
                   data: entries,
                   totalHeight: listHeight,
+                  isAccountCredit: _selectedAccount?.isCredit ?? false,
                 ),
               ),
             ),

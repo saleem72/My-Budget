@@ -11,7 +11,7 @@ import '../../app_database.dart';
 
 part 'debentures_dao.g.dart';
 
-@DriftAccessor(tables: [Debentures, Accounts])
+@DriftAccessor(tables: [Debentures, DebentureItems, Accounts])
 class DebenturesDao extends DatabaseAccessor<AppDatabase>
     with _$DebenturesDaoMixin {
   DebenturesDao(AppDatabase db) : super(db);
@@ -32,102 +32,74 @@ class DebenturesDao extends DatabaseAccessor<AppDatabase>
     return result.firstOrNull;
   }
 
-  // Future<List<DebentureItem>> getDebentureByDebit(
-  //     {required int debitId}) async {
-  //   final query = select(debentureItems)
-  //     ..where((tbl) => tbl.debit.equals(debitId));
-
-  //   final result = await query.get();
-  //   return result;
-  // }
-
-  Future addJournalEntry(JournalEntry entry) async {
-    /*
+  Future addBillEntries(JournalEntry entry) async {
     final debenture = DebenturesCompanion.insert(source: 1, sourceId: 1);
     final debentureId = await into(debentures).insert(debenture);
 
     const cashierId = 3;
-    final related = entry.accountId;
-    final cashierPart = TransactionsCompanion.insert(
+    final related = entry.releatedAccountId;
+
+    final cashierPart = DebentureItemsCompanion.insert(
       debentureId: debentureId,
-      source: cashierId,
-      related: related,
+      account: cashierId,
+      releatedAccount: entry.releatedAccountId,
       date: entry.date,
-      amount: entry.amount,
+      credit: const Value(null),
+      debit: Value(entry.amount),
       notes: Value(entry.notes),
-      isCredit: Value(entry.isIn),
     );
 
-    final accountPart = TransactionsCompanion.insert(
+    final accountPart = DebentureItemsCompanion.insert(
       debentureId: debentureId,
-      source: related,
-      related: cashierId,
+      account: related,
+      releatedAccount: cashierId,
       date: entry.date,
-      amount: entry.amount,
+      debit: const Value(null),
+      credit: Value(entry.amount),
       notes: Value(entry.notes),
-      isCredit: Value(!entry.isIn),
     );
 
-    into(transactions).insert(cashierPart);
-    into(transactions).insert(accountPart);
-    */
+    into(debentureItems).insert(cashierPart);
+    into(debentureItems).insert(accountPart);
   }
 
-  /*
-  Stream<List<JournalEntry>> watchOtherJournalForDate(DateTime date) {
+  Future<List<StatementEntry>> getStatmentForAccountById(int accountId) {
     final otherAccounts = db.alias(db.accounts, 'other');
-    return (select(transactions)
-          ..where((row) {
-            final cashier = row.source.equals(3);
-            final rowDate = row.date;
-            final sameYear = rowDate.year.equals(date.year);
-            final sameMonth = rowDate.month.equals(date.month);
-            final sameDay = rowDate.day.equals(date.day);
-            return cashier & sameYear;
-          }))
-        .join([
-      leftOuterJoin(accounts, transactions.related.equalsExp(accounts.id)),
-      leftOuterJoin(
-          otherAccounts, transactions.source.equalsExp(otherAccounts.id)),
-    ]).map((p0) {
-      final debentureItem = p0.readTable(transactions);
-      final related = p0.readTable(accounts);
-      final source = p0.readTable(otherAccounts);
-      final label =
-          (debentureItem.notes != null && debentureItem.notes?.length == 0)
-              ? debentureItem.id.toString()
-              : debentureItem.notes;
-      print(' $label ${debentureItem.date}, $date');
-      return JournalEntry.fromTransaction(
-          item: debentureItem, source: source, related: related);
-    }).watch();
-    
-  }
 
-  Future<List<JournalEntry>> getOtherStatmentForAccountById(int accountId) {
-    final otherAccounts = db.alias(db.accounts, 'other');
-    return (select(transactions)
+    return (select(debentureItems)
           ..where((row) {
-            return row.source.equals(accountId);
+            return row.account.equals(accountId);
           }))
         .join([
-      leftOuterJoin(accounts, transactions.related.equalsExp(accounts.id)),
+      leftOuterJoin(accounts, debentureItems.account.equalsExp(accounts.id)),
       leftOuterJoin(
-          otherAccounts, transactions.source.equalsExp(otherAccounts.id)),
+          otherAccounts, debentureItems.account.equalsExp(otherAccounts.id)),
     ]).map((p0) {
-      final debentureItem = p0.readTable(transactions);
+      final debentureItem = p0.readTable(debentureItems);
       final related = p0.readTable(accounts);
       final source = p0.readTable(otherAccounts);
-      return JournalEntry.fromTransaction(
-          item: debentureItem,
-          source: source,
-          related: related,
-          isStatment: true);
+      return StatementEntry(
+        id: debentureItem.id,
+        debentureId: debentureItem.debentureId,
+        accountId: source.id,
+        account: source.title,
+        releatedAccountId: related.id,
+        releatedAccount: related.title,
+        date: debentureItem.date,
+        credit: debentureItem.credit,
+        debit: debentureItem.debit,
+        notes: debentureItem.notes,
+      );
       // return item.copyWith(
       //   relatedAccount: credit.title,
       // );
     }).get();
   }
+
+  /*
+ 
+
+  
   */
 }
 

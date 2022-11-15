@@ -153,7 +153,7 @@ class _AnotherDatePickerState extends State<AnotherDatePicker> {
       lastDate: DateTime(DateTime.now().year + 40),
     );
 
-    if (pickedDate != null && pickedDate != _selectedDate) {
+    if (pickedDate != null) {
       setState(() {
         _selectedDate = pickedDate;
         widget.onChange(pickedDate);

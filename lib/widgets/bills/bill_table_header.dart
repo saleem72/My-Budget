@@ -11,6 +11,7 @@ class BillTableHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const double fontSize = 12;
     return Row(
       children: [
         Expanded(
@@ -19,6 +20,7 @@ class BillTableHeader extends StatelessWidget {
               child: Text(
                 Translator.translation(context).subject,
                 style: Topology.darkMeduimBody.copyWith(
+                  // fontSize: fontSize,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -33,6 +35,7 @@ class BillTableHeader extends StatelessWidget {
               child: Text(
                 Translator.translation(context).quantity,
                 style: Topology.darkMeduimBody.copyWith(
+                  // fontSize: fontSize,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -47,6 +50,7 @@ class BillTableHeader extends StatelessWidget {
               child: Text(
                 Translator.translation(context).price,
                 style: Topology.darkMeduimBody.copyWith(
+                  // fontSize: fontSize,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -61,6 +65,7 @@ class BillTableHeader extends StatelessWidget {
               child: Text(
                 Translator.translation(context).total,
                 style: Topology.darkMeduimBody.copyWith(
+                  // fontSize: fontSize,
                   fontWeight: FontWeight.w600,
                 ),
               ),

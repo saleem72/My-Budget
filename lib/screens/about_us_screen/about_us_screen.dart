@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_budget/database/buget_database_cubit/budget_database_cubit.dart';
+import 'package:my_budget/database/models/journal_entry.dart';
 import 'package:my_budget/widgets/main_widgets_imports.dart';
 
 import '../../database/app_database.dart';
@@ -17,7 +18,7 @@ class AboutUsScreen extends StatefulWidget {
 
 class _AboutUsScreenState extends State<AboutUsScreen> {
   DateTime _selectedDate = DateTime.now();
-  List<Bill> bills = [];
+  List<JournalEntry> bills = [];
 
   void updateSelectedDate(DateTime date) {
     setState(() {
@@ -27,7 +28,8 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
 
   void _doit(BuildContext context) async {
     final database = context.read<BudgetDatabaseCubit>().database;
-    final something = await database.billsDao.getBillsForDate(_selectedDate);
+    final something =
+        await database.journalsDao.getJournalForDate(_selectedDate);
     setState(() {
       bills = something;
     });
@@ -58,10 +60,12 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
             child: ListView.builder(
               itemCount: bills.length,
               itemBuilder: (context, index) {
-                return BillRow(
-                  bill: bills[index],
-                  index: index + 1,
-                  onTap: () {},
+                return Row(
+                  children: [
+                    Text(bills[index].amount.toString()),
+                    const SizedBox(width: 16),
+                    Text(bills[index].releatedAccount)
+                  ],
                 );
               },
             ),

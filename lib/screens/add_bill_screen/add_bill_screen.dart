@@ -148,12 +148,14 @@ class _AddBillScreenState extends State<AddBillScreen> {
     final entry = JournalEntry(
       id: 0,
       date: _selectedDate,
-      relatedAccount: 'Bills',
+      debentureId: 0,
+      releatedAccountId: billsId?.id ?? 0,
+      releatedAccount: billsId?.title ?? '',
+      isCredit: false,
       amount: _total,
-      accountId: billsId?.id ?? 0,
       notes: _notes.text,
     );
-    database.debenturesDao.addJournalEntry(entry);
+    database.debenturesDao.addBillEntries(entry);
     if (mounted) {}
     Navigator.of(context).pop();
   }

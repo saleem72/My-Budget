@@ -7,7 +7,7 @@ import 'package:collection/collection.dart';
 
 import '../../app_database.dart';
 import '../../entities/accounts.dart';
-import '../../models/object_label.dart';
+import '../../models/account_title.dart';
 
 part 'accounts_dao.g.dart';
 
@@ -44,8 +44,9 @@ class AccountsDao extends DatabaseAccessor<AppDatabase>
     });
   }
 
-  Future<List<ObjectTitle>> accountsTitles() async => select(accounts)
-      .map((p0) => ObjectTitle(id: p0.id, title: p0.title))
+  Future<List<AccountTitle>> accountsTitles() async => select(accounts)
+      .map((p0) =>
+          AccountTitle(id: p0.id, title: p0.title, isCredit: p0.isCredit))
       .get();
 
   Future updateAccount(Account account) async =>
