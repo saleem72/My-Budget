@@ -2,8 +2,11 @@
 //
 
 import 'package:flutter/material.dart';
+import 'package:my_budget/dependancy_injection.dart' as di;
 import 'package:my_budget/helpers/localization/language_constants.dart';
 import 'package:my_budget/helpers/routing/nav_links.dart';
+import 'package:my_budget/helpers/safe/safe.dart';
+import 'package:my_budget/screens/first_run_screen/first_run_screen.dart';
 import 'package:my_budget/screens/home_screen/models/home_more_menu_item.dart';
 import 'package:my_budget/screens/home_screen/models/home_screen_button.dart';
 
@@ -19,6 +22,15 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  late bool isFirstRun;
+
+  @override
+  void initState() {
+    super.initState();
+    final Safe safe = di.locator();
+    isFirstRun = safe.isFirstRun;
+  }
+
   void _actionFor(BuildContext context, {required HomeScreenButton button}) {
     switch (button) {
       case HomeScreenButton.bill:
@@ -55,12 +67,27 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (isFirstRun) {
+      return FirstRunScreen(
+        onProceed: () {
+          setState(() {
+            isFirstRun = false;
+          });
+        },
+      );
+    } else {
+      return _homeContent(context);
+    }
+  }
+
+  Scaffold _homeContent(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final statusbarHeight = MediaQuery.of(context).viewPadding.top;
 
     final double totalHeight = (size.height - kToolbarHeight - statusbarHeight);
     final cardHeight = ((totalHeight * 0.60)) / 2;
     final double itemWidth = size.width / 2;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(

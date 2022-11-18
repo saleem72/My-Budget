@@ -10,7 +10,7 @@ class Topology {
 
   static const TextStyle title = TextStyle(
     fontFamily: _fontFamily,
-    fontWeight: FontWeight.w900,
+    fontWeight: FontWeight.w600,
     fontSize: 16,
   );
 

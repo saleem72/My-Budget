@@ -40,7 +40,8 @@ LazyDatabase _openConnection() {
   ],
 )
 class AppDatabase extends _$AppDatabase {
-  AppDatabase() : super(_openConnection());
+  AppDatabase({required this.arabicAccounts}) : super(_openConnection());
+  final bool arabicAccounts;
 
   @override
   MigrationStrategy get migration {
@@ -51,15 +52,16 @@ class AppDatabase extends _$AppDatabase {
       onCreate: (m) async {
         await m.createAll();
         await batch((batch) {
-          batch.insertAll(subjects, mainSubjects());
-          batch.insertAll(subjects, clothesSubSubjects());
-          batch.insertAll(subjects, shirtsSubSubjects());
-          batch.insertAll(subjects, foodSubSubjects());
-          batch.insertAll(subjects, electricitySubSubjects());
+          batch.insertAll(subjects, DatabaseUtils.mainSubjects());
+          batch.insertAll(subjects, DatabaseUtils.clothesSubSubjects());
+          batch.insertAll(subjects, DatabaseUtils.shirtsSubSubjects());
+          batch.insertAll(subjects, DatabaseUtils.foodSubSubjects());
+          batch.insertAll(subjects, DatabaseUtils.electricitySubSubjects());
 
-          batch.insertAll(accounts, mainAccounts());
-          batch.insertAll(accounts, indebtedSubAccounts());
-          batch.insertAll(accounts, creditSubAccounts());
+          batch.insertAll(accounts, DatabaseUtils.allAccounts());
+          // batch.insertAll(accounts, DatabaseUtils.mainAccounts());
+          // batch.insertAll(accounts, DatabaseUtils.indebtedSubAccounts());
+          // batch.insertAll(accounts, DatabaseUtils.creditSubAccounts());
         });
       },
     );
@@ -67,31 +69,107 @@ class AppDatabase extends _$AppDatabase {
 
   @override
   int get schemaVersion => 1;
+
+  Future localizeAccounts() async {
+    for (final item in MainAccounts.values) {
+      await _localizeaccount(item);
+    }
+  }
+
+  Future _localizeaccount(MainAccounts item) async {
+    final list = await ((select(accounts)
+          ..where((tbl) => tbl.id.equals(item.id)))
+        .get());
+    final account = list.first;
+    await update(accounts).replace(account.copyWith(title: item.arabic));
+  }
 }
 
-// indebted credit
-List<AccountsCompanion> mainAccounts() => [
-      AccountsCompanion.insert(
-          id: const Value(1), title: 'Debit', isCredit: false),
-      AccountsCompanion.insert(
-          id: const Value(2), title: 'Credit', isCredit: true),
-    ];
+enum MainAccounts { debit, credit, cashier, salary, purchases, bills }
 
-// cashier salary
-List<AccountsCompanion> indebtedSubAccounts() => [
-      AccountsCompanion.insert(
-          id: const Value(3),
-          parentId: const Value(2),
-          title: 'Cashier',
-          isCredit: false),
-      AccountsCompanion.insert(
-          parentId: const Value(2), title: 'Salary', isCredit: true),
-    ];
+extension MainAccountsDetails on MainAccounts {
+  int get id {
+    switch (this) {
+      case MainAccounts.debit:
+        return 1;
+      case MainAccounts.credit:
+        return 2;
+      case MainAccounts.cashier:
+        return 3;
+      case MainAccounts.salary:
+        return 4;
+      case MainAccounts.purchases:
+        return 5;
+      case MainAccounts.bills:
+        return 6;
+    }
+  }
 
-// cashier salary
-List<AccountsCompanion> creditSubAccounts() => [
-      AccountsCompanion.insert(
-          parentId: const Value(1), title: 'Purchases', isCredit: false),
-      AccountsCompanion.insert(
-          parentId: const Value(1), title: 'Bills', isCredit: false),
-    ];
+  int? get parentId {
+    switch (this) {
+      case MainAccounts.debit:
+        return null;
+      case MainAccounts.credit:
+        return null;
+      case MainAccounts.cashier:
+        return 2;
+      case MainAccounts.salary:
+        return 2;
+      case MainAccounts.purchases:
+        return 1;
+      case MainAccounts.bills:
+        return 1;
+    }
+  }
+
+  bool get isCredit {
+    switch (this) {
+      case MainAccounts.debit:
+        return false;
+      case MainAccounts.credit:
+        return true;
+      case MainAccounts.cashier:
+        return false;
+      case MainAccounts.salary:
+        return true;
+      case MainAccounts.purchases:
+        return false;
+      case MainAccounts.bills:
+        return false;
+    }
+  }
+
+  String get english {
+    switch (this) {
+      case MainAccounts.debit:
+        return 'Debit';
+      case MainAccounts.credit:
+        return 'Credit';
+      case MainAccounts.cashier:
+        return 'Cashier';
+      case MainAccounts.salary:
+        return 'Salary';
+      case MainAccounts.purchases:
+        return 'Purchases';
+      case MainAccounts.bills:
+        return 'Bills';
+    }
+  }
+
+  String get arabic {
+    switch (this) {
+      case MainAccounts.debit:
+        return 'مدين';
+      case MainAccounts.credit:
+        return 'دائن';
+      case MainAccounts.cashier:
+        return 'الصندوق';
+      case MainAccounts.salary:
+        return 'الراتب';
+      case MainAccounts.purchases:
+        return 'المشتريات';
+      case MainAccounts.bills:
+        return 'الفواتير';
+    }
+  }
+}

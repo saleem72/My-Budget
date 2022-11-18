@@ -144,7 +144,8 @@ class _AddBillScreenState extends State<AddBillScreen> {
       items: _items,
       totla: _total,
     );
-    final billsId = await database.accountsDao.getAccountForTitle('Bills');
+    // const billsId = 6;
+    final billsId = await database.accountsDao.getAccountForId(6);
     final entry = JournalEntry(
       id: 0,
       date: _selectedDate,

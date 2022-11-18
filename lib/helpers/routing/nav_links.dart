@@ -2,8 +2,8 @@
 
 class NavLinks {
   NavLinks._();
-
-  static const home = '/';
+  static const initial = '/';
+  static const home = '/home';
   static const settings = '/settings';
   static const subjects = '/subjects';
   static const accounts = '/accounts';

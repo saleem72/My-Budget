@@ -13,6 +13,8 @@ class RoutesGenerator {
   static Route<dynamic> generate(RouteSettings settings) {
     final arguments = settings.arguments;
     switch (settings.name) {
+      case NavLinks.initial:
+        return MaterialPageRoute(builder: (_) => const LandingScreen());
       case NavLinks.home:
         return MaterialPageRoute(builder: (_) => const HomeScreen());
       case NavLinks.settings:

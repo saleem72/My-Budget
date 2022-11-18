@@ -11,10 +11,11 @@ import 'package:my_budget/dependancy_injection.dart' as di;
 import 'package:my_budget/helpers/localization/locale_cubit/locale_cubit.dart';
 import 'package:my_budget/helpers/routing/nav_links.dart';
 import 'package:my_budget/helpers/routing/routes_generator.dart';
+import 'package:my_budget/helpers/safe/safe.dart';
 import 'package:my_budget/styling/pallet.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'screens/sreens_imports.dart';
+import 'styling/styling.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -43,10 +44,11 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
+    final Safe safe = di.locator();
     return MultiBlocProvider(
       providers: [
+        BlocProvider(create: (_) => LocaleCubit(safe: safe)),
         BlocProvider(create: (_) => BudgetDatabaseCubit()),
-        BlocProvider(create: (_) => LocaleCubit(safe: di.locator())),
       ],
       child: BlocBuilder<LocaleCubit, Locale>(
         builder: (context, state) {
@@ -60,31 +62,9 @@ class _MyAppState extends State<MyApp> {
               primarySwatch: Pallet.appBarSwatch,
             ),
             onGenerateRoute: RoutesGenerator.generate,
-            initialRoute: NavLinks.home,
+            initialRoute: NavLinks.initial,
           );
         },
-      ),
-    );
-  }
-}
-
-class MainBolcsProviderScreen extends StatelessWidget {
-  const MainBolcsProviderScreen({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [BlocProvider(create: (_) => BudgetDatabaseCubit())],
-      child: MaterialApp(
-        title: 'My Budjet',
-        debugShowCheckedModeBanner: false,
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        locale: const Locale('ar'),
-        theme: ThemeData(
-          primarySwatch: Pallet.appBarSwatch,
-        ),
-        home: const HomeScreen(),
       ),
     );
   }

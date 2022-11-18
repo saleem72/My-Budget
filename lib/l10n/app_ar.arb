@@ -43,5 +43,8 @@
     "select_subject_hint": "اختر مادة",
     "date": "التاريخ",
     "can_not_save": "لا استطيع الحفظ الان",
-    "save_bill": "حفظ فاتورة"
+    "save_bill": "حفظ فاتورة",
+    "first_run": "التشغيل الاول",
+    "first_run_inform": "انها اول مرة لتشغيل التطبيق",
+    "first_run_arabic": "هل ترغب بجعل واجهة التطبيق عربي؟ "
 }

@@ -12,6 +12,7 @@ class SafeKeys {
   static const String arabic = 'ar';
 
   static const String themeKey = 'themeKey';
+  static const String isFirstRun = 'is_first_run';
 }
 
 class Safe {
@@ -59,5 +60,10 @@ class Safe {
     } else {
       return ThemeMode.light;
     }
+  }
+
+  bool get isFirstRun => _storage.getBool(SafeKeys.isFirstRun) ?? true;
+  Future updateFirstRun() async {
+    await _storage.setBool(SafeKeys.isFirstRun, false);
   }
 }

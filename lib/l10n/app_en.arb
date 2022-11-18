@@ -43,5 +43,8 @@
     "select_subject_hint": "Select Subject",
     "date": "Date",
     "can_not_save": "Can not save for now",
-    "save_bill": "Save bill"
+    "save_bill": "Save bill",
+    "first_run": "First Run",
+    "first_run_inform": "It is your first run",
+    "first_run_arabic": "Do you prefre arabic interface? "
 }

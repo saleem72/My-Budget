@@ -36,27 +36,24 @@ class DebenturesDao extends DatabaseAccessor<AppDatabase>
     final debenture = DebenturesCompanion.insert(source: 1, sourceId: 1);
     final debentureId = await into(debentures).insert(debenture);
 
-    const cashierId = 3;
-    final related = entry.releatedAccountId;
-
     final cashierPart = DebentureItemsCompanion.insert(
       debentureId: debentureId,
-      account: cashierId,
-      releatedAccount: entry.releatedAccountId,
+      account: 3,
       date: entry.date,
-      credit: const Value(null),
-      debit: Value(entry.amount),
+      debit: entry.isCredit ? Value(entry.amount) : const Value(null),
+      credit: entry.isCredit ? const Value(null) : Value(entry.amount),
       notes: Value(entry.notes),
+      releatedAccount: entry.releatedAccountId,
     );
 
     final accountPart = DebentureItemsCompanion.insert(
       debentureId: debentureId,
-      account: related,
-      releatedAccount: cashierId,
+      account: entry.releatedAccountId,
       date: entry.date,
-      debit: const Value(null),
-      credit: Value(entry.amount),
+      credit: entry.isCredit ? Value(entry.amount) : const Value(null),
+      debit: entry.isCredit ? const Value(null) : Value(entry.amount),
       notes: Value(entry.notes),
+      releatedAccount: entry.releatedAccountId,
     );
 
     into(debentureItems).insert(cashierPart);
@@ -71,7 +68,8 @@ class DebenturesDao extends DatabaseAccessor<AppDatabase>
             return row.account.equals(accountId);
           }))
         .join([
-      leftOuterJoin(accounts, debentureItems.account.equalsExp(accounts.id)),
+      leftOuterJoin(
+          accounts, debentureItems.releatedAccount.equalsExp(accounts.id)),
       leftOuterJoin(
           otherAccounts, debentureItems.account.equalsExp(otherAccounts.id)),
     ]).map((p0) {

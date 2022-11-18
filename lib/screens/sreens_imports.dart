@@ -9,3 +9,5 @@ export 'accounts_screen/accounts_screen.dart';
 export 'bills_screen/bills_screen.dart';
 export 'add_bill_screen/add_bill_screen.dart';
 export 'about_us_screen/about_us_screen.dart';
+export 'landing_screen/landing_screen.dart';
+export 'first_run_screen/first_run_screen.dart';
