@@ -18,6 +18,8 @@
     "list_of_movement": "List of movement",
     "save": "Save",
     "cancel": "Cancel",
+    "yes": "Yes",
+    "no": "No",
     "add_movment": "Add movment",
     "amount": "Amount",
     "balance": "Balance",
@@ -46,5 +48,10 @@
     "save_bill": "Save bill",
     "first_run": "First Run",
     "first_run_inform": "It is your first run",
-    "first_run_arabic": "Do you prefre arabic interface? "
+    "first_run_arabic": "Do you prefre arabic interface? ",
+    "add_account": "Add account",
+    "edit_account": "Edit account",
+    "delete_account": "Account Delete",
+    "delete_account_message": "Are you sure you want to delete this account?",
+    "in_details": "In details"
 }

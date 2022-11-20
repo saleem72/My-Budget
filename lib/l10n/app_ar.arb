@@ -18,6 +18,8 @@
     "list_of_movement": "سجل الحركة",
     "save": "حفظ",
     "cancel": "الغاء",
+    "yes": "نعم",
+    "no": "لا",
     "add_movment": "اضافة حركة",
     "amount": "المبلغ",
     "balance": "الرصيد",
@@ -46,5 +48,10 @@
     "save_bill": "حفظ فاتورة",
     "first_run": "التشغيل الاول",
     "first_run_inform": "انها اول مرة لتشغيل التطبيق",
-    "first_run_arabic": "هل ترغب بجعل واجهة التطبيق عربي؟ "
+    "first_run_arabic": "هل ترغب بجعل واجهة التطبيق عربي؟ ",
+    "add_account": "اضافة حساب",
+    "edit_account": "تعديل حساب",
+    "delete_account": "حذف حساب",
+    "delete_account_message": "هل انت متاكد من حذف هذا الحساب؟",
+    "in_details": "تفصيلي"
 }

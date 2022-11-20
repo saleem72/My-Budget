@@ -64,7 +64,7 @@ class _MyAppState extends State<MyApp> {
             onGenerateRoute: RoutesGenerator.generate,
             initialRoute: NavLinks.initial,
           );
-        },
+        }, //
       ),
     );
   }

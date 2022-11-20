@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_budget/database/buget_database_cubit/budget_database_cubit.dart';
 import 'package:my_budget/database/models/journal_entry.dart';
-import 'package:my_budget/database/models/object_label.dart';
 import 'package:my_budget/styling/assets.dart';
 import 'package:my_budget/styling/topology.dart';
 
@@ -24,6 +23,7 @@ class _AccountStatmentScreenState extends State<AccountStatmentScreen> {
   Account? account;
   bool isTableVisible = false;
   double listHeight = 0;
+  bool inDetails = false;
 
   List<AccountTitle> _accountList = [];
   AccountTitle? _selectedAccount;
@@ -76,7 +76,24 @@ class _AccountStatmentScreenState extends State<AccountStatmentScreen> {
         const SizedBox(height: 16),
         // _buildAutoComplete(context),
         _buildSearchBar(context),
-        const SizedBox(height: 16),
+        const SizedBox(height: 8),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Row(
+            children: [
+              Text(
+                Translator.translation(context).in_details,
+                style: Topology.darkMeduimBody,
+              ),
+              Switch(
+                value: inDetails,
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                onChanged: (value) {},
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 8),
         Expanded(
           child: _buildAccountStatment(statements),
         ),

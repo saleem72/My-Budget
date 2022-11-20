@@ -20,8 +20,10 @@ class StatementEntryTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    NumberFormat numberFormat = NumberFormat("#,##0.##", "en_US");
     return Container(
       height: Constants.journalRowHeight(context),
+      padding: const EdgeInsets.only(top: 8),
       decoration: const BoxDecoration(
         border: Border(
           bottom: BorderSide(
@@ -60,11 +62,13 @@ class StatementEntryTile extends StatelessWidget {
                     SizedBox(
                       width: 75,
                       child: Text(
-                        '\$${entry!.amount.abs()}',
-                        style: Topology.darkMeduimBody,
+                        '\$${numberFormat.format(entry!.amount)}', // entry!.amount.abs()
+                        style: Topology.darkMeduimBody.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
-                  ],
+                  ], // الرا
                 ),
                 Text(
                   entry!.notes ?? '',

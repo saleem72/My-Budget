@@ -17,6 +17,7 @@ class JournalEntryTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     DateFormat formatter = DateFormat('dd-MMM');
+    NumberFormat numberFormat = NumberFormat("#,##0.##", "en_US");
     return Container(
       height: Constants.journalRowHeight(context),
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -37,7 +38,7 @@ class JournalEntryTile extends StatelessWidget {
                   MovementIndicator(isIn: entry.isCredit),
                   const SizedBox(width: Constants.verticalGap),
                   Text(
-                    '\$${entry.amount.abs()}',
+                    '\$${numberFormat.format(entry.amount.abs())}',
                     style: Topology.darkMeduimBody.copyWith(
                       fontWeight: FontWeight.w600,
                     ),

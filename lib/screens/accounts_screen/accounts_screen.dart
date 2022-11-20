@@ -2,14 +2,17 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_budget/database/models/account_title.dart';
 import 'package:my_budget/database/models/account_with_childs.dart';
 import 'package:my_budget/database/models/tree_node.dart';
+import 'package:my_budget/helpers/utilities.dart';
 import 'package:my_budget/screens/accounts_screen/cubits/accounts_cubit/accounts_cubit.dart';
 import 'package:my_budget/screens/accounts_screen/cubits/selected_account_cubit/selected_account_cubit.dart';
 import 'package:my_budget/styling/assets.dart';
 import 'package:my_budget/styling/pallet.dart';
 import 'package:my_budget/styling/topology.dart';
 
+import '../../database/app_database.dart';
 import '../../database/buget_database_cubit/budget_database_cubit.dart';
 import '../../helpers/localization/language_constants.dart';
 import '../../widgets/main_widgets_imports.dart';
@@ -68,36 +71,29 @@ class _AccountsScreenContentState extends State<_AccountsScreenContent> {
   }
 
   Widget _toolbar(BuildContext context) {
-    final accountsCubit = context.read<AccountsCubit>();
-    final selectedAccountCubit = context.read<SelectedAccountCubit>();
     return Row(
       children: [
         ToolBarButton(
-          onPressed: () {
-            accountsCubit.deleteAccount(selectedAccountCubit.state);
-            selectedAccountCubit.selectNodeById(null);
-          },
+          onPressed: () => _deleteAccount(context),
           icon: Icons.delete,
           backgroundColor: Colors.pink,
         ),
         ToolBarButton(
           onPressed: () {
-            _showAddSubjectDialog(context);
+            _showAddAccount(context);
           },
           icon: Icons.add,
           backgroundColor: Colors.green,
         ),
         ToolBarButton(
           onPressed: () {
-            _showAddEntryDialog(context);
+            _showEditAccount(context);
           },
-          icon: Icons.search,
+          icon: Icons.edit,
           backgroundColor: Colors.purple,
         ),
         ToolBarButton(
-          onPressed: () {
-            _showEditSubjectDialog(context);
-          },
+          onPressed: () {},
           icon: Icons.more_vert,
           backgroundColor: Colors.blue,
         ),
@@ -105,79 +101,90 @@ class _AccountsScreenContentState extends State<_AccountsScreenContent> {
     );
   }
 
-  _showAddEntryDialog(BuildContext context) async {
-    final selected = context.read<SelectedAccountCubit>().state;
-    if (selected == null) {
-      return;
-    }
-    final accountCubit = context.read<AccountsCubit>();
-    final accounts = accountCubit.accounts;
-    // TreeNode
-    final selectedAccount = accounts.nodeForId(selected) as AccountWithChilds?;
-    if (selectedAccount == null) {
-      return;
-    }
+  _deleteAccount(BuildContext context) async {
+    final database = context.read<BudgetDatabaseCubit>().database;
+    final selectedAccountCubit = context.read<SelectedAccountCubit>();
+    final selectedId = selectedAccountCubit.state;
 
-    final result = await showDialog(
-        context: context,
-        builder: (context) {
-          return _addEntryAlert(context, selectedAccount);
-        });
-    final json = result as Map<String, dynamic>?;
-
-    if (json != null) {
-      // "title": title.text, "isCredit"
-      final newTitle = json['title'] as String;
-      final newIsCredit = json['isCredit'] as bool? ?? false;
-      final newAccount = selectedAccount.account?.copyWith(
-        title: newTitle,
-        isCredit: newIsCredit,
+    if (selectedId != null) {
+      Utilities.showConfirmMessage(
+        context,
+        message: Translator.translation(context).delete_account_message,
+        title: Translator.translation(context).delete_account,
+        titleTextStyle: Topology.darkLargBody.copyWith(
+          color: Colors.redAccent,
+        ),
+        onOk: () {
+          print('Will be deleted');
+          database.accountsDao.deleteAccount(selectedId);
+          selectedAccountCubit.selectNodeById(null);
+        },
       );
-
-      if (newAccount == null) {
-        return;
-      }
-      if (mounted) {
-        final database = context.read<BudgetDatabaseCubit>().database;
-
-        database.accountsDao.updateAccount(newAccount);
-      }
-    } else {
-      debugPrint('No result');
     }
   }
 
-  AlertDialog _addEntryAlert(BuildContext context, AccountWithChilds account) {
+  _showAddAccount(BuildContext context) async {
+    final database = context.read<BudgetDatabaseCubit>().database;
+    final accountsCubit = context.read<AccountsCubit>();
+    final selectedAccount = context.read<SelectedAccountCubit>().state;
+
+    final returned = await showDialog(
+        context: context,
+        builder: (context) {
+          return _addAccountAlert(context, null);
+        });
+
+    final result = returned as Map<String, dynamic>?;
+    if (result != null) {
+      final title = result['title'] as String;
+      final isCredit = result['isCredit'] as bool;
+      // ابو غياث
+      accountsCubit.expandSelected(selectedAccount);
+      database.accountsDao.addAccount(
+          parentId: selectedAccount, title: title, isCredit: isCredit);
+    }
+  }
+
+  _showEditAccount(BuildContext context) async {
+    final database = context.read<BudgetDatabaseCubit>().database;
+    final accountsCubit = context.read<AccountsCubit>();
+    final selectedAccount = context.read<SelectedAccountCubit>().state;
+    Account? account = null;
+    if (selectedAccount != null) {
+      account = await database.accountsDao.getAccountForId(selectedAccount);
+    } else {
+      return;
+    }
+
+    final returned = await showDialog(
+        context: context,
+        builder: (context) {
+          return _addAccountAlert(context, account);
+        });
+    // وائل
+    final result = returned as Map<String, dynamic>?;
+    if (result != null) {
+      final title = result['title'] as String;
+      final isCredit = result['isCredit'] as bool;
+      final editedAccount = account!.copyWith(title: title, isCredit: isCredit);
+      database.accountsDao.updateAccount(editedAccount);
+    }
+  }
+
+  AlertDialog _addAccountAlert(BuildContext context, Account? account) {
     final TextEditingController title =
-        TextEditingController(text: account.title);
-    bool isCredit = account.isCredit;
+        TextEditingController(text: account?.title);
+    bool isCredit = account?.isCredit ?? false;
     return AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       elevation: 8,
       title: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Material(
-            elevation: 4,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-            child: Container(
-              width: 36,
-              height: 36,
-              decoration: const BoxDecoration(
-                color: Pallet.appBar,
-                shape: BoxShape.circle,
-              ),
-              padding: const EdgeInsets.all(10),
-              child: Image.asset(
-                Assests.journalOut,
-                color: Colors.white,
-              ),
-            ),
-          ),
-          const SizedBox(width: 8),
           Text(
-            '${Translator.translation(context).edit} ${account.title}',
+            account == null
+                ? Translator.translation(context).add_account
+                : Translator.translation(context).edit_account,
             style: Topology.darkLargBody.copyWith(
               // fontWeight: FontWeight.w600,
               fontSize: 20,
@@ -195,6 +202,7 @@ class _AccountsScreenContentState extends State<_AccountsScreenContent> {
                 controller: title,
                 label: Translator.translation(context).title,
                 hint: Translator.translation(context).title,
+                keyboard: TextInputType.text,
               ),
               const SizedBox(height: 16),
               Material(
@@ -243,115 +251,12 @@ class _AccountsScreenContentState extends State<_AccountsScreenContent> {
     );
   }
 
-  _showAddSubjectDialog(BuildContext context) async {
-    final accountsCubit = context.read<AccountsCubit>();
-    final selectedAccountCubit = context.read<SelectedAccountCubit>();
-    final TextEditingController newSubject = TextEditingController();
-    final alert = _addSubjectAlert(context, newSubject);
-
-    final returned = await showDialog(
-      context: context,
-      builder: (_) => alert,
-    );
-
-    final result = returned as String?;
-    if (result != null && result == 'Save') {
-      final addedNodeId = await accountsCubit.addAccount(
-          selectedAccountCubit.state, newSubject.text);
-      selectedAccountCubit.selectNodeById(addedNodeId);
-    }
-  }
-
   Widget _cancelButtonButton(BuildContext context) {
     return TextButton(
       onPressed: () {
         Navigator.of(context).pop();
       },
       child: Text(Translator.translation(context).cancel),
-    );
-  }
-
-  AlertDialog _addSubjectAlert(
-      BuildContext context, TextEditingController controller) {
-    final saveButton = TextButton(
-      onPressed: () {
-        Navigator.of(context).pop('Save');
-      },
-      child: const Text('Save'),
-    );
-
-    final cancelButtonButton = TextButton(
-      onPressed: () {
-        Navigator.of(context).pop();
-      },
-      child: const Text('Cancel'),
-    );
-    return AlertDialog(
-      title: const Text('Add Subject'),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          AppTextField(
-            controller: controller,
-            hint: 'Subject name',
-          ),
-        ],
-      ),
-      actions: [
-        saveButton,
-        cancelButtonButton,
-      ],
-    );
-  }
-
-  _showEditSubjectDialog(BuildContext context) async {
-    final subjectsCubit = context.read<AccountsCubit>();
-    final subjectSelectedCubit = context.read<SelectedAccountCubit>();
-    final TextEditingController newSubject = TextEditingController();
-    final alert = _addSubjectAlert(context, newSubject);
-
-    final returned = await showDialog(context: context, builder: (_) => alert);
-
-    final result = returned as String?;
-    if (result != null && result == 'Save') {
-      final addedNodeId = await subjectsCubit.addAccount(
-          subjectSelectedCubit.state, newSubject.text);
-      subjectSelectedCubit.selectNodeById(addedNodeId);
-    }
-  }
-
-  // ignore: unused_element
-  AlertDialog _editSubjectAlert(
-      BuildContext context, TextEditingController controller) {
-    final saveButton = TextButton(
-      onPressed: () {
-        Navigator.of(context).pop('Save');
-      },
-      child: const Text('Save'),
-    );
-    final cancelButtonButton = TextButton(
-      onPressed: () {
-        Navigator.of(context).pop();
-      },
-      child: const Text('Cancel'),
-    );
-    return AlertDialog(
-      title: const Text('Add Subject'),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          AppTextField(
-            controller: controller,
-            hint: 'Subject name',
-          ),
-        ],
-      ),
-      actions: [
-        saveButton,
-        cancelButtonButton,
-      ],
     );
   }
 }

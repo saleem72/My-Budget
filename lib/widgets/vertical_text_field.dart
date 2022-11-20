@@ -12,7 +12,7 @@ class VerticalTextField extends StatelessWidget {
     required this.controller,
     this.hint = '',
     this.radius = 6,
-    this.keyboard = TextInputType.text,
+    this.keyboard = TextInputType.number,
   }) : super(key: key);
 
   final String label;
@@ -36,7 +36,7 @@ class VerticalTextField extends StatelessWidget {
           child: TextField(
             controller: controller,
             style: Topology.darkLargBody,
-            keyboardType: TextInputType.number,
+            keyboardType: keyboard,
             decoration: InputDecoration(
               hintText: hint,
               border: InputBorder.none,

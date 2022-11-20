@@ -51,4 +51,27 @@ class AccountsDao extends DatabaseAccessor<AppDatabase>
 
   Future updateAccount(Account account) async =>
       update(accounts).replace(account);
+
+  Future addAccount(
+      {required int? parentId,
+      required String title,
+      required bool isCredit}) async {
+    final newAccount = AccountsCompanion.insert(
+        title: title, isCredit: isCredit, parentId: Value(parentId));
+    await into(accounts).insert(newAccount);
+  }
+
+  Future editAccount(Account editedAccount) async {
+    await update(accounts).replace(editedAccount);
+  }
+
+  Future deleteAccount(int id) async {
+    final modelList =
+        await (select(accounts)..where((tbl) => tbl.id.equals(id))).get();
+
+    if (modelList.isNotEmpty) {
+      final model = modelList.first;
+      delete(accounts).delete(model);
+    }
+  }
 }
