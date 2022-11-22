@@ -20,8 +20,23 @@ class DebenturesDao extends DatabaseAccessor<AppDatabase>
   Future insertDebenture(DebenturesCompanion model) async =>
       into(debentures).insert(model);
 
-  Future deleteDebenture(DebenturesCompanion model) async =>
-      delete(debentures).delete(model);
+  Future deleteDebenture(int debentureId) async {
+    // delete main debenture
+    final debenture = (await (select(debentures)
+              ..where((tbl) => tbl.id.equals(debentureId)))
+            .get())
+        .first;
+    delete(debentures).delete(debenture);
+
+    // delete debenture items
+    final items = await (select(debentureItems)
+          ..where((tbl) => tbl.debentureId.equals(debentureId)))
+        .get();
+
+    for (final item in items) {
+      delete(debentureItems).delete(item);
+    }
+  }
 
   Future updateDebenture(Debenture model) async =>
       update(debentures).replace(model);

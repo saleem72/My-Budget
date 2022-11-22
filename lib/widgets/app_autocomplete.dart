@@ -10,18 +10,21 @@ class AppAutoComplete extends StatelessWidget {
       {Key? key,
       required this.objectsList,
       required this.onSelected,
+      this.initialValue = '',
       this.hint,
       this.onChange})
       : super(key: key);
 
   final List<ObjectTitle> objectsList;
   final String? hint;
+  final String initialValue;
   final Function(ObjectTitle) onSelected;
   final Function(String)? onChange;
   @override
   Widget build(BuildContext context) {
     String displayStringForOption(ObjectTitle option) => option.title;
     return Autocomplete<ObjectTitle>(
+      initialValue: TextEditingValue(text: initialValue),
       displayStringForOption: displayStringForOption,
       fieldViewBuilder:
           (context, textEditingController, focusNode, onFieldSubmitted) {

@@ -28,11 +28,8 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
 
   void _doit(BuildContext context) async {
     final database = context.read<BudgetDatabaseCubit>().database;
-    final something =
-        await database.journalsDao.getJournalForDate(_selectedDate);
-    setState(() {
-      bills = something;
-    });
+    final itemsCount = await database.journalsDao.debentureItemsCount();
+    print('Items count: $itemsCount');
   }
 
   @override

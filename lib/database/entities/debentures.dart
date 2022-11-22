@@ -15,9 +15,9 @@ class Debentures extends Table {
 
 class DebentureItems extends Table {
   IntColumn get id => integer().autoIncrement()();
+  // IntColumn get debentureId => integer().references(Debentures, #id)();
   IntColumn get debentureId => integer()
       .customConstraint('REFERENCES debentures(id) ON DELETE CASCADE')();
-
   IntColumn get account => integer().references(Accounts, #id)();
   IntColumn get releatedAccount => integer().references(Accounts, #id)();
   DateTimeColumn get date => dateTime()();

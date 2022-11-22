@@ -38,7 +38,7 @@ class JournalsDao extends DatabaseAccessor<AppDatabase>
       credit: model.isCredit ? Value(model.amount) : const Value(null),
       debit: model.isCredit ? const Value(null) : Value(model.amount),
       notes: Value(model.notes),
-      releatedAccount: model.releatedAccountId,
+      releatedAccount: 3,
     ));
 
     final journalId = await into(journals).insert(JournalsCompanion.insert(
@@ -56,6 +56,54 @@ class JournalsDao extends DatabaseAccessor<AppDatabase>
       sourceId: Value(journalId),
     );
     update(debentures).replace(updatedDebenture);
+  }
+
+  Future editJournalEntry(JournalEntry model) async {
+    // delete old debentureItems
+
+    final items = await (select(debentureItems)
+          ..where((tbl) => tbl.debentureId.equals(model.debentureId)))
+        .get();
+
+    for (final item in items) {
+      delete(debentureItems).delete(item);
+    }
+
+    // create debenture items
+    /// create cashier part
+    into(debentureItems).insert(DebentureItemsCompanion.insert(
+      debentureId: model.debentureId,
+      account: 3,
+      date: model.date,
+      debit: model.isCredit ? Value(model.amount) : const Value(null),
+      credit: model.isCredit ? const Value(null) : Value(model.amount),
+      notes: Value(model.notes),
+      releatedAccount: model.releatedAccountId,
+    ));
+
+    /// create related part
+    into(debentureItems).insert(DebentureItemsCompanion.insert(
+      debentureId: model.debentureId,
+      account: model.releatedAccountId,
+      date: model.date,
+      credit: model.isCredit ? Value(model.amount) : const Value(null),
+      debit: model.isCredit ? const Value(null) : Value(model.amount),
+      notes: Value(model.notes),
+      releatedAccount: model.releatedAccountId,
+    ));
+
+    final oldJournal = (await (select(journals)
+              ..where((tbl) => tbl.id.equals(model.id)))
+            .get())
+        .first;
+
+    final newJournal = oldJournal.copyWith(
+      amount: model.amount,
+      related: model.releatedAccountId,
+      notes: Value(model.notes ?? ''),
+      isCredit: model.isCredit,
+    );
+    update(journals).replace(newJournal);
   }
 
   Stream<List<JournalEntry>> watchJournalForDate(DateTime date) {
@@ -113,5 +161,25 @@ class JournalsDao extends DatabaseAccessor<AppDatabase>
         notes: journal.notes,
       );
     }).get();
+  }
+
+  Future deleteJournalEntry(JournalEntry entry) async {
+    // delete journal
+    final journalToDelete = (await (select(journals)
+              ..where((tbl) => tbl.id.equals(entry.id)))
+            .get())
+        .first;
+    delete(journals).delete(journalToDelete);
+
+    // delete main debenture
+    final debenture = (await (select(debentures)
+              ..where((tbl) => tbl.id.equals(entry.debentureId)))
+            .get())
+        .first;
+    delete(debentures).delete(debenture);
+  }
+
+  Future<int> debentureItemsCount() async {
+    return (await select(debentureItems).get()).length;
   }
 }

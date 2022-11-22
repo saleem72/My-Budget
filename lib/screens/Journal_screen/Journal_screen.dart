@@ -4,12 +4,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_budget/database/buget_database_cubit/budget_database_cubit.dart';
+import 'package:my_budget/helpers/extensions/string_extension.dart';
 
 import 'package:my_budget/styling/styling.dart';
 import 'package:my_budget/widgets/main_widgets_imports.dart';
 
 import '../../database/app_database.dart';
 import '../../database/models/object_label.dart';
+import '../../dialogs/add_journal_dialog.dart';
 import '../../helpers/localization/language_constants.dart';
 import '../../database/models/journal_entry.dart';
 
@@ -216,7 +218,7 @@ class _JournalScreenState extends State<JournalScreen> {
 
     if (mounted) {}
 
-    final alert = _addEntryAlert(context, accounts);
+    final alert = addJournalAlert(context, accounts: accounts, entry: null);
     final result = await showDialog(
         context: context,
         builder: (context) {
@@ -247,129 +249,5 @@ class _JournalScreenState extends State<JournalScreen> {
 
       database.journalsDao.addJournalEntry(newEntry);
     }
-  }
-
-  Widget _addEntryAlert(BuildContext context, List<ObjectTitle> entries) {
-    final TextEditingController amountText = TextEditingController();
-    final TextEditingController notes = TextEditingController();
-    bool isCredit = false;
-    ObjectTitle? account;
-    return AlertDialog(
-      contentPadding:
-          const EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 0),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      elevation: 8,
-      content: StatefulBuilder(
-        builder: (context, setState) => SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    Translator.translation(context).add_movment,
-                    style: Topology.darkMeduimBody.copyWith(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 18,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              VerticalTextField(
-                radius: 8,
-                controller: amountText,
-                keyboard: TextInputType.number,
-                label: Translator.translation(context).amount,
-                hint: Translator.translation(context).amount,
-              ),
-              const SizedBox(height: 16),
-              PopupWidget(
-                radius: 8,
-                child: AppAutoComplete(
-                  objectsList: entries,
-                  hint: Translator.translation(context).select_account_hint,
-                  onSelected: (p0) {
-                    setState(() {
-                      account = p0;
-                    });
-                  },
-                ),
-              ),
-              const SizedBox(height: 16),
-              PopupWidget(
-                child: TextField(
-                  controller: notes,
-                  style: Topology.darkLargBody,
-                  decoration: InputDecoration(
-                    hintText: Translator.translation(context).notes,
-                    border: InputBorder.none,
-                    isCollapsed: true,
-                    hintStyle: Topology.darkLargBody.copyWith(
-                      color: Colors.grey,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              PopupWidget(
-                child: Row(
-                  children: [
-                    Text('${Translator.translation(context).is_credit}: '),
-                    Switch(
-                      value: isCredit,
-                      onChanged: (newValue) {
-                        setState(() {
-                          isCredit = newValue;
-                        });
-                      },
-                    )
-                  ],
-                ),
-              ),
-              const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: Text(Translator.translation(context).cancel),
-                  ),
-                  CapsuleButton(
-                    onPressed: () {
-                      Navigator.of(context).pop({
-                        "amount": amountText.text,
-                        "account": account?.id,
-                        "isCredit": isCredit,
-                        "notes": notes.text,
-                      });
-                    },
-                    isDisable: false,
-                    label: Translator.translation(context).save,
-                    icon: Icons.person,
-                  ),
-                ],
-              )
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-extension ArabicDigits on String {
-  String replaceArabicNumber() {
-    const english = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-    const arabic = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
-    String input = this;
-    for (int i = 0; i < english.length; i++) {
-      input = replaceAll(english[i], arabic[i]);
-    }
-
-    return input;
   }
 }
