@@ -18,8 +18,8 @@ class Constants {
     final lineHeight = _lineHeight(context, style);
     return lineHeight +
         max(movementIndicatorHeight, lineHeight) +
-        verticalGap +
-        verticalPadding * 2;
+        verticalGap * 2; // +
+    // verticalPadding * 2;
   }
 
   static double subjectTileHeight(BuildContext context,

@@ -50,19 +50,6 @@ class JournalEntry {
 }
 
 class StatementEntry {
-  /*
-
-  IntColumn get id => integer().autoIncrement()();
-  IntColumn get debentureId => integer().references(Debentures, #id)();
-  IntColumn get account => integer().references(Accounts, #id)();
-  IntColumn get releatedAccount => integer().references(Accounts, #id)();
-  DateTimeColumn get date => dateTime()();
-  RealColumn get debit => real().nullable()();
-  RealColumn get credit => real().nullable()();
-  TextColumn get notes => text().nullable()();
-
-  */
-
   final int id;
   final int debentureId;
   final int accountId;

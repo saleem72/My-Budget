@@ -35,6 +35,7 @@ class StatementEntryTile extends StatelessWidget {
       child: entry == null
           ? const SizedBox.shrink()
           : Column(
+              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(

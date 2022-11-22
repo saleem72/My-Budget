@@ -53,5 +53,7 @@
     "edit_account": "تعديل حساب",
     "delete_account": "حذف حساب",
     "delete_account_message": "هل انت متاكد من حذف هذا الحساب؟",
-    "in_details": "تفصيلي"
+    "in_details": "تفصيلي",
+    "report_type": "اختر نوع التقرير",
+    "short": "مختصر"
 }

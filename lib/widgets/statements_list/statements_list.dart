@@ -16,11 +16,13 @@ class StatementsList extends StatefulWidget {
   const StatementsList({
     Key? key,
     required this.data,
+    required this.previousBalance,
     required this.totalHeight,
     required this.isAccountCredit,
   }) : super(key: key);
 
   final List<StatementEntry> data;
+  final double previousBalance;
   final double totalHeight;
   final bool isAccountCredit;
 
@@ -43,37 +45,75 @@ class _StatementsListState extends State<StatementsList> {
 
   @override
   Widget build(BuildContext context) {
+    return Column(
+      children: [
+        _possiblePreviousBalance(),
+        Expanded(child: _buildList(context)),
+        _totalBalance(context),
+      ],
+    );
+  }
+
+  Widget _possiblePreviousBalance() {
+    return widget.previousBalance != 0
+        ? Column(
+            children: [
+              const SizedBox(height: 8),
+              _previousBalance(),
+              const SizedBox(height: 8),
+            ],
+          )
+        : const SizedBox.shrink();
+  }
+
+  Widget _previousBalance() {
+    return Row(
+      children: [
+        Text(
+          'Previous Balance:',
+          style: Topology.darkMeduimBody.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(width: 8),
+        Text(
+          '\$${formattedString(widget.previousBalance)}',
+          style: Topology.darkMeduimBody.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Container _totalBalance(BuildContext context) {
     final double inCome = widget.data.fold(
         0, (previousValue, element) => previousValue + (element.credit ?? 0));
     final double outCome = widget.data.fold(
         0, (previousValue, element) => previousValue + (element.debit ?? 0));
     final double balance =
-        widget.isAccountCredit ? inCome - outCome : outCome - inCome;
-    return Column(
-      children: [
-        Expanded(child: _buildList(context)),
-        Container(
-          height: 44,
-          alignment: Alignment.center,
-          child: Row(
-            children: [
-              Text(
-                '${Translator.translation(context).balance}: ',
-                style: Topology.darkMeduimBody.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const SizedBox(width: 8),
-              Text(
-                '\$${formattedString(balance)}',
-                style: Topology.darkMeduimBody.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
-              )
-            ],
+        (widget.isAccountCredit ? inCome - outCome : outCome - inCome) +
+            widget.previousBalance;
+    return Container(
+      height: 44,
+      alignment: Alignment.center,
+      child: Row(
+        children: [
+          Text(
+            '${Translator.translation(context).balance}: ',
+            style: Topology.darkMeduimBody.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
           ),
-        ),
-      ],
+          const SizedBox(width: 8),
+          Text(
+            '\$${formattedString(balance)}',
+            style: Topology.darkMeduimBody.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
+          )
+        ],
+      ),
     );
   }
 

@@ -53,5 +53,7 @@
     "edit_account": "Edit account",
     "delete_account": "Account Delete",
     "delete_account_message": "Are you sure you want to delete this account?",
-    "in_details": "In details"
+    "in_details": "In details",
+    "report_type": "Select Report type",
+    "short": "Short"
 }

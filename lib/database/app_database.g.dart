@@ -955,7 +955,7 @@ class $DebentureItemsTable extends DebentureItems
       'debenture_id', aliasedName, false,
       type: DriftSqlType.int,
       requiredDuringInsert: true,
-      defaultConstraints: 'REFERENCES "debentures" ("id")');
+      $customConstraints: 'REFERENCES debentures(id) ON DELETE CASCADE');
   final VerificationMeta _accountMeta = const VerificationMeta('account');
   @override
   late final GeneratedColumn<int> account = GeneratedColumn<int>(

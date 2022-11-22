@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_budget/database/buget_database_cubit/budget_database_cubit.dart';
 import 'package:my_budget/database/models/journal_entry.dart';
+import 'package:my_budget/helpers/extensions/datetime_extension.dart';
+import 'package:my_budget/screens/sreens_imports.dart';
 import 'package:my_budget/styling/assets.dart';
 import 'package:my_budget/styling/topology.dart';
 
@@ -28,6 +30,7 @@ class _AccountStatmentScreenState extends State<AccountStatmentScreen> {
   List<AccountTitle> _accountList = [];
   AccountTitle? _selectedAccount;
   List<StatementEntry> statements = [];
+  double previousBalance = 0;
 
   @override
   void initState() {
@@ -44,17 +47,20 @@ class _AccountStatmentScreenState extends State<AccountStatmentScreen> {
     });
   }
 
-  void getStatements() async {
+  void getStatements(
+      {required DateTime startDate, required bool inDetails}) async {
     if (_selectedAccount != null) {
       statements.clear();
-      final list = await context
+
+      final result = await context
           .read<BudgetDatabaseCubit>()
           .database
           .debenturesDao
-          .getStatmentForAccountById(_selectedAccount!.id);
+          .getStatmentForAccountById(_selectedAccount!.id, startDate);
       if (mounted) {
         setState(() {
-          statements = list;
+          statements = result.statments;
+          previousBalance = result.previousBalance;
         });
       }
     }
@@ -63,6 +69,7 @@ class _AccountStatmentScreenState extends State<AccountStatmentScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text(Translator.translation(context).account_statment_tag),
       ),
@@ -76,24 +83,7 @@ class _AccountStatmentScreenState extends State<AccountStatmentScreen> {
         const SizedBox(height: 16),
         // _buildAutoComplete(context),
         _buildSearchBar(context),
-        const SizedBox(height: 8),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Row(
-            children: [
-              Text(
-                Translator.translation(context).in_details,
-                style: Topology.darkMeduimBody,
-              ),
-              Switch(
-                value: inDetails,
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                onChanged: (value) {},
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 16),
         Expanded(
           child: _buildAccountStatment(statements),
         ),
@@ -101,7 +91,91 @@ class _AccountStatmentScreenState extends State<AccountStatmentScreen> {
     );
   }
 
+  void _showReportType(BuildContext context) async {
+    if (_selectedAccount == null) {
+      return;
+    }
+    final result = await showDialog(
+        context: context,
+        builder: (context) {
+          return _reportTypeAlert(context);
+        });
+    final data = result as Map<String, dynamic>?;
+    if (data != null) {
+      print(
+          'startDate: ${data['startDate'] as DateTime}, inDetails: ${data['inDetails'] as bool}');
+      getStatements(
+        startDate: data['startDate'] as DateTime,
+        inDetails: data['inDetails'] as bool,
+      );
+    }
+  }
+
+  AlertDialog _reportTypeAlert(BuildContext context) {
+    DateTime selectedDate = AppDates.firstOfCurrent;
+    bool isInDetails = false;
+
+    return AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      title: Text(Translator.translation(context).report_type),
+      content: StatefulBuilder(
+        builder: (context, setState) => Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              children: [
+                const Text('Selected date'),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: AnotherDatePicker(
+                    label: 'Select date',
+                    initialDate: selectedDate,
+                    onChange: (date) {
+                      setState(() {
+                        selectedDate = date;
+                      });
+                      // updateSelectedDate(date);
+                    },
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Text(
+                  Translator.translation(context).in_details,
+                  style: Topology.darkMeduimBody,
+                ),
+                Switch(
+                  value: isInDetails,
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  onChanged: (value) {
+                    setState(() {
+                      isInDetails = value;
+                    });
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        CapsuleButton(
+          label: 'Ok',
+          isDisable: false,
+          onPressed: () {
+            Navigator.of(context)
+                .pop({"startDate": selectedDate, "inDetails": isInDetails});
+          },
+        ),
+      ],
+    );
+  }
+
   Widget _buildSearchBar(BuildContext context) {
+    final isDisabled = _selectedAccount == null;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: PopupWidget(
@@ -129,10 +203,13 @@ class _AccountStatmentScreenState extends State<AccountStatmentScreen> {
               child: AppAutoComplete(
                 hint: Translator.translation(context).select_account_hint,
                 objectsList: _accountList,
-                onChange: (_) {
+                onChange: (value) {
                   if (statements.isNotEmpty) {
                     setState(() {
+                      print(value);
                       statements = [];
+                      previousBalance = 0;
+                      _selectedAccount = null;
                     });
                   }
                 },
@@ -145,7 +222,7 @@ class _AccountStatmentScreenState extends State<AccountStatmentScreen> {
             ),
             const SizedBox(width: 4),
             InkWell(
-              onTap: () => getStatements(),
+              onTap: isDisabled ? null : () => _showReportType(context),
               child: Container(
                 height: 24,
                 width: 24,
@@ -153,7 +230,10 @@ class _AccountStatmentScreenState extends State<AccountStatmentScreen> {
                 child: SizedBox(
                   height: 14,
                   width: 14,
-                  child: Image.asset(Assests.filter),
+                  child: Image.asset(
+                    Assests.filter,
+                    color: isDisabled ? Colors.red : Colors.black,
+                  ),
                 ),
               ),
             ),
@@ -194,6 +274,7 @@ class _AccountStatmentScreenState extends State<AccountStatmentScreen> {
                 },
                 child: StatementsList(
                   data: entries,
+                  previousBalance: previousBalance,
                   totalHeight: listHeight,
                   isAccountCredit: _selectedAccount?.isCredit ?? false,
                 ),

@@ -5,6 +5,7 @@
 import 'package:drift/drift.dart';
 import 'package:my_budget/database/entities/entities_imports.dart';
 import 'package:collection/collection.dart';
+import 'package:my_budget/database/models/account_summary.dart';
 import 'package:my_budget/database/models/journal_entry.dart';
 
 import '../../app_database.dart';
@@ -60,10 +61,35 @@ class DebenturesDao extends DatabaseAccessor<AppDatabase>
     into(debentureItems).insert(accountPart);
   }
 
-  Future<List<StatementEntry>> getStatmentForAccountById(int accountId) {
+  AccountSummary _filterStatments(
+      bool isCredit, List<StatementEntry> list, DateTime startDate) {
+    final balanceList =
+        list.where((element) => element.date.compareTo(startDate) < 0).toList();
+    final double inCome = balanceList.fold(
+        0, (previousValue, element) => previousValue + (element.credit ?? 0));
+    final double outCome = balanceList.fold(
+        0, (previousValue, element) => previousValue + (element.debit ?? 0));
+    final double balance = isCredit ? inCome - outCome : outCome - inCome;
+    final fliteredList = list
+        .where((element) => element.date.compareTo(startDate) >= 0)
+        .toList();
+
+    fliteredList.sort(((a, b) => a.date.compareTo(b.date)));
+    return AccountSummary(statments: fliteredList, previousBalance: balance);
+  }
+
+  Future<AccountSummary> getStatmentForAccountById(
+    int accountId,
+    DateTime startDate,
+  ) async {
     final otherAccounts = db.alias(db.accounts, 'other');
 
-    return (select(debentureItems)
+    final account = (await (select(accounts)
+              ..where((tbl) => tbl.id.equals(accountId)))
+            .get())
+        .first;
+
+    final list = await (select(debentureItems)
           ..where((row) {
             return row.account.equals(accountId);
           }))
@@ -92,13 +118,8 @@ class DebenturesDao extends DatabaseAccessor<AppDatabase>
       //   relatedAccount: credit.title,
       // );
     }).get();
+    return _filterStatments(account.isCredit, list, startDate);
   }
-
-  /*
- 
-
-  
-  */
 }
 
 extension DateOnlyCompare on DateTime {
