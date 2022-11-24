@@ -9,8 +9,6 @@ import 'package:my_budget/helpers/extensions/string_extension.dart';
 import 'package:my_budget/styling/styling.dart';
 import 'package:my_budget/widgets/main_widgets_imports.dart';
 
-import '../../database/app_database.dart';
-import '../../database/models/object_label.dart';
 import '../../dialogs/add_journal_dialog.dart';
 import '../../helpers/localization/language_constants.dart';
 import '../../database/models/journal_entry.dart';
@@ -54,15 +52,11 @@ class _JournalScreenState extends State<JournalScreen> {
 
   void updateSelectedDate(DateTime date) {
     final newDate = date.add(date.timeZoneOffset);
-    flipTheDate(date);
     setState(() {
       _selectedDate = newDate;
-      // _selectedDate = date.add(const Duration(
-      //     milliseconds:
-      //         (17 * 60 * 60 * 1000) + (59 * 60 * 1000) + (38 * 1000) + 250));
     });
   }
-
+  /*
   void flipTheDate(DateTime date) {
     Duration offset = date.timeZoneOffset;
     date.add(offset);
@@ -78,8 +72,8 @@ class _JournalScreenState extends State<JournalScreen> {
         (offset.inMinutes - offset.inHours * 60).toString().padLeft(2, '0');
 
     String dateTimeWithOffset = '$dateTime$utcHourOffset:$utcMinuteOffset';
-    print('flipTheDate: $dateTimeWithOffset');
   }
+  */
 
   Widget _buildSearchBar(BuildContext context) {
     return PopupWidget(

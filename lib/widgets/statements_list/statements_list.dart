@@ -1,15 +1,11 @@
 //
 
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 import 'package:my_budget/helpers/localization/language_constants.dart';
 import 'package:my_budget/styling/topology.dart';
 
 import '../../database/models/journal_entry.dart';
-import '../../helpers/constants.dart';
 import 'statements_entry_tile.dart';
 
 class StatementsList extends StatefulWidget {
@@ -106,12 +102,43 @@ class _StatementsListState extends State<StatementsList> {
             ),
           ),
           const SizedBox(width: 8),
-          Text(
-            '\$${formattedString(balance)}',
-            style: Topology.darkMeduimBody.copyWith(
-              fontWeight: FontWeight.w600,
+          Container(
+            constraints: const BoxConstraints(
+              minWidth: 50,
             ),
-          )
+            child: Text(
+              formattedString(widget.isAccountCredit ? inCome : outCome),
+              style: Topology.darkMeduimBody.copyWith(
+                fontWeight: FontWeight.w600,
+                color: Colors.green,
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          Container(
+            constraints: const BoxConstraints(
+              minWidth: 50,
+            ),
+            child: Text(
+              formattedString(widget.isAccountCredit ? outCome : inCome),
+              style: Topology.darkMeduimBody.copyWith(
+                fontWeight: FontWeight.w600,
+                color: Colors.red,
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          Flexible(
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: Text(
+                formattedString(balance),
+                style: Topology.darkMeduimBody.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );

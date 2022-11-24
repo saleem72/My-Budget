@@ -1,6 +1,7 @@
 //
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../../database/models/journal_entry.dart';
 import '../../helpers/localization/language_constants.dart';
@@ -17,11 +18,12 @@ class JournalList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double balance = data.fold(
-        0,
-        (previousValue, element) =>
-            previousValue +
-            (element.isCredit ? element.amount : -element.amount));
+    final income = data.where((element) => element.isCredit).fold<double>(
+        0, (previousValue, element) => previousValue + element.amount);
+    final outcome = data.where((element) => !element.isCredit).fold<double>(
+        0, (previousValue, element) => previousValue + element.amount);
+    final double balance = income - outcome;
+    final formatter = NumberFormat('#,##0.##');
     return Column(
       children: [
         Expanded(child: _buildList(context)),
@@ -43,12 +45,45 @@ class JournalList extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 8),
-              Text(
-                '\$$balance',
-                style: Topology.darkMeduimBody.copyWith(
-                  fontWeight: FontWeight.w600,
+              Container(
+                constraints: const BoxConstraints(
+                  minWidth: 50,
                 ),
-              )
+                child: Text(
+                  formatter.format(income),
+                  style: Topology.darkMeduimBody.copyWith(
+                    color: Colors.green,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Container(
+                constraints: const BoxConstraints(
+                  minWidth: 50,
+                ),
+                child: Text(
+                  formatter.format(outcome),
+                  style: Topology.darkMeduimBody.copyWith(
+                    color: Colors.red,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Flexible(
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    formatter.format(balance),
+                    textAlign: TextAlign.end,
+                    overflow: TextOverflow.ellipsis,
+                    style: Topology.darkMeduimBody.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
         ),

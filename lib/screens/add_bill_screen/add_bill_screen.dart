@@ -100,8 +100,6 @@ class _AddBillScreenState extends State<AddBillScreen> {
 
     if (widget.bill != null) {
       _setupBill(widget.bill!);
-    } else {
-      print('No bill at all');
     }
   }
 

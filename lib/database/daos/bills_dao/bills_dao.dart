@@ -2,7 +2,6 @@
 
 import 'package:drift/drift.dart';
 import 'package:my_budget/database/entities/entities_imports.dart';
-import 'package:my_budget/database/models/object_label.dart';
 
 import '../../../models/bill_item_model.dart';
 import '../../app_database.dart';

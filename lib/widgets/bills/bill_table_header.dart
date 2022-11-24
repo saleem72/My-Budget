@@ -11,7 +11,6 @@ class BillTableHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const double fontSize = 12;
     return Row(
       children: [
         Expanded(

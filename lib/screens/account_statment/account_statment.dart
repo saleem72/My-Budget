@@ -101,8 +101,6 @@ class _AccountStatmentScreenState extends State<AccountStatmentScreen> {
         });
     final data = result as Map<String, dynamic>?;
     if (data != null) {
-      print(
-          'startDate: ${data['startDate'] as DateTime}, inDetails: ${data['inDetails'] as bool}');
       getStatements(
         startDate: data['startDate'] as DateTime,
         inDetails: data['inDetails'] as bool,
@@ -205,7 +203,6 @@ class _AccountStatmentScreenState extends State<AccountStatmentScreen> {
                 onChange: (value) {
                   if (statements.isNotEmpty) {
                     setState(() {
-                      print(value);
                       statements = [];
                       previousBalance = 0;
                       _selectedAccount = null;

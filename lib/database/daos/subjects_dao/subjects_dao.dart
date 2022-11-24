@@ -2,7 +2,6 @@
 
 import 'package:my_budget/database/entities/subjects.dart';
 import 'package:drift/drift.dart';
-import 'package:my_budget/database/models/object_label.dart';
 import 'package:my_budget/database/models/subject_title.dart';
 import 'package:my_budget/database/models/subject_with_childs.dart';
 import 'package:my_budget/database/models/tree_node.dart';

@@ -1,12 +1,9 @@
 //
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my_budget/database/buget_database_cubit/budget_database_cubit.dart';
 import 'package:my_budget/database/models/journal_entry.dart';
 import 'package:my_budget/widgets/main_widgets_imports.dart';
 
-import '../../database/app_database.dart';
 import '../../styling/styling.dart';
 
 class AboutUsScreen extends StatefulWidget {
@@ -17,19 +14,17 @@ class AboutUsScreen extends StatefulWidget {
 }
 
 class _AboutUsScreenState extends State<AboutUsScreen> {
-  DateTime _selectedDate = DateTime.now();
+  // DateTime _selectedDate = DateTime.now();
   List<JournalEntry> bills = [];
 
   void updateSelectedDate(DateTime date) {
-    setState(() {
-      _selectedDate = date; // date.add(const Duration(hours: 5));
-    });
+    // setState(() {
+    //   _selectedDate = date; // date.add(const Duration(hours: 5));
+    // });
   }
 
   void _doit(BuildContext context) async {
-    final database = context.read<BudgetDatabaseCubit>().database;
-    final itemsCount = await database.journalsDao.debentureItemsCount();
-    print('Items count: $itemsCount');
+    // final database = context.read<BudgetDatabaseCubit>().database;
   }
 
   @override

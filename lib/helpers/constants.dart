@@ -44,22 +44,6 @@ class Constants {
           .size
           .height;
 
-  /*
-return LayoutBuilder(builder: (context, constraints) {
-  final span = TextSpan(text: yourText, style: yourStyle);
-  final tp = TextPainter(text: span);
-  tp.layout(maxWidth: constraints.maxWidth);
-  final numLines = textPainter.computeLineMetrics().length;
-
-  if (numLines > 3) {
-    // TODO: display the prompt message
-    return ColoredBox(color: Colors.red);
-  } else {
-    return Text(yourText, style: yourStyle);
-  }
-});
-
-  */
   static double billRowGap = 8;
   static double billQantityWidth = 50;
   static double billPriceWidth = 60;

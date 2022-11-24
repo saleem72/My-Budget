@@ -136,7 +136,6 @@ class JournalsDao extends DatabaseAccessor<AppDatabase>
   }
 
   Future<List<JournalEntry>> getJournalForDate(DateTime date) {
-    print('getJournalForDate date: $date');
     return (select(journals)
           ..where((row) {
             final rowDate = row.date;

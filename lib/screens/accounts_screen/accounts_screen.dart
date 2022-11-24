@@ -2,14 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my_budget/database/models/account_title.dart';
-import 'package:my_budget/database/models/account_with_childs.dart';
-import 'package:my_budget/database/models/tree_node.dart';
 import 'package:my_budget/helpers/utilities.dart';
 import 'package:my_budget/screens/accounts_screen/cubits/accounts_cubit/accounts_cubit.dart';
 import 'package:my_budget/screens/accounts_screen/cubits/selected_account_cubit/selected_account_cubit.dart';
-import 'package:my_budget/styling/assets.dart';
-import 'package:my_budget/styling/pallet.dart';
 import 'package:my_budget/styling/topology.dart';
 
 import '../../database/app_database.dart';
@@ -115,7 +110,6 @@ class _AccountsScreenContentState extends State<_AccountsScreenContent> {
           color: Colors.redAccent,
         ),
         onOk: () {
-          print('Will be deleted');
           database.accountsDao.deleteAccount(selectedId);
           selectedAccountCubit.selectNodeById(null);
         },
@@ -147,9 +141,9 @@ class _AccountsScreenContentState extends State<_AccountsScreenContent> {
 
   _showEditAccount(BuildContext context) async {
     final database = context.read<BudgetDatabaseCubit>().database;
-    final accountsCubit = context.read<AccountsCubit>();
+    // final accountsCubit = context.read<AccountsCubit>();
     final selectedAccount = context.read<SelectedAccountCubit>().state;
-    Account? account = null;
+    Account? account;
     if (selectedAccount != null) {
       account = await database.accountsDao.getAccountForId(selectedAccount);
     } else {

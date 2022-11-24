@@ -3,6 +3,7 @@
 import 'package:drift/drift.dart';
 import 'package:my_budget/database/models/account_with_childs.dart';
 import 'package:my_budget/database/models/tree_node.dart';
+// ignore: depend_on_referenced_packages
 import 'package:collection/collection.dart';
 
 import '../../app_database.dart';
