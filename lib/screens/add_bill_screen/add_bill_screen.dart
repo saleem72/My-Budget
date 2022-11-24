@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_budget/database/models/main_accounts.dart';
 import 'package:my_budget/helpers/localization/language_constants.dart';
 import 'package:my_budget/helpers/utilities.dart';
 import 'package:my_budget/models/bill_item_model.dart';
@@ -144,14 +145,14 @@ class _AddBillScreenState extends State<AddBillScreen> {
       items: _items,
       totla: _total,
     );
-    // const billsId = 6;
-    final billsId = await database.accountsDao.getAccountForId(6);
+    final billsId = CreditMainAccounts.billsId;
+    final billsAccount = await database.accountsDao.getAccountForId(billsId);
     final entry = JournalEntry(
       id: 0,
       date: _selectedDate,
       debentureId: 0,
-      releatedAccountId: billsId?.id ?? 0,
-      releatedAccount: billsId?.title ?? '',
+      releatedAccountId: billsAccount?.id ?? 0,
+      releatedAccount: billsAccount?.title ?? '',
       isCredit: false,
       amount: _total,
       notes: _notes.text,

@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_budget/database/buget_database_cubit/budget_database_cubit.dart';
 import 'package:my_budget/helpers/localization/language.dart';
 import 'package:my_budget/helpers/localization/language_constants.dart';
 import 'package:my_budget/helpers/localization/locale_cubit/locale_cubit.dart';
@@ -35,12 +36,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
       setState(() {
         _isArabic = value;
       });
-      context.read<LocaleCubit>().setLocal(
-            context,
-            _isArabic
-                ? Language.arabic.languageCode
-                : Language.english.languageCode,
-          );
+      final localeCubit = context.read<LocaleCubit>();
+      localeCubit.setLocal(
+        context,
+        _isArabic
+            ? Language.arabic.languageCode
+            : Language.english.languageCode,
+      );
+      context
+          .read<BudgetDatabaseCubit>()
+          .database
+          .localizeAccounts(_isArabic ? Language.arabic : Language.english);
     }
   }
 

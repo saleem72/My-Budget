@@ -31,7 +31,7 @@
     "select_account_tag": "رجاءاً قم باختيار حساب",
     "title": "الاسم",
     "edit": "تعديل",
-    "is_credit": "هل مدين",
+    "is_credit": "هل هي دخل",
     "notes": "ملاحظات",
     "bills": "الفواتير",
     "select_bill_hint": "اختر فاتورة",
@@ -55,5 +55,7 @@
     "delete_account_message": "هل انت متاكد من حذف هذا الحساب؟",
     "in_details": "تفصيلي",
     "report_type": "اختر نوع التقرير",
-    "short": "مختصر"
+    "short": "مختصر",
+    "previous_balance": "الرصيد السابق",
+    "start_date": "تاريخ البدء"
 }

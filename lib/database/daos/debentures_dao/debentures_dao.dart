@@ -9,6 +9,7 @@ import 'package:my_budget/database/models/account_summary.dart';
 import 'package:my_budget/database/models/journal_entry.dart';
 
 import '../../app_database.dart';
+import '../../models/main_accounts.dart';
 
 part 'debentures_dao.g.dart';
 
@@ -54,7 +55,7 @@ class DebenturesDao extends DatabaseAccessor<AppDatabase>
 
     final cashierPart = DebentureItemsCompanion.insert(
       debentureId: debentureId,
-      account: 3,
+      account: CreditMainAccounts.cashierId,
       date: entry.date,
       debit: entry.isCredit ? Value(entry.amount) : const Value(null),
       credit: entry.isCredit ? const Value(null) : Value(entry.amount),
@@ -69,7 +70,7 @@ class DebenturesDao extends DatabaseAccessor<AppDatabase>
       credit: entry.isCredit ? Value(entry.amount) : const Value(null),
       debit: entry.isCredit ? const Value(null) : Value(entry.amount),
       notes: Value(entry.notes),
-      releatedAccount: entry.releatedAccountId,
+      releatedAccount: CreditMainAccounts.cashierId,
     );
 
     into(debentureItems).insert(cashierPart);

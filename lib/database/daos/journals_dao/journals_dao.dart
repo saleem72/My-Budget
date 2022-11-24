@@ -1,6 +1,7 @@
 //
 
 import 'package:drift/drift.dart';
+import 'package:my_budget/database/models/main_accounts.dart';
 
 import '../../app_database.dart';
 import '../../entities/entities_imports.dart';
@@ -22,7 +23,7 @@ class JournalsDao extends DatabaseAccessor<AppDatabase>
     /// create cashier part
     into(debentureItems).insert(DebentureItemsCompanion.insert(
       debentureId: debentureId,
-      account: 3,
+      account: CreditMainAccounts.cashierId,
       date: model.date,
       debit: model.isCredit ? Value(model.amount) : const Value(null),
       credit: model.isCredit ? const Value(null) : Value(model.amount),
@@ -38,7 +39,7 @@ class JournalsDao extends DatabaseAccessor<AppDatabase>
       credit: model.isCredit ? Value(model.amount) : const Value(null),
       debit: model.isCredit ? const Value(null) : Value(model.amount),
       notes: Value(model.notes),
-      releatedAccount: 3,
+      releatedAccount: CreditMainAccounts.cashierId,
     ));
 
     final journalId = await into(journals).insert(JournalsCompanion.insert(
@@ -73,7 +74,7 @@ class JournalsDao extends DatabaseAccessor<AppDatabase>
     /// create cashier part
     into(debentureItems).insert(DebentureItemsCompanion.insert(
       debentureId: model.debentureId,
-      account: 3,
+      account: CreditMainAccounts.cashierId,
       date: model.date,
       debit: model.isCredit ? Value(model.amount) : const Value(null),
       credit: model.isCredit ? const Value(null) : Value(model.amount),
@@ -89,7 +90,7 @@ class JournalsDao extends DatabaseAccessor<AppDatabase>
       credit: model.isCredit ? Value(model.amount) : const Value(null),
       debit: model.isCredit ? const Value(null) : Value(model.amount),
       notes: Value(model.notes),
-      releatedAccount: model.releatedAccountId,
+      releatedAccount: CreditMainAccounts.cashierId,
     ));
 
     final oldJournal = (await (select(journals)

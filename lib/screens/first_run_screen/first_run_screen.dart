@@ -29,7 +29,7 @@ class _FirstRunScreenState extends State<FirstRunScreen> {
   void _createDatabase(BuildContext context) async {
     if (_isArabic) {
       final database = context.read<BudgetDatabaseCubit>().database;
-      await database.localizeAccounts();
+      await database.localizeAccounts(Language.arabic);
     }
 
     final Safe safe = di.locator();

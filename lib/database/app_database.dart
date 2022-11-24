@@ -7,9 +7,11 @@ import 'package:drift/native.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
 
+import '../helpers/localization/language.dart';
 import 'database_creation_procedures.dart';
 import 'daos/daos_imports.dart';
 import 'entities/entities_imports.dart';
+import 'models/main_accounts.dart';
 
 part 'app_database.g.dart';
 
@@ -70,106 +72,26 @@ class AppDatabase extends _$AppDatabase {
   @override
   int get schemaVersion => 1;
 
-  Future localizeAccounts() async {
+  Future localizeAccounts(Language language) async {
     for (final item in MainAccounts.values) {
-      await _localizeaccount(item);
+      await _localizeaccount(item, language);
     }
-  }
 
-  Future _localizeaccount(MainAccounts item) async {
+    for (final item in CreditMainAccounts.values) {
+      await _localizeaccount(item, language);
+    }
+
+    for (final item in DebitMainAccounts.values) {
+      await _localizeaccount(item, language);
+    }
+  } //الص
+
+  Future _localizeaccount(AppAccount item, Language language) async {
     final list = await ((select(accounts)
           ..where((tbl) => tbl.id.equals(item.id)))
         .get());
     final account = list.first;
-    await update(accounts).replace(account.copyWith(title: item.arabic));
-  }
-}
-
-enum MainAccounts { debit, credit, cashier, salary, purchases, bills }
-
-extension MainAccountsDetails on MainAccounts {
-  int get id {
-    switch (this) {
-      case MainAccounts.debit:
-        return 1;
-      case MainAccounts.credit:
-        return 2;
-      case MainAccounts.cashier:
-        return 3;
-      case MainAccounts.salary:
-        return 4;
-      case MainAccounts.purchases:
-        return 5;
-      case MainAccounts.bills:
-        return 6;
-    }
-  }
-
-  int? get parentId {
-    switch (this) {
-      case MainAccounts.debit:
-        return null;
-      case MainAccounts.credit:
-        return null;
-      case MainAccounts.cashier:
-        return 2;
-      case MainAccounts.salary:
-        return 2;
-      case MainAccounts.purchases:
-        return 1;
-      case MainAccounts.bills:
-        return 1;
-    }
-  }
-
-  bool get isCredit {
-    switch (this) {
-      case MainAccounts.debit:
-        return false;
-      case MainAccounts.credit:
-        return true;
-      case MainAccounts.cashier:
-        return false;
-      case MainAccounts.salary:
-        return true;
-      case MainAccounts.purchases:
-        return false;
-      case MainAccounts.bills:
-        return false;
-    }
-  }
-
-  String get english {
-    switch (this) {
-      case MainAccounts.debit:
-        return 'Debit';
-      case MainAccounts.credit:
-        return 'Credit';
-      case MainAccounts.cashier:
-        return 'Cashier';
-      case MainAccounts.salary:
-        return 'Salary';
-      case MainAccounts.purchases:
-        return 'Purchases';
-      case MainAccounts.bills:
-        return 'Bills';
-    }
-  }
-
-  String get arabic {
-    switch (this) {
-      case MainAccounts.debit:
-        return 'مدين';
-      case MainAccounts.credit:
-        return 'دائن';
-      case MainAccounts.cashier:
-        return 'الصندوق';
-      case MainAccounts.salary:
-        return 'الراتب';
-      case MainAccounts.purchases:
-        return 'المشتريات';
-      case MainAccounts.bills:
-        return 'الفواتير';
-    }
+    await update(accounts).replace(account.copyWith(
+        title: language == Language.arabic ? item.arabic : item.english));
   }
 }

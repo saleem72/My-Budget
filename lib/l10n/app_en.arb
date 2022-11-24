@@ -31,7 +31,7 @@
     "select_account_tag": "Please select an account",
     "title": "Title",
     "edit": "Edit",
-    "is_credit": "Is credit",
+    "is_credit": "Is is income",
     "notes": "Notes",
     "bills": "Bills",
     "select_bill_hint": "Select bill",
@@ -55,5 +55,7 @@
     "delete_account_message": "Are you sure you want to delete this account?",
     "in_details": "In details",
     "report_type": "Select Report type",
-    "short": "Short"
+    "short": "Short",
+    "previous_balance": "Previous Balance",
+    "start_date": "Start Date"
 }

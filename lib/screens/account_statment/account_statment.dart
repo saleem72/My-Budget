@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_budget/database/buget_database_cubit/budget_database_cubit.dart';
 import 'package:my_budget/database/models/journal_entry.dart';
 import 'package:my_budget/helpers/extensions/datetime_extension.dart';
-import 'package:my_budget/screens/sreens_imports.dart';
 import 'package:my_budget/styling/assets.dart';
 import 'package:my_budget/styling/topology.dart';
 
@@ -124,7 +123,7 @@ class _AccountStatmentScreenState extends State<AccountStatmentScreen> {
           children: [
             Row(
               children: [
-                const Text('Selected date'),
+                Text('${Translator.translation(context).start_date}:'),
                 const SizedBox(width: 8),
                 Expanded(
                   child: AnotherDatePicker(
@@ -144,7 +143,7 @@ class _AccountStatmentScreenState extends State<AccountStatmentScreen> {
             Row(
               children: [
                 Text(
-                  Translator.translation(context).in_details,
+                  '${Translator.translation(context).in_details}:',
                   style: Topology.darkMeduimBody,
                 ),
                 Switch(

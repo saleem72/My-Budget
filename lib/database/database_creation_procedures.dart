@@ -3,6 +3,7 @@
 import 'package:drift/drift.dart';
 
 import 'app_database.dart';
+import 'models/main_accounts.dart';
 
 class DatabaseUtils {
   DatabaseUtils._();
@@ -84,6 +85,26 @@ class DatabaseUtils {
   static List<AccountsCompanion> allAccounts() {
     final List<AccountsCompanion> array = [];
     for (final account in MainAccounts.values) {
+      final item = AccountsCompanion.insert(
+        id: Value(account.id),
+        parentId: Value(account.parentId),
+        isCredit: account.isCredit,
+        title: account.english,
+      );
+      array.add(item);
+    }
+
+    for (final account in CreditMainAccounts.values) {
+      final item = AccountsCompanion.insert(
+        id: Value(account.id),
+        parentId: Value(account.parentId),
+        isCredit: account.isCredit,
+        title: account.english,
+      );
+      array.add(item);
+    }
+
+    for (final account in DebitMainAccounts.values) {
       final item = AccountsCompanion.insert(
         id: Value(account.id),
         parentId: Value(account.parentId),

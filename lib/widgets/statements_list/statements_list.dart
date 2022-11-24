@@ -70,7 +70,7 @@ class _StatementsListState extends State<StatementsList> {
     return Row(
       children: [
         Text(
-          'Previous Balance:',
+          '${Translator.translation(context).previous_balance}:',
           style: Topology.darkMeduimBody.copyWith(
             fontWeight: FontWeight.w600,
           ),
